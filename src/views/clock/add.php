@@ -35,7 +35,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
             ],
         ]); ?>
         <?= $form->field($model, 'year') ?>
-        <?= $form->field($model, 'month')->dropDownList(\app\models\Clock::$months) ?>
+        <?= $form->field($model, 'month')->dropDownList(\app\models\Clock::months()) ?>
         <?= $form->field($model, 'day')->dropDownList(array_combine(range(1, 31), range(1, 31))) ?>
 
         <div class="form-group field-clockform-starthour field-clockform-startminute required <?= $model->hasErrors('startHour') || $model->hasErrors('startMinute') ? 'has-error' : '' ?>">

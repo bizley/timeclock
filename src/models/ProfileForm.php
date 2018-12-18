@@ -37,7 +37,7 @@ class ProfileForm extends RegisterForm
                     $entropy -= $p * log($p) / log(2);
                 }
                 if ($entropy < self::MIN_ENTROPY) {
-                    $this->addError($attribute, 'Musisz wybrać bardziej skomplikowane hasło.');
+                    $this->addError($attribute, Yii::t('app', 'You must provide more complex password.'));
                 }
             }],
         ];
@@ -57,8 +57,8 @@ class ProfileForm extends RegisterForm
     public function attributeLabels(): array
     {
         return [
-            'password' => 'Nowe hasło',
-            'name' => 'Imię i nazwisko',
+            'password' => Yii::t('app', 'New Password'),
+            'name' => Yii::t('app', 'First And Last Name'),
         ];
     }
 
@@ -82,7 +82,7 @@ class ProfileForm extends RegisterForm
         }
 
         if (!$user->save()) {
-            Yii::$app->alert->danger('Wystąpił błąd podczas zapisu użytkownika.');
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             return false;
         }
 

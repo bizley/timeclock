@@ -50,6 +50,12 @@ class ClockForm extends Model
 
     private $session;
 
+    /**
+     * ClockForm constructor.
+     * @param Clock $session
+     * @param array $config
+     * @throws \yii\base\InvalidConfigException
+     */
     public function __construct(Clock $session, array $config = [])
     {
         $this->session = $session;
@@ -129,7 +135,7 @@ class ClockForm extends Model
         $maxDaysInMonth = date('t', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, 1, 1, 0)));
 
         if ($this->day > $maxDaysInMonth) {
-            $this->addError('day', "Wybrany miesiąc ma tylko $maxDaysInMonth dni.");
+            $this->addError('day', Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
         }
     }
 
@@ -147,7 +153,7 @@ class ClockForm extends Model
         }
 
         if (!$this->hasErrors() && Clock::find()->where($conditions)->exists()) {
-            $this->addError('startHour', 'Wybrana godzina pokrywa się z inną zamkniętą sesją.');
+            $this->addError('startHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
         }
     }
 
@@ -155,10 +161,10 @@ class ClockForm extends Model
     {
         if (!$this->hasErrors()) {
             if ($this->endHour !== '' && $this->endHour !== null && ($this->endMinute === '' || $this->endMinute === null)) {
-                $this->addError('endMinute', 'Podaj minuty zakończenia sesji.');
+                $this->addError('endMinute', Yii::t('app', 'Provide session ending minute.'));
             }
             if ($this->endMinute !== '' && $this->endMinute !== null && ($this->endHour === '' || $this->endHour === null)) {
-                $this->addError('endHour', 'Podaj godzinę zakończenia sesji.');
+                $this->addError('endHour', Yii::t('app', 'Provide session ending hour.'));
             }
         }
 
@@ -166,7 +172,7 @@ class ClockForm extends Model
             if (!$this->hasErrors()
                 && Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))
                 >= Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->endHour, $this->endMinute))) {
-                $this->addError('endHour', 'Godzina zakończenia sesji musi być późniejsza niż godzina rozpoczęcia.');
+                $this->addError('endHour', Yii::t('app', 'Session ending hour must be later than starting hour.'));
             }
 
             $conditions = [
@@ -181,7 +187,7 @@ class ClockForm extends Model
             }
 
             if (!$this->hasErrors() && Clock::find()->where($conditions)->exists()) {
-                $this->addError('endHour', 'Wybrana godzina pokrywa się z inną zamkniętą sesją.');
+                $this->addError('endHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
             }
         }
     }
@@ -192,11 +198,11 @@ class ClockForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'year' => 'Rok',
-            'month' => 'Miesiąc',
-            'day' => 'Dzień',
-            'startHour' => 'Start',
-            'endHour' => 'Koniec',
+            'year' => Yii::t('app', 'Year'),
+            'month' => Yii::t('app', 'Month'),
+            'day' => Yii::t('app', 'Day'),
+            'startHour' => Yii::t('app', 'Start'),
+            'endHour' => Yii::t('app', 'End'),
         ];
     }
 

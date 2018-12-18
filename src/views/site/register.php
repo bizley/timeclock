@@ -35,11 +35,12 @@ JS
     <div class="form-group field-registerform-emailaccount field-registerform-emaildomain required <?= $model->hasErrors('emailAccount') || $model->hasErrors('emailDomain') ? 'has-error' : '' ?>">
         <?= Html::activeLabel($model, 'emailAccount', ['class' => 'col-sm-2 control-label']) ?>
         <div class="col-sm-4 email">
-            <?= Html::activeDropDownList($model, 'emailDomain', [
-                '@semfleet.tech' => '@semfleet.tech',
-                '@sagacapital.eu' => '@sagacapital.eu',
-                '@semfleet.com' => '@semfleet.com',
-            ], ['class' => 'form-control pull-right', 'id' => 'registerform-emaildomain']) ?>
+            <?= Html::activeDropDownList(
+                    $model,
+                    'emailDomain',
+                    array_combine(Yii::$app->params['allowedDomains'], Yii::$app->params['allowedDomains']),
+                    ['class' => 'form-control pull-right', 'id' => 'registerform-emaildomain']
+            ) ?>
             <?= Html::activeTextInput($model, 'emailAccount', ['class' => 'form-control', 'id' => 'registerform-emailaccount', 'autofocus' => true]) ?>
         </div>
         <div class="col-sm-6">

@@ -154,7 +154,7 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyStart();
 
-        $this->assertSame('Wybrana godzina pokrywa się z inną zamkniętą sesją.', $clockForm->getFirstError('startHour'));
+        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startHour'));
     }
 
     public function testVerifyStartNoOverlap(): void
@@ -241,6 +241,6 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Wybrana godzina pokrywa się z inną zamkniętą sesją.', $clockForm->getFirstError('endHour'));
+        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
     }
 }

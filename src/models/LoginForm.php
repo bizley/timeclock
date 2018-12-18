@@ -49,9 +49,9 @@ class LoginForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'email' => 'Email',
-            'password' => 'Hasło',
-            'rememberMe' => 'Zapamiętaj mnie na tym urządzeniu',
+            'email' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
+            'rememberMe' => Yii::t('app', 'Remember me at this device'),
         ];
     }
 
@@ -66,7 +66,7 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Nieprawidłowe hasło bądź nazwa użytkownika.');
+                $this->addError($attribute, Yii::t('app', 'Invalid password or user name.'));
             }
         }
     }

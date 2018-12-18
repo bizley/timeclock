@@ -39,7 +39,7 @@ $this->title = 'Company Timeclock | Dodanie wolnego';
         </div>
 
         <?= $form->field($model, 'startYear') ?>
-        <?= $form->field($model, 'startMonth')->dropDownList(\app\models\Off::$months) ?>
+        <?= $form->field($model, 'startMonth')->dropDownList(\app\models\Clock::months()) ?>
         <?= $form->field($model, 'startDay')->dropDownList(array_combine(range(1, 31), range(1, 31))) ?>
 
         <div class="form-group">
@@ -49,7 +49,7 @@ $this->title = 'Company Timeclock | Dodanie wolnego';
         </div>
 
         <?= $form->field($model, 'endYear') ?>
-        <?= $form->field($model, 'endMonth')->dropDownList(['' => ''] + \app\models\Off::$months) ?>
+        <?= $form->field($model, 'endMonth')->dropDownList(['' => ''] + \app\models\Clock::months()) ?>
         <?= $form->field($model, 'endDay')->dropDownList(['' => ''] + array_combine(range(1, 31), range(1, 31))) ?>
 
         <div class="form-group">

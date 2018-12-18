@@ -36,7 +36,7 @@ class ResetForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'email' => 'Email',
+            'email' => Yii::t('app', 'Email'),
         ];
     }
 
@@ -67,12 +67,12 @@ class ResetForm extends Model
                     'user' => $user->name,
                     'link' => Url::to(['site/new-password', 'token' => $user->password_reset_token], true)
                 ])
-                ->setFrom('notice@semfleet.com')
+                ->setFrom(Yii::$app->params['email'])
                 ->setTo([$user->email => $user->name])
-                ->setSubject('Reset hasła w Company Timeclock');
+                ->setSubject(Yii::t('app', 'Password reset at {company} Timeclock system', ['company' => Yii::$app->params['company']]));
 
             if (!$mail->send()) {
-                Yii::$app->alert->danger('Wystąpił błąd podczas wysyłąnia emaila z linkiem resetującym hasło.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while sending password reset link email.'));
                 return false;
             }
         }

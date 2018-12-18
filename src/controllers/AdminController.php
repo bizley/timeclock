@@ -222,13 +222,13 @@ class AdminController extends Controller
         $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_ASC])->all();
 
         return $this->render('history', [
-            'months' => Clock::$months,
+            'months' => Clock::months(),
             'year' => $year,
             'month' => $month,
-            'previous' => Clock::$months[$previousMonth],
+            'previous' => Clock::months()[$previousMonth],
             'previousYear' => $previousYear,
             'previousMonth' => $previousMonth,
-            'next' => Clock::$months[$nextMonth],
+            'next' => Clock::months()[$nextMonth],
             'nextYear' => $nextYear,
             'nextMonth' => $nextMonth,
             'clock' => $clock,
@@ -284,13 +284,13 @@ class AdminController extends Controller
         $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_ASC])->all();
 
         return $this->render('calendar', [
-            'months' => Clock::$months,
+            'months' => Clock::months(),
             'year' => $year,
             'month' => $month,
-            'previous' => Clock::$months[$previousMonth],
+            'previous' => Clock::months()[$previousMonth],
             'previousYear' => $previousYear,
             'previousMonth' => $previousMonth,
-            'next' => Clock::$months[$nextMonth],
+            'next' => Clock::months()[$nextMonth],
             'nextYear' => $nextYear,
             'nextMonth' => $nextMonth,
             'firstDayInMonth' => $firstDayInMonth,

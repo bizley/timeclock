@@ -21,22 +21,25 @@ use yii\db\ActiveRecord;
 class Clock extends ActiveRecord
 {
     /**
-     * @var array
+     * @return array
      */
-    public static $months = [
-        1 => 'styczeń',
-        2 => 'luty',
-        3 => 'marzec',
-        4 => 'kwiecień',
-        5 => 'maj',
-        6 => 'czerwiec',
-        7 => 'lipiec',
-        8 => 'sierpień',
-        9 => 'wrzesień',
-        10 => 'październik',
-        11 => 'listopad',
-        12 => 'grudzień',
-    ];
+    public static function months(): array
+    {
+        return [
+            1 => Yii::t('app', 'January'),
+            2 => Yii::t('app', 'February'),
+            3 => Yii::t('app', 'March'),
+            4 => Yii::t('app', 'April'),
+            5 => Yii::t('app', 'May'),
+            6 => Yii::t('app', 'June'),
+            7 => Yii::t('app', 'July'),
+            8 => Yii::t('app', 'August'),
+            9 => Yii::t('app', 'September'),
+            10 => Yii::t('app', 'October'),
+            11 => Yii::t('app', 'November'),
+            12 => Yii::t('app', 'December'),
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -78,7 +81,7 @@ class Clock extends ActiveRecord
             ['>=', 'clock_out', $this->clock_out],
         ];
 
-        return Clock::find()->where($conditions)->exists();
+        return static::find()->where($conditions)->exists();
     }
 
     /**
@@ -95,7 +98,7 @@ class Clock extends ActiveRecord
                 'user_id' => Yii::$app->user->id,
             ],
         ])->exists()) {
-            Yii::$app->alert->danger('Sesja została już rozpoczęta.');
+            Yii::$app->alert->danger(Yii::t('app', 'Session has already been started.'));
             return false;
         }
 
@@ -124,7 +127,7 @@ class Clock extends ActiveRecord
         }
 
         if ($this->isAnotherSessionSaved()) {
-            Yii::$app->alert->danger('Nie można zakończyć aktualnej sesji, ponieważ pokrywa się one z inną już zamkniętą.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not end current session because it overlaps with another ended session.'));
             return false;
         }
 

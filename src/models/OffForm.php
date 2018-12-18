@@ -45,6 +45,12 @@ class OffForm extends Model
 
     private $off;
 
+    /**
+     * OffForm constructor.
+     * @param Off $off
+     * @param array $config
+     * @throws \yii\base\InvalidConfigException
+     */
     public function __construct(Off $off, array $config = [])
     {
         $this->off = $off;
@@ -117,7 +123,7 @@ class OffForm extends Model
         $maxDaysInMonth = date('t', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($year, $month, 1, 1, 0)));
 
         if ($this->$attribute > $maxDaysInMonth) {
-            $this->addError($attribute, "Wybrany miesiąc ma tylko $maxDaysInMonth dni.");
+            $this->addError($attribute, Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
         }
     }
 
@@ -135,7 +141,7 @@ class OffForm extends Model
         }
 
         if (!$this->hasErrors() && Off::find()->where($conditions)->exists()) {
-            $this->addError('startDay', 'Wybrany dzień pokrywa się z innym okresem wolnym.');
+            $this->addError('startDay', Yii::t('app', 'Selected day overlaps another off-time.'));
         }
     }
 
@@ -148,13 +154,13 @@ class OffForm extends Model
                 || ($this->endDay !== '' && $this->endDay !== null)
             ) {
                 if ($this->endYear === '' || $this->endYear === null) {
-                    $this->addError('endYear', 'Podaj rok zakończenia okresu wolnego.');
+                    $this->addError('endYear', Yii::t('app', 'Provide off-time ending year.'));
                 }
                 if ($this->endMonth === '' || $this->endMonth === null) {
-                    $this->addError('endMonth', 'Podaj miesiąc zakończenia okresu wolnego.');
+                    $this->addError('endMonth', Yii::t('app', 'Provide off-time ending month.'));
                 }
                 if ($this->endDay === '' || $this->endDay === null) {
-                    $this->addError('endDay', 'Podaj dzień zakończenia okresu wolnego.');
+                    $this->addError('endDay', Yii::t('app', 'Provide off-time ending day.'));
                 }
             }
         }
@@ -170,7 +176,7 @@ class OffForm extends Model
             if (!$this->hasErrors()
                 && Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))
                 >= Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))) {
-                $this->addError('endDay', 'Dzień zakończenia wolnego nie może być wcześniejszy niż dzień rozpoczęcia.');
+                $this->addError('endDay', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
             }
 
             $conditions = [
@@ -185,7 +191,7 @@ class OffForm extends Model
             }
 
             if (!$this->hasErrors() && Off::find()->where($conditions)->exists()) {
-                $this->addError('endDay', 'Wybrany dzień pokrywa się z innym okresem wolnym.');
+                $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
             }
         }
     }
@@ -196,12 +202,12 @@ class OffForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'startYear' => 'Rok',
-            'startMonth' => 'Miesiąc',
-            'startDay' => 'Dzień',
-            'endYear' => 'Rok',
-            'endMonth' => 'Miesiąc',
-            'endDay' => 'Dzień',
+            'startYear' => Yii::t('app', 'Year'),
+            'startMonth' => Yii::t('app', 'Month'),
+            'startDay' => Yii::t('app', 'Day'),
+            'endYear' => Yii::t('app', 'Year'),
+            'endMonth' => Yii::t('app', 'Month'),
+            'endDay' => Yii::t('app', 'Day'),
         ];
     }
 

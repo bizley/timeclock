@@ -37,7 +37,7 @@ class NewPasswordForm extends RegisterForm
                     $entropy -= $p * log($p) / log(2);
                 }
                 if ($entropy < self::MIN_ENTROPY) {
-                    $this->addError($attribute, 'Musisz wybrać bardziej skomplikowane hasło.');
+                    $this->addError($attribute, Yii::t('app', 'You must provide more complex password.'));
                 }
             }],
         ];
@@ -57,7 +57,7 @@ class NewPasswordForm extends RegisterForm
     public function attributeLabels(): array
     {
         return [
-            'password' => 'Nowe hasło',
+            'password' => Yii::t('app', 'New Password'),
         ];
     }
 
@@ -77,7 +77,7 @@ class NewPasswordForm extends RegisterForm
         $this->user->removePasswordResetToken();
 
         if (!$this->user->save()) {
-            Yii::$app->alert->danger('Wystąpił błąd podczas zapisu użytkownika.');
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             return false;
         }
 

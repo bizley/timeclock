@@ -50,7 +50,7 @@ class RegisterForm extends Model
         return [
             [['emailAccount', 'emailDomain', 'email', 'password', 'name'], 'required'],
             [['emailAccount'], 'string'],
-            [['emailDomain'], 'in', 'range' => ['@semfleet.tech', '@sagacapital.eu', '@semfleet.com']],
+            [['emailDomain'], 'in', 'range' => Yii::$app->params['allowedDomains']],
             [['email'], 'email'],
             [['email'], 'unique', 'targetClass' => User::class],
             [['password'], 'string', 'min' => self::MIN_PASSWORD, 'max' => self::MAX_PASSWORD],
@@ -63,7 +63,7 @@ class RegisterForm extends Model
                     $entropy -= $p * log($p) / log(2);
                 }
                 if ($entropy < self::MIN_ENTROPY) {
-                    $this->addError($attribute, 'Musisz wybrać bardziej skomplikowane hasło.');
+                    $this->addError($attribute, Yii::t('app', 'You must provide more complex password.'));
                 }
             }],
         ];
@@ -89,9 +89,9 @@ class RegisterForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'emailAccount' => 'Email',
-            'password' => 'Hasło',
-            'name' => 'Imię i nazwisko',
+            'emailAccount' => Yii::t('app', 'Email'),
+            'password' => Yii::t('app', 'Password'),
+            'name' => Yii::t('app', 'First And Last Name'),
         ];
     }
 
@@ -114,7 +114,7 @@ class RegisterForm extends Model
         $user->generateAuthKey();
 
         if (!$user->save()) {
-            Yii::$app->alert->danger('Wystąpił błąd podczas zapisu użytkownika.');
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             return false;
         }
 

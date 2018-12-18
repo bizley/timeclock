@@ -125,13 +125,13 @@ class ClockController extends Controller
         Url::remember();
 
         return $this->render('history', [
-            'months' => Clock::$months,
+            'months' => Clock::months(),
             'year' => $year,
             'month' => $month,
-            'previous' => Clock::$months[$previousMonth],
+            'previous' => Clock::months()[$previousMonth],
             'previousYear' => $previousYear,
             'previousMonth' => $previousMonth,
-            'next' => Clock::$months[$nextMonth],
+            'next' => Clock::months()[$nextMonth],
             'nextYear' => $nextYear,
             'nextMonth' => $nextMonth,
             'clock' => Clock::find()->where([
@@ -165,13 +165,13 @@ class ClockController extends Controller
         Url::remember();
 
         return $this->render('calendar', [
-            'months' => Clock::$months,
+            'months' => Clock::months(),
             'year' => $year,
             'month' => $month,
-            'previous' => Clock::$months[$previousMonth],
+            'previous' => Clock::months()[$previousMonth],
             'previousYear' => $previousYear,
             'previousMonth' => $previousMonth,
-            'next' => Clock::$months[$nextMonth],
+            'next' => Clock::months()[$nextMonth],
             'nextYear' => $nextYear,
             'nextMonth' => $nextMonth,
             'firstDayInMonth' => $firstDayInMonth,
