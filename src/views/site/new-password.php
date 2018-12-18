@@ -6,7 +6,7 @@ use yii\bootstrap\Html;
 /* @var $this yii\web\View */
 /* @var $model \app\models\NewPasswordForm */
 
-$this->title = 'Company Timeclock | Nowe hasło';
+$this->title = Yii::t('app', 'New Password');
 
 $this->registerJs(<<<JS
 $(".password").click(function () {
@@ -21,7 +21,7 @@ JS
 );
 ?>
 <div class="form-group">
-    <h1>Nowe hasło</h1>
+    <h1><?= Yii::t('app', 'New Password') ?></h1>
 </div>
 
 <?php $form = ActiveForm::begin([
@@ -44,7 +44,7 @@ JS
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <?= Html::submitButton('Zapisz', ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
         </div>
     </div>
 

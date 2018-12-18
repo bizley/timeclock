@@ -6,7 +6,7 @@ use yii\bootstrap\Html;
 /* @var $this yii\web\View */
 /* @var $model \app\models\ProfileForm */
 
-$this->title = 'Company Timeclock | Profil';
+$this->title = Yii::t('app', 'Profile');
 
 $this->registerJs(<<<JS
 $(".password").click(function () {
@@ -32,7 +32,7 @@ JS
     ],
 ]); ?>
     <div class="form-group">
-        <label class="col-sm-2 control-label">Email</label>
+        <label class="col-sm-2 control-label"><?= Yii::t('app', 'Email') ?></label>
         <div class="col-sm-3">
             <p class="form-control-static"><?= Yii::$app->user->identity->email ?></p>
         </div>
@@ -53,7 +53,7 @@ JS
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <?= Html::submitButton('Zapisz', ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
         </div>
     </div>
 

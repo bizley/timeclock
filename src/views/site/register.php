@@ -7,7 +7,7 @@
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Company Capital';
+$this->title = Yii::t('app', 'New Account');
 
 $this->registerJs(<<<JS
 $(".password").click(function () {
@@ -22,7 +22,7 @@ JS
 );
 ?>
 <div class="form-group">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Yii::t('app', 'New Account') ?></h1>
 </div>
 
 <?php $form = ActiveForm::begin([
@@ -70,7 +70,7 @@ JS
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-11">
-            <?= Html::submitButton('Zarejestruj', ['class' => 'btn btn-primary', 'name' => 'register-button']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Register'), ['class' => 'btn btn-primary', 'name' => 'register-button']) ?>
         </div>
     </div>
 

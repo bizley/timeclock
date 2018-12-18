@@ -6,10 +6,10 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Company Capital | Reset hasła';
+$this->title = Yii::t('app', 'Password Reset');
 ?>
 <div class="form-group">
-    <h1>Reset hasła</h1>
+    <h1><?= Yii::t('app', 'Password Reset') ?></h1>
 </div>
 
 <?php $form = ActiveForm::begin([
@@ -23,7 +23,7 @@ $this->title = 'Company Capital | Reset hasła';
 
     <div class="form-group">
         <div class="col-sm-offset-1 col-sm-11">
-            <?= Html::submitButton('Resetuj', ['class' => 'btn btn-primary', 'name' => 'reset-button']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 'name' => 'reset-button']) ?>
         </div>
     </div>
 

@@ -21,7 +21,7 @@ use yii\helpers\Url;
 /* @var $off array */
 /* @var $dayOff \app\models\Off */
 
-$this->title = 'Company Timeclock | Kalendarz';
+$this->title = Yii::t('app', 'Calendar');
 
 $clockDays = [];
 foreach ($clock as $session) {
@@ -48,13 +48,13 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
 
 ?>
 <div class="form-group">
-    <h1>Kalendarz</h1>
+    <h1><?= Yii::t('app', 'Calendar') ?></h1>
 </div>
 
 <div class="row">
     <div class="col-sm-3">
         <div class="form-group">
-            Miesiąc:
+            <?= Yii::t('app', 'Month') ?>:
         </div>
         <?= Html::beginForm(['clock/calendar'], 'get'); ?>
             <div class="form-group">
@@ -75,40 +75,52 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <?= Html::a("<i class=\"glyphicon glyphicon-step-backward\"></i> $previous", ['calendar', 'month' => $previousMonth, 'year' => $previousYear], ['class' => 'btn btn-primary btn-block']) ?>
+                        <?= Html::a(
+                                "<i class=\"glyphicon glyphicon-step-backward\"></i> $previous",
+                                ['calendar', 'month' => $previousMonth, 'year' => $previousYear],
+                                ['class' => 'btn btn-primary btn-block']
+                        ) ?>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <?= Html::a("$next <i class=\"glyphicon glyphicon-step-forward\"></i>", ['calendar', 'month' => $nextMonth, 'year' => $nextYear], ['class' => 'btn btn-primary btn-block']) ?>
+                        <?= Html::a(
+                                "$next <i class=\"glyphicon glyphicon-step-forward\"></i>",
+                                ['calendar', 'month' => $nextMonth, 'year' => $nextYear],
+                                ['class' => 'btn btn-primary btn-block']
+                        ) ?>
                     </div>
                 </div>
             </div>
         <?= Html::endForm(); ?>
         <div class="form-group">
-            <?= Html::a('<i class="glyphicon glyphicon-list"></i> Przełącz na historię', ['history', 'month' => $month, 'year' => $year], ['class' => 'btn btn-info btn-block']) ?>
+            <?= Html::a(
+                    '<i class="glyphicon glyphicon-list"></i> ' . Yii::t('app', 'Switch To History'),
+                    ['history', 'month' => $month, 'year' => $year],
+                    ['class' => 'btn btn-info btn-block']
+            ) ?>
         </div>
     </div>
     <div class="col-sm-9">
         <div class="form-group">
             <div class="pull-right">
                 <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-xs">
-                    <i class="glyphicon glyphicon-plus"></i> Dodaj sesję
+                    <i class="glyphicon glyphicon-plus"></i> <?= Yii::t('app', 'Add Session') ?>
                 </a>
                 <a href="<?= Url::to(['clock/off-add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-warning btn-xs">
-                    <i class="glyphicon glyphicon-plus-sign"></i> Dodaj wolne
+                    <i class="glyphicon glyphicon-plus-sign"></i> <?= Yii::t('app', 'Add Off-Time') ?>
                 </a>
             </div>
             <?= $months[$month] ?> <?= $year ?>
         </div>
         <div class="form-group">
-            <div class="calendar day">Pn</div>
-            <div class="calendar day">Wt</div>
-            <div class="calendar day">Śr</div>
-            <div class="calendar day">Cz</div>
-            <div class="calendar day">Pt</div>
-            <div class="calendar day">Sb</div>
-            <div class="calendar day">Nd</div>
+            <div class="calendar day"><?= Yii::t('app', 'Mon') ?></div>
+            <div class="calendar day"><?= Yii::t('app', 'Tue') ?></div>
+            <div class="calendar day"><?= Yii::t('app', 'Wed') ?></div>
+            <div class="calendar day"><?= Yii::t('app', 'Thu') ?></div>
+            <div class="calendar day"><?= Yii::t('app', 'Fri') ?></div>
+            <div class="calendar day"><?= Yii::t('app', 'Sat') ?></div>
+            <div class="calendar day"><?= Yii::t('app', 'Sun') ?></div>
             <div class="clearfix"></div>
             <?php
             $dayOfWeek = $firstDayInMonth;

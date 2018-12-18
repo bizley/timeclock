@@ -7,22 +7,22 @@ use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model \app\models\OffForm */
 
-$this->title = 'Company Timeclock | Dodanie wolnego';
+$this->title = Yii::t('app', 'Adding Off-Time');
 
 ?>
 <div class="form-group">
-    <h1>Dodanie wolnego</h1>
+    <h1><?= Yii::t('app', 'Adding Off-Time') ?></h1>
 </div>
 
 <div class="row">
     <div class="col-sm-2">
         <div class="form-group">
-            <a href="<?= Url::previous() ?>" class="btn btn-primary btn-block"><i class="glyphicon glyphicon-backward"></i> Powrót</a>
+            <a href="<?= Url::previous() ?>" class="btn btn-primary btn-block"><i class="glyphicon glyphicon-backward"></i> <?= Yii::t('app', 'Go Back') ?></a>
         </div>
     </div>
     <div class="col-sm-10">
         <div class="form-group">
-            Nowe wolne
+            <?= Yii::t('app', 'New Off-Time') ?>
         </div>
         <?php $form = ActiveForm::begin([
             'layout' => 'horizontal',
@@ -32,31 +32,31 @@ $this->title = 'Company Timeclock | Dodanie wolnego';
             ],
         ]); ?>
 
-        <div class="form-group">
-            <div class="col-sm-10 col-sm-offset-2">
-                <p class="form-control-static">Dzień rozpoczęcia</p>
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <p class="form-control-static"><?= Yii::t('app', 'Start Day') ?></p>
+                </div>
             </div>
-        </div>
 
-        <?= $form->field($model, 'startYear') ?>
-        <?= $form->field($model, 'startMonth')->dropDownList(\app\models\Clock::months()) ?>
-        <?= $form->field($model, 'startDay')->dropDownList(array_combine(range(1, 31), range(1, 31))) ?>
+            <?= $form->field($model, 'startYear') ?>
+            <?= $form->field($model, 'startMonth')->dropDownList(\app\models\Clock::months()) ?>
+            <?= $form->field($model, 'startDay')->dropDownList(array_combine(range(1, 31), range(1, 31))) ?>
 
-        <div class="form-group">
-            <div class="col-sm-10 col-sm-offset-2">
-                <p class="form-control-static">Dzień zakończenia (pozostaw puste, jeśli wolne będzie trwać tylko jeden dzień)</p>
+            <div class="form-group">
+                <div class="col-sm-10 col-sm-offset-2">
+                    <p class="form-control-static"><?= Yii::t('app', 'End Day (leave empty if off-time is just for one day)') ?></p>
+                </div>
             </div>
-        </div>
 
-        <?= $form->field($model, 'endYear') ?>
-        <?= $form->field($model, 'endMonth')->dropDownList(['' => ''] + \app\models\Clock::months()) ?>
-        <?= $form->field($model, 'endDay')->dropDownList(['' => ''] + array_combine(range(1, 31), range(1, 31))) ?>
+            <?= $form->field($model, 'endYear') ?>
+            <?= $form->field($model, 'endMonth')->dropDownList(['' => ''] + \app\models\Clock::months()) ?>
+            <?= $form->field($model, 'endDay')->dropDownList(['' => ''] + array_combine(range(1, 31), range(1, 31))) ?>
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <?= Html::submitButton('Zapisz', ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
+                </div>
             </div>
-        </div>
 
         <?php ActiveForm::end(); ?>
     </div>

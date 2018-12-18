@@ -48,7 +48,7 @@ class Alert extends Widget
                         . Html::button(Html::tag('span', '&times;', ['aria-hidden' => 'true']), [
                             'class' => 'close',
                             'data-dismiss' => 'alert',
-                            'aria-label' => 'Zamknij',
+                            'aria-label' => \Yii::t('app', 'Close'),
                         ]),
                         [
                             'class' => "alert alert-{$key} alert-dismissible fade in",
