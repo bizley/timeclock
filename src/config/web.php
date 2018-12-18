@@ -1,6 +1,6 @@
 <?php
 
-use yii\db\Connection;
+use app\base\Alert;
 use app\models\User;
 use yii\caching\FileCache;
 use yii\debug\Module;
@@ -27,7 +27,7 @@ $config = [
             'class' => FileCache::class,
         ],
         'alert' => [
-            'class' => \app\base\Alert::class,
+            'class' => Alert::class,
         ],
         'user' => [
             'identityClass' => User::class,
@@ -35,6 +35,9 @@ $config = [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'i18n' => [
+
         ],
         'mailer' => [
             'class' => Mailer::class,
@@ -50,10 +53,7 @@ $config = [
                 ],
             ],
         ],
-        'db' => [
-            'class' => Connection::class,
-            'dsn' => 'sqlite:' . __DIR__ . '/../../db/timeclock.db',
-        ],
+        'db' => require 'db.php',
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
@@ -66,6 +66,9 @@ $config = [
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
             ],
         ],
+    ],
+    'params' => [
+        'company' => 'Company Name',
     ],
 ];
 
