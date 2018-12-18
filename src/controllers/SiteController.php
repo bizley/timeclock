@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\Holidays;
+use app\models\Holiday;
 use app\models\LoginForm;
 use app\models\NewPasswordForm;
 use app\models\RegisterForm;

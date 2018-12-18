@@ -6,7 +6,7 @@ namespace app\controllers;
 
 use app\models\Clock;
 use app\models\ClockForm;
-use app\models\Holidays;
+use app\models\Holiday;
 use app\models\Off;
 use app\models\OffForm;
 use Yii;
@@ -182,7 +182,7 @@ class ClockController extends Controller
                 ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
                 ['user_id' => Yii::$app->user->id],
             ])->orderBy(['clock_in' => SORT_ASC])->all(),
-            'holidays' => Holidays::getMonthHolidays($month, $year),
+            'holidays' => Holiday::getMonthHolidays($month, $year),
             'off' => Off::find()->where([
                 'and',
                 ['<', 'start_at', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],

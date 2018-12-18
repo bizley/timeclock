@@ -7,13 +7,13 @@ namespace app\models;
 use yii\db\ActiveRecord;
 
 /**
- * Holidays model
+ * Holiday model
  *
  * @property int $year
  * @property int $month
  * @property int $day
  */
-class Holidays extends ActiveRecord
+class Holiday extends ActiveRecord
 {
     /**
      * @var string

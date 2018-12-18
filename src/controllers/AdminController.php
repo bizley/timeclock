@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use app\models\Clock;
-use app\models\Holidays;
+use app\models\Holiday;
 use app\models\Off;
 use app\models\User;
 use Yii;
@@ -298,7 +298,7 @@ class AdminController extends Controller
             'clock' => $clock,
             'employee' => $user,
             'users' => User::find()->indexBy('id')->all(),
-            'holidays' => Holidays::getMonthHolidays($month, $year),
+            'holidays' => Holiday::getMonthHolidays($month, $year),
             'off' => $off,
         ]);
     }
