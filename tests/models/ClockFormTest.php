@@ -69,6 +69,7 @@ class ClockFormTest extends DbTestCase
      * @dataProvider roundToFiveProvider
      * @param int $expected
      * @param int $provided
+     * @throws \yii\base\InvalidConfigException
      */
     public function testRoundToFive(int $expected, int $provided): void
     {
@@ -99,6 +100,7 @@ class ClockFormTest extends DbTestCase
      * @param int $day
      * @param int $hour
      * @param int $minute
+     * @throws \yii\base\InvalidConfigException
      */
     public function testPrepareDate(string $expected, int $year, int $month, int $day, int $hour, int $minute): void
     {
@@ -116,10 +118,10 @@ class ClockFormTest extends DbTestCase
     public function maxDayProvider(): array
     {
         return [
-            ['Wybrany miesiąc ma tylko 28 dni.', 2018, 2],
-            ['Wybrany miesiąc ma tylko 29 dni.', 2016, 2],
-            ['Wybrany miesiąc ma tylko 30 dni.', 2018, 4],
-            ['Wybrany miesiąc ma tylko 31 dni.', 2018, 1],
+            ['Selected month has got only 28 days.', 2018, 2],
+            ['Selected month has got only 29 days.', 2016, 2],
+            ['Selected month has got only 30 days.', 2018, 4],
+            ['Selected month has got only 31 days.', 2018, 1],
         ];
     }
 
@@ -128,6 +130,7 @@ class ClockFormTest extends DbTestCase
      * @param string $expected
      * @param int $year
      * @param int $month
+     * @throws \yii\base\InvalidConfigException
      */
     public function testMaxDay(string $expected, int $year, int $month): void
     {
@@ -145,6 +148,9 @@ class ClockFormTest extends DbTestCase
         $this->assertSame($expected, $clockForm->getFirstError('day'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyStartOverlap(): void
     {
         $clockForm = new ClockForm(new Clock([
@@ -157,6 +163,9 @@ class ClockFormTest extends DbTestCase
         $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startHour'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyStartNoOverlap(): void
     {
         $clockForm = new ClockForm(new Clock([
@@ -169,6 +178,9 @@ class ClockFormTest extends DbTestCase
         $this->assertFalse($clockForm->hasErrors());
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEnd(): void
     {
         $clockForm = new ClockForm(new Clock([
@@ -184,6 +196,9 @@ class ClockFormTest extends DbTestCase
         $this->assertFalse($clockForm->hasErrors());
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndMinutesMissing(): void
     {
         $clockForm = new ClockForm(new Clock([
@@ -196,9 +211,12 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Podaj minuty zakończenia sesji.', $clockForm->getFirstError('endMinute'));
+        $this->assertSame('Provide session ending minute.', $clockForm->getFirstError('endMinute'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndHourMissing(): void
     {
         $clockForm = new ClockForm(new Clock([
@@ -211,9 +229,12 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Podaj godzinę zakończenia sesji.', $clockForm->getFirstError('endHour'));
+        $this->assertSame('Provide session ending hour.', $clockForm->getFirstError('endHour'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndSwapped(): void
     {
         $clockForm = new ClockForm(new Clock([
@@ -226,9 +247,12 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Godzina zakończenia sesji musi być późniejsza niż godzina rozpoczęcia.', $clockForm->getFirstError('endHour'));
+        $this->assertSame('Session ending hour must be later than starting hour.', $clockForm->getFirstError('endHour'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndOverlap(): void
     {
         $clockForm = new ClockForm(new Clock([

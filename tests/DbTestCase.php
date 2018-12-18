@@ -110,7 +110,7 @@ abstract class DbTestCase extends AppTestCase
     {
         parent::setUpBeforeClass();
 
-        $lines = explode(';', file_get_contents(__DIR__ . '/../db/structure.sql'));
+        $lines = explode(';', file_get_contents(__DIR__ . '/structure.sql'));
 
         if (!static::$db->isActive) {
             static::$db->open();

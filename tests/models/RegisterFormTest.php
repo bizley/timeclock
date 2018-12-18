@@ -64,7 +64,7 @@ class RegisterFormTest extends DbTestCase
 
         $this->assertFalse($registerForm->validate());
 
-        $this->assertSame('Hasło must not be equal to "Email".', $registerForm->getFirstError('password'));
+        $this->assertSame('Password must not be equal to "Email".', $registerForm->getFirstError('password'));
     }
 
     public function testPasswordTooSimple(): void
@@ -75,6 +75,6 @@ class RegisterFormTest extends DbTestCase
 
         $this->assertFalse($registerForm->validate());
 
-        $this->assertSame('Musisz wybrać bardziej skomplikowane hasło.', $registerForm->getFirstError('password'));
+        $this->assertSame('You must provide more complex password.', $registerForm->getFirstError('password'));
     }
 }

@@ -1,0 +1,38 @@
+CREATE TABLE "user" (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email VARCHAR NOT NULL,
+  name VARCHAR NOT NULL,
+  auth_key VARCHAR NOT NULL,
+  password_hash VARCHAR NOT NULL,
+  password_reset_token VARCHAR DEFAULT NULL,
+  role INTEGER NOT NULL DEFAULT '1',
+  status INTEGER NOT NULL DEFAULT '0',
+  created_at INTEGER DEFAULT NULL,
+  updated_at INTEGER DEFAULT NULL,
+  CONSTRAINT "email" UNIQUE (email),
+  CONSTRAINT "password_reset_token" UNIQUE (password_reset_token)
+);
+CREATE TABLE "clock" (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  clock_in INTEGER NOT NULL,
+  clock_out INTEGER DEFAULT NULL,
+  created_at INTEGER DEFAULT NULL,
+  updated_at INTEGER DEFAULT NULL,
+  CONSTRAINT "fk-clock-user" FOREIGN KEY (user_id) REFERENCES "user" (id) ON UPDATE CASCADE
+);
+CREATE TABLE "holiday" (
+  year INTEGER NOT NULL,
+  month INTEGER NOT NULL,
+  day INTEGER NOT NULL,
+  PRIMARY KEY (year,month,day)
+);
+CREATE TABLE "off" (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  start_at INTEGER NOT NULL,
+  end_at INTEGER NOT NULL,
+  created_at INTEGER DEFAULT NULL,
+  updated_at INTEGER DEFAULT NULL,
+  CONSTRAINT "fk-off-user" FOREIGN KEY (user_id) REFERENCES "user" (id) ON UPDATE CASCADE
+);

@@ -54,6 +54,11 @@ abstract class AppTestCase extends \PHPUnit\Framework\TestCase
                         'scriptUrl' => '/index.php',
                     ],
                 ],
+                'params' => [
+                    'company' => 'Company Name',
+                    'email' => 'email@company.com',
+                    'allowedDomains' => ['@company.com', '@company.net'],
+                ],
             ],
             static::config()
         ));

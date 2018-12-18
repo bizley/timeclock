@@ -66,6 +66,7 @@ class OffFormTest extends DbTestCase
      * @param int $day
      * @param int $hour
      * @param int $minute
+     * @throws \yii\base\InvalidConfigException
      */
     public function testPrepareDate(string $expected, int $year, int $month, int $day, int $hour, int $minute): void
     {
@@ -83,10 +84,10 @@ class OffFormTest extends DbTestCase
     public function maxDayProvider(): array
     {
         return [
-            ['Wybrany miesiąc ma tylko 28 dni.', 2018, 2],
-            ['Wybrany miesiąc ma tylko 29 dni.', 2016, 2],
-            ['Wybrany miesiąc ma tylko 30 dni.', 2018, 4],
-            ['Wybrany miesiąc ma tylko 31 dni.', 2018, 1],
+            ['Selected month has got only 28 days.', 2018, 2],
+            ['Selected month has got only 29 days.', 2016, 2],
+            ['Selected month has got only 30 days.', 2018, 4],
+            ['Selected month has got only 31 days.', 2018, 1],
         ];
     }
 
@@ -95,6 +96,7 @@ class OffFormTest extends DbTestCase
      * @param string $expected
      * @param int $year
      * @param int $month
+     * @throws \yii\base\InvalidConfigException
      */
     public function testMaxDay(string $expected, int $year, int $month): void
     {
@@ -112,6 +114,9 @@ class OffFormTest extends DbTestCase
         $this->assertSame($expected, $offForm->getFirstError('startDay'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyStartOverlap(): void
     {
         $offForm = new OffForm(new Off([
@@ -121,9 +126,12 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyStart();
 
-        $this->assertSame('Wybrany dzień pokrywa się z innym okresem wolnym.', $offForm->getFirstError('startDay'));
+        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('startDay'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyStartNoOverlap(): void
     {
         $offForm = new OffForm(new Off([
@@ -136,6 +144,9 @@ class OffFormTest extends DbTestCase
         $this->assertFalse($offForm->hasErrors());
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEnd(): void
     {
         $offForm = new OffForm(new Off([
@@ -152,6 +163,9 @@ class OffFormTest extends DbTestCase
         $this->assertFalse($offForm->hasErrors());
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndYearMissing(): void
     {
         $offForm = new OffForm(new Off([
@@ -164,9 +178,12 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Podaj rok zakończenia okresu wolnego.', $offForm->getFirstError('endYear'));
+        $this->assertSame('Provide off-time ending year.', $offForm->getFirstError('endYear'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndMonthMissing(): void
     {
         $offForm = new OffForm(new Off([
@@ -179,9 +196,12 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Podaj miesiąc zakończenia okresu wolnego.', $offForm->getFirstError('endMonth'));
+        $this->assertSame('Provide off-time ending month.', $offForm->getFirstError('endMonth'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndDayMissing(): void
     {
         $offForm = new OffForm(new Off([
@@ -194,9 +214,12 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Podaj dzień zakończenia okresu wolnego.', $offForm->getFirstError('endDay'));
+        $this->assertSame('Provide off-time ending day.', $offForm->getFirstError('endDay'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndSwapped(): void
     {
         $offForm = new OffForm(new Off([
@@ -210,9 +233,12 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Dzień zakończenia wolnego nie może być wcześniejszy niż dzień rozpoczęcia.', $offForm->getFirstError('endDay'));
+        $this->assertSame('Off-time ending day can not be earlier than starting day.', $offForm->getFirstError('endDay'));
     }
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function testVerifyEndOverlap(): void
     {
         $offForm = new OffForm(new Off([
@@ -226,6 +252,6 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Wybrany dzień pokrywa się z innym okresem wolnym.', $offForm->getFirstError('endDay'));
+        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDay'));
     }
 }
