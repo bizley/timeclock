@@ -14,7 +14,7 @@ $this->beginPage(); ?>
 <body>
 <?php $this->beginBody() ?>
 <?= $content ?>
-<div class="footer"><?= date('Y') ?> &copy; Company</div>
+<div class="footer"><?= date('Y') ?> &copy; <?= Yii::$app->params['company'] ?></div>
 <?php $this->endBody() ?>
 </body>
 </html>

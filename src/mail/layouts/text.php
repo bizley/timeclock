@@ -9,6 +9,6 @@ $this->beginBody(); ?>
 <?= $content ?>
 
 --
-<?= date('Y') ?> copyright Company
+<?= date('Y') ?> copyright <?= Yii::$app->params['company'] ?>
 <?php $this->endBody();
 $this->endPage();
