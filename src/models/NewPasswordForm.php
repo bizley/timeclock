@@ -1,0 +1,86 @@
+<?php
+
+declare(strict_types=1);
+
+namespace app\models;
+
+use Yii;
+use yii\base\Model;
+
+/**
+ * Class NewPasswordForm
+ * @package app\models
+ */
+class NewPasswordForm extends RegisterForm
+{
+    private $user;
+
+    public function __construct(User $user, array $config = [])
+    {
+        $this->user = $user;
+        parent::__construct($config);
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [['password'], 'string', 'min' => self::MIN_PASSWORD, 'max' => self::MAX_PASSWORD],
+            [['password'], 'compare', 'compareAttribute' => 'emailAccount', 'operator' => '!='],
+            [['password'], function ($attribute) {
+                $entropy = 0;
+                $size = mb_strlen($this->$attribute, Yii::$app->charset ?: 'UTF-8');
+                foreach (count_chars($this->$attribute, 1) as $frequency) {
+                    $p = $frequency / $size;
+                    $entropy -= $p * log($p) / log(2);
+                }
+                if ($entropy < self::MIN_ENTROPY) {
+                    $this->addError($attribute, 'Musisz wybrać bardziej skomplikowane hasło.');
+                }
+            }],
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function beforeValidate(): bool
+    {
+        return Model::beforeValidate();
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'password' => 'Nowe hasło',
+        ];
+    }
+
+    /**
+     * @return bool
+     * @throws \yii\base\Exception
+     */
+    public function save(): bool
+    {
+        if (!$this->validate()) {
+            return false;
+        }
+
+        $this->user->setPassword($this->password);
+        $this->user->generateAuthKey();
+
+        $this->user->removePasswordResetToken();
+
+        if (!$this->user->save()) {
+            Yii::$app->alert->danger('Wystąpił błąd podczas zapisu użytkownika.');
+            return false;
+        }
+
+        return true;
+    }
+}
