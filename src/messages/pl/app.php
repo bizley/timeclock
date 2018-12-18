@@ -8,6 +8,7 @@ return [
     'Can not find user of given ID.' => 'Nie znaleziono użytkownika o podanym ID.',
     'Error while ending session.' => 'Błąd podczas zamykania sesji.',
     'Error while starting session.' => 'Błąd podczas uruchamiania sesji.',
+    'Hello, {user}' => 'Witaj, {user}',
     'Invalid or expired reset token provided.' => 'Podano nieprawidłowy lub nieważny token resetujący.',
     'Off-time has been deleted.' => 'Wolne zostało usunięte.',
     'Off-time has been saved.' => 'Wolne zostało zapisane.',
@@ -28,4 +29,5 @@ return [
     'User has been promoted to admin.' => 'Użytkownik został awansowany na admina.',
     'You can not delete your own account.' => 'Nie możesz usunąć własnego konta.',
     'You can not demote your own account.' => 'Nie możesz zdegradować własnego konta.',
+    'Your password reset link at Timeclock system:' => 'Twój link resetujący hasło w systemie Timeclock:',
 ];

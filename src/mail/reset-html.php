@@ -1,3 +1,3 @@
-<p>Witaj, <?= $user ?></p>
-<p>Twój link resetujący hasło w systemie Timeclock:</p>
+<p><?= Yii::t('app', 'Hello, {user}', ['user' => $user]) ?></p>
+<p><?= Yii::t('app', 'Your password reset link at Timeclock system:') ?></p>
 <p><a href="<?= $link ?>"><?= $link ?></a></p>
