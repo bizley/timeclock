@@ -4,6 +4,7 @@ use app\base\Alert;
 use app\models\User;
 use yii\caching\FileCache;
 use yii\debug\Module;
+use yii\i18n\PhpMessageSource;
 use yii\log\FileTarget;
 use yii\swiftmailer\Mailer;
 
@@ -37,7 +38,12 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'i18n' => [
-
+            'translations' => [
+                'app*' => [
+                    'class' => PhpMessageSource::class,
+                    'basePath' => '@app/messages'
+                ],
+            ],
         ],
         'mailer' => [
             'class' => Mailer::class,
@@ -69,6 +75,7 @@ $config = [
     ],
     'params' => [
         'company' => 'Company Name',
+        'email' => 'email@company.com',
     ],
 ];
 

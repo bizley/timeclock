@@ -28,6 +28,8 @@ class m181218_180810_user extends Migration
             'created_at' => $this->integer(11),
             'updated_at' => $this->integer(11),
         ], $tableOptions);
+
+        $this->createIndex('idx-user-name', '{{%user}}', ['name']);
     }
 
     public function down()

@@ -55,7 +55,7 @@ class ClockController extends Controller
         $clock = new Clock();
 
         if (!$clock->start()) {
-            Yii::$app->alert->danger('Błąd podczas uruchamiania sesji.');
+            Yii::$app->alert->danger(Yii::t('app', 'Error while starting session.'));
         }
 
         return $this->redirect(['site/index']);
@@ -69,9 +69,9 @@ class ClockController extends Controller
         $clock = Clock::session();
 
         if ($clock === null) {
-            Yii::$app->alert->danger('Nie znaleziono otwartej sesji.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find any started session.'));
         } elseif (!$clock->stop()) {
-            Yii::$app->alert->danger('Błąd podczas zamykania sesji.');
+            Yii::$app->alert->danger(Yii::t('app', 'Error while ending session.'));
         }
 
         return $this->redirect(['site/index']);
@@ -206,12 +206,12 @@ class ClockController extends Controller
         ])->one();
 
         if ($clock === null) {
-            Yii::$app->alert->danger('Nie znaleziono sesji o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
         } else {
             if (!$clock->delete()) {
-                Yii::$app->alert->danger('Wystąpił błąd podczas usuwania sesji.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting session.'));
             } else {
-                Yii::$app->alert->success('Sesja została usunięta.');
+                Yii::$app->alert->success(Yii::t('app', 'Session has been deleted.'));
             }
         }
 
@@ -231,13 +231,13 @@ class ClockController extends Controller
         ])->one();
 
         if ($session === null) {
-            Yii::$app->alert->danger('Nie znaleziono sesji o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
             return $this->goBack();
         }
 
         $model = new ClockForm($session);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->alert->success('Sesja została zapisana.');
+            Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
             return $this->goBack();
         }
 
@@ -269,7 +269,7 @@ class ClockController extends Controller
             )->getTimestamp()
         ]));
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->alert->success('Sesja została zapisana.');
+            Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
             return $this->goBack();
         }
 
@@ -300,7 +300,7 @@ class ClockController extends Controller
             )->getTimestamp()
         ]));
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->alert->success('Wolne zostało zapisane.');
+            Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
             return $this->goBack();
         }
 
@@ -322,13 +322,13 @@ class ClockController extends Controller
         ])->one();
 
         if ($off === null) {
-            Yii::$app->alert->danger('Nie znaleziono wolnego o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
             return $this->goBack();
         }
 
         $model = new OffForm($off);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->alert->success('Wolne zostało zapisane.');
+            Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
             return $this->goBack();
         }
 
@@ -352,12 +352,12 @@ class ClockController extends Controller
         ])->one();
 
         if ($off === null) {
-            Yii::$app->alert->danger('Nie znaleziono wolnego o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
         } else {
             if (!$off->delete()) {
-                Yii::$app->alert->danger('Wystąpił błąd podczas usuwania wolnego.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting off-time.'));
             } else {
-                Yii::$app->alert->success('Wolne zostało usunięta.');
+                Yii::$app->alert->success(Yii::t('app', 'Off-time has been deleted.'));
             }
         }
 

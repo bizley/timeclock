@@ -89,12 +89,12 @@ class AdminController extends Controller
         $user = User::findOne($id);
 
         if ($user === null) {
-            Yii::$app->alert->danger('Nie znaleziono użytkownika o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
         } else {
             $user->generatePasswordResetToken();
 
             if (!$user->save()) {
-                Yii::$app->alert->danger('Wystąpił błąd w czasie zapisywania użytkownika.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             } else {
                 $mail = Yii::$app->mailer->compose([
                     'html' => 'reset-html',
@@ -103,14 +103,14 @@ class AdminController extends Controller
                     'user' => $user->name,
                     'link' => Url::to(['site/new-password', 'token' => $user->password_reset_token], true)
                 ])
-                    ->setFrom('notice@semfleet.com')
+                    ->setFrom(Yii::$app->params['email'])
                     ->setTo([$user->email => $user->name])
-                    ->setSubject('Reset hasła w Company Timeclock');
+                    ->setSubject(Yii::t('app', 'Password reset at {company} Timeclock system', ['company' => Yii::$app->params['company']]));
 
                 if (!$mail->send()) {
-                    Yii::$app->alert->danger('Wystąpił błąd podczas wysyłąnia emaila z linkiem resetującym hasło.');
+                    Yii::$app->alert->danger(Yii::t('app', 'There was an error while sending password reset link email.'));
                 } else {
-                    Yii::$app->alert->success('Email z linkiem resetującym hasło został wysłany.');
+                    Yii::$app->alert->success(Yii::t('app', 'Password reset link email has been sent.'));
                 }
             }
         }
@@ -129,15 +129,15 @@ class AdminController extends Controller
         $user = User::findOne($id);
 
         if ($user === null) {
-            Yii::$app->alert->danger('Nie znaleziono użytkownika o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
         } elseif ((int) $user->id === (int) Yii::$app->user->id) {
-            Yii::$app->alert->danger('Nie możesz usunąć własnego konta.');
+            Yii::$app->alert->danger(Yii::t('app', 'You can not delete your own account.'));
         } else {
             Clock::deleteAll(['user_id' => $user->id]);
             if (!$user->delete()) {
-                Yii::$app->alert->danger('Wystąpił błąd podczas usuwania użytkownika.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting user.'));
             } else {
-                Yii::$app->alert->success('Użytkownik został usunięty.');
+                Yii::$app->alert->success(Yii::t('app', 'User has been deleted.'));
             }
         }
 
@@ -195,7 +195,7 @@ class AdminController extends Controller
             $user = User::findOne($id);
 
             if ($user === null) {
-                Yii::$app->alert->danger('Nie znaleziono użytkownika o podanym ID.');
+                Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
             }
         }
 
@@ -257,7 +257,7 @@ class AdminController extends Controller
             $user = User::findOne($id);
 
             if ($user === null) {
-                Yii::$app->alert->danger('Nie znaleziono użytkownika o podanym ID.');
+                Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
             }
         }
 
@@ -313,15 +313,15 @@ class AdminController extends Controller
         $user = User::findOne($id);
 
         if ($user === null) {
-            Yii::$app->alert->danger('Nie znaleziono użytkownika o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
         } elseif ((int) $user->id === (int) Yii::$app->user->id) {
-            Yii::$app->alert->danger('Nie możesz zdegradować własnego konta.');
+            Yii::$app->alert->danger(Yii::t('app', 'You can not demote your own account.'));
         } else {
             $user->role = User::ROLE_EMPLOYEE;
             if (!$user->save()) {
-                Yii::$app->alert->danger('Wystąpił błąd podczas zapisywania użytkownika.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             } else {
-                Yii::$app->alert->success('Użytkownik został zdegradowany.');
+                Yii::$app->alert->success(Yii::t('app', 'User has been demoted.'));
             }
         }
 
@@ -338,13 +338,13 @@ class AdminController extends Controller
         $user = User::findOne($id);
 
         if ($user === null) {
-            Yii::$app->alert->danger('Nie znaleziono użytkownika o podanym ID.');
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
         } else {
             $user->role = User::ROLE_ADMIN;
             if (!$user->save()) {
-                Yii::$app->alert->danger('Wystąpił błąd podczas zapisywania użytkownika.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             } else {
-                Yii::$app->alert->success('Użytkownik został awansowany na admina.');
+                Yii::$app->alert->success(Yii::t('app', 'User has been promoted to admin.'));
             }
         }
 

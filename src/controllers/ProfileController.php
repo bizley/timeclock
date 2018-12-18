@@ -36,13 +36,14 @@ class ProfileController extends Controller
 
     /**
      * @return string|Response
+     * @throws \yii\base\Exception
      */
     public function actionIndex()
     {
         $model = new ProfileForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->update()) {
-            Yii::$app->alert->success('Profil został uaktualniony.');
+            Yii::$app->alert->success(Yii::t('app', 'Profile has been updated.'));
             return $this->refresh();
         }
 

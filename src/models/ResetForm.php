@@ -56,7 +56,7 @@ class ResetForm extends Model
             $user->generatePasswordResetToken();
 
             if (!$user->save()) {
-                Yii::$app->alert->danger('Wystąpił błąd w czasie zapisywania użytkownika.');
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
                 return false;
             }
 

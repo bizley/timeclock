@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\models\Holiday;
 use app\models\LoginForm;
 use app\models\NewPasswordForm;
 use app\models\RegisterForm;
@@ -102,7 +101,7 @@ class SiteController extends Controller
 
         $model = new RegisterForm();
         if ($model->load(Yii::$app->request->post()) && $model->register()) {
-            Yii::$app->alert->success('Konto zostało zarejestrowane.');
+            Yii::$app->alert->success(Yii::t('app', 'Account has been registered.'));
             Yii::$app->user->login(User::findByEmail($model->email));
 
             return $this->redirect(['index']);
@@ -138,7 +137,7 @@ class SiteController extends Controller
 
         $model = new ResetForm();
         if ($model->load(Yii::$app->request->post()) && $model->reset()) {
-            Yii::$app->alert->success('Link resetujący hasło został wysłany na podany adres email, o ile jest on zarejestrowany w systemie.');
+            Yii::$app->alert->success(Yii::t('app', 'Password reset link has been sent to given email address assuming this address has been registered.'));
             return $this->goBack();
         }
 
@@ -155,19 +154,19 @@ class SiteController extends Controller
     public function actionNewPassword(string $token)
     {
         if (!User::isPasswordResetTokenValid($token)) {
-            Yii::$app->alert->danger('Podano nieprawidłowy lub nieważny token resetujący.');
+            Yii::$app->alert->danger(Yii::t('app', 'Invalid or expired reset token provided.'));
             return $this->redirect(['login']);
         }
 
         $user = User::findByPasswordResetToken($token);
         if ($user === null) {
-            Yii::$app->alert->danger('Podano nieprawidłowy lub nieważny token resetujący.');
+            Yii::$app->alert->danger(Yii::t('app', 'Invalid or expired reset token provided.'));
             return $this->redirect(['login']);
         }
 
         $model = new NewPasswordForm($user);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->alert->success('Hasło zostało zmienione.');
+            Yii::$app->alert->success();
             return $this->redirect(['login']);
         }
 
