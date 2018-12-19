@@ -9,6 +9,7 @@ CREATE TABLE "user" (
   status INTEGER NOT NULL DEFAULT '0',
   created_at INTEGER DEFAULT NULL,
   updated_at INTEGER DEFAULT NULL,
+  theme VARCHAR NOT NULL DEFAULT 'light',
   CONSTRAINT "email" UNIQUE (email),
   CONSTRAINT "password_reset_token" UNIQUE (password_reset_token)
 );
