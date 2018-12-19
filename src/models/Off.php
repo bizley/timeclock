@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  * @property int $user_id
  * @property int $start_at
  * @property int $end_at
+ * @property string $note
  * @property int $created_at
  * @property int $updated_at
  */
@@ -44,6 +45,7 @@ class Off extends ActiveRecord
             [['user_id', 'start_at'], 'required'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['end_at'], 'compare', 'compareAttribute' => 'start_at', 'operator' => '>'],
+            [['note'], 'string'],
         ];
     }
 }
