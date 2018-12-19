@@ -52,6 +52,10 @@ $this->title = Yii::t('app', 'Adding Off-Time');
             <?= $form->field($model, 'endMonth')->dropDownList(\app\models\Clock::months()) ?>
             <?= $form->field($model, 'endDay')->dropDownList(array_combine(range(1, 31), range(1, 31))) ?>
 
+            <div class="form-group">&nbsp;</div>
+
+            <?= $form->field($model, 'note')->textarea() ?>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>

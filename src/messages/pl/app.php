@@ -67,6 +67,7 @@ return [
     'NONE' => 'BRAK',
     'November' => 'listopad',
     'not ended' => 'niezamknięta',
+    'Note' => 'Notka',
     'October' => 'październik',
     'Off-Time' => 'Wolne',
     'Off-time ending day can not be earlier than starting day.' => 'Dzień zakończenia wolnego nie może być wcześniejszy niż dzień rozpoczęcia.',

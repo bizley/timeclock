@@ -43,6 +43,11 @@ class OffForm extends Model
      */
     public $endDay;
 
+    /**
+     * @var string
+     */
+    public $note;
+
     private $off;
 
     /**
@@ -61,6 +66,7 @@ class OffForm extends Model
         $this->endYear = Yii::$app->formatter->asTime($off->end_at, 'y');
         $this->endMonth = Yii::$app->formatter->asTime($off->end_at, 'M');
         $this->endDay = Yii::$app->formatter->asDate($off->end_at, 'd');
+        $this->note = $off->note;
 
         parent::__construct($config);
     }
@@ -78,6 +84,7 @@ class OffForm extends Model
             [['startDay', 'endDay'], 'maxDay'],
             [['startDay'], 'verifyStart'],
             [['endDay'], 'verifyEnd'],
+            [['note'], 'string'],
         ];
     }
 
@@ -180,6 +187,7 @@ class OffForm extends Model
             'endYear' => Yii::t('app', 'Year'),
             'endMonth' => Yii::t('app', 'Month'),
             'endDay' => Yii::t('app', 'Day'),
+            'note' => Yii::t('app', 'Note'),
         ];
     }
 
@@ -206,6 +214,8 @@ class OffForm extends Model
             $this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59),
             new \DateTimeZone(Yii::$app->timeZone))
         )->getTimestamp();
+
+        $this->off->note = $this->note;
 
         return $this->off->save();
     }
