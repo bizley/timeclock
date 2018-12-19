@@ -76,7 +76,7 @@ $config = [
     'params' => [
         'company' => 'Company Name',
         'email' => 'email@company.com',
-        'allowedDomains' => [],
+        'allowedDomains' => ['@company.com'],
     ],
 ];
 
