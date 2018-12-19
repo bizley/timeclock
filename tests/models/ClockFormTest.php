@@ -211,7 +211,7 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Provide session ending minute.', $clockForm->getFirstError('endMinute'));
+        $this->assertSame(0, $clockForm->endMinute);
     }
 
     /**

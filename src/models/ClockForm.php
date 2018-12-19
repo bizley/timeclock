@@ -161,7 +161,7 @@ class ClockForm extends Model
     {
         if (!$this->hasErrors()) {
             if ($this->endHour !== '' && $this->endHour !== null && ($this->endMinute === '' || $this->endMinute === null)) {
-                $this->addError('endMinute', Yii::t('app', 'Provide session ending minute.'));
+                $this->endMinute = 0;
             }
             if ($this->endMinute !== '' && $this->endMinute !== null && ($this->endHour === '' || $this->endHour === null)) {
                 $this->addError('endHour', Yii::t('app', 'Provide session ending hour.'));

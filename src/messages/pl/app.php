@@ -87,7 +87,6 @@ return [
     'Provide off-time ending month.' => 'Podaj miesiąc zakończenia okresu wolnego.',
     'Provide off-time ending year.' => 'Podaj rok zakończenia okresu wolnego.',
     'Provide session ending hour.' => 'Podaj godzinę zakończenia sesji.',
-    'Provide session ending minute.' => 'Podaj minuty zakończenia sesji.',
     'Register' => 'Zarejestruj',
     'Remember me at this device' => 'Zapamiętaj mnie na tym urządzeniu',
     'Reset' => 'Resetuj',
