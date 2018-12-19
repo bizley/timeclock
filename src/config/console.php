@@ -11,6 +11,7 @@ return [
     'bootstrap' => ['log'],
     'timeZone' => 'Europe/Warsaw',
     'language' => 'pl',
+    'controllerNamespace' => 'app\\commands',
     'components' => [
         'cache' => [
             'class' => FileCache::class,
