@@ -295,9 +295,13 @@ class ClockController extends Controller
 
         $model = new OffForm(new Off([
             'start_at' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . date('d H:00:00'),
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . date('d 00:00:00'),
                 new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp()
+            )->getTimestamp(),
+            'end_at' => (new \DateTime(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . date('d 23:59:59'),
+                new \DateTimeZone(Yii::$app->timeZone))
+            )->getTimestamp(),
         ]));
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));

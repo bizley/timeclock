@@ -73,6 +73,7 @@ class OffFormTest extends DbTestCase
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1,
+            'end_at' => 10,
         ]));
 
         $this->assertSame($expected, $offForm->prepareDate($year, $month, $day, $hour, $minute));
@@ -103,6 +104,7 @@ class OffFormTest extends DbTestCase
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1,
+            'end_at' => 10,
         ]));
 
         $offForm->startDay = 32;
@@ -122,6 +124,7 @@ class OffFormTest extends DbTestCase
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1544054400,
+            'end_at' => 1544054401,
         ]));
 
         $offForm->verifyStart();
@@ -137,6 +140,7 @@ class OffFormTest extends DbTestCase
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1240000500,
+            'end_at' => 1240000501,
         ]));
 
         $offForm->verifyStart();
@@ -152,6 +156,7 @@ class OffFormTest extends DbTestCase
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1543622400,
+            'end_at' => 1543622401,
         ]));
 
         $offForm->endYear = '2018';
@@ -166,70 +171,13 @@ class OffFormTest extends DbTestCase
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public function testVerifyEndYearMissing(): void
-    {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1,
-        ]));
-
-        $offForm->endMonth = '12';
-        $offForm->endDay = '3';
-
-        $offForm->verifyEnd();
-
-        $this->assertSame('Provide off-time ending year.', $offForm->getFirstError('endYear'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function testVerifyEndMonthMissing(): void
-    {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1,
-        ]));
-
-        $offForm->endYear = '2018';
-        $offForm->endDay = '3';
-
-        $offForm->verifyEnd();
-
-        $this->assertSame('Provide off-time ending month.', $offForm->getFirstError('endMonth'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function testVerifyEndDayMissing(): void
-    {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1,
-        ]));
-
-        $offForm->endYear = '2018';
-        $offForm->endMonth = '12';
-
-        $offForm->verifyEnd();
-
-        $this->assertSame('Provide off-time ending day.', $offForm->getFirstError('endDay'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     */
     public function testVerifyEndSwapped(): void
     {
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1543622400,
+            'end_at' => 1543621000,
         ]));
-
-        $offForm->endYear = '2018';
-        $offForm->endMonth = '10';
-        $offForm->endDay = '3';
 
         $offForm->verifyEnd();
 
@@ -244,11 +192,8 @@ class OffFormTest extends DbTestCase
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1543622400,
+            'end_at' => 1544140700,
         ]));
-
-        $offForm->endYear = '2018';
-        $offForm->endMonth = '12';
-        $offForm->endDay = '5';
 
         $offForm->verifyEnd();
 

@@ -44,13 +44,13 @@ $this->title = Yii::t('app', 'Adding Off-Time');
 
             <div class="form-group">
                 <div class="col-sm-10 col-sm-offset-2">
-                    <p class="form-control-static"><?= Yii::t('app', 'End Day (leave empty if off-time is just for one day)') ?></p>
+                    <p class="form-control-static"><?= Yii::t('app', 'End Day') ?></p>
                 </div>
             </div>
 
             <?= $form->field($model, 'endYear') ?>
-            <?= $form->field($model, 'endMonth')->dropDownList(['' => ''] + \app\models\Clock::months()) ?>
-            <?= $form->field($model, 'endDay')->dropDownList(['' => ''] + array_combine(range(1, 31), range(1, 31))) ?>
+            <?= $form->field($model, 'endMonth')->dropDownList(\app\models\Clock::months()) ?>
+            <?= $form->field($model, 'endDay')->dropDownList(array_combine(range(1, 31), range(1, 31))) ?>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">

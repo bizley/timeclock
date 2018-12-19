@@ -58,9 +58,9 @@ class OffForm extends Model
         $this->startYear = Yii::$app->formatter->asDate($off->start_at, 'y');
         $this->startMonth = Yii::$app->formatter->asDate($off->start_at, 'M');
         $this->startDay = Yii::$app->formatter->asDate($off->start_at, 'd');
-        $this->endYear = $off->end_at ? Yii::$app->formatter->asTime($off->end_at, 'y') : null;
-        $this->endMonth = $off->end_at ? Yii::$app->formatter->asTime($off->end_at, 'M') : null;
-        $this->endDay = $off->end_at ? Yii::$app->formatter->asDate($off->end_at, 'd') : null;
+        $this->endYear = Yii::$app->formatter->asTime($off->end_at, 'y');
+        $this->endMonth = Yii::$app->formatter->asTime($off->end_at, 'M');
+        $this->endDay = Yii::$app->formatter->asDate($off->end_at, 'd');
 
         parent::__construct($config);
     }
@@ -71,7 +71,7 @@ class OffForm extends Model
     public function rules(): array
     {
         return [
-            [['startYear', 'startMonth', 'startDay'], 'required'],
+            [['startYear', 'startMonth', 'startDay', 'endYear', 'endMonth', 'endDay'], 'required'],
             [['startYear', 'endYear'], 'number', 'min' => 2018],
             [['startMonth', 'endMonth'], 'number', 'min' => 1, 'max' => 12],
             [['startDay', 'endDay'], 'number', 'min' => 1, 'max' => 31],
@@ -147,52 +147,24 @@ class OffForm extends Model
 
     public function verifyEnd(): void
     {
-        if (!$this->hasErrors()) {
-            if (
-                ($this->endYear !== '' && $this->endYear !== null)
-                || ($this->endMonth !== '' && $this->endMonth !== null)
-                || ($this->endDay !== '' && $this->endDay !== null)
-            ) {
-                if ($this->endYear === '' || $this->endYear === null) {
-                    $this->addError('endYear', Yii::t('app', 'Provide off-time ending year.'));
-                }
-                if ($this->endMonth === '' || $this->endMonth === null) {
-                    $this->addError('endMonth', Yii::t('app', 'Provide off-time ending month.'));
-                }
-                if ($this->endDay === '' || $this->endDay === null) {
-                    $this->addError('endDay', Yii::t('app', 'Provide off-time ending day.'));
-                }
-            }
+        if (Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))
+            >= Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))) {
+            $this->addError('endDay', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
         }
 
-        if (
-            $this->endYear !== ''
-            && $this->endYear !== null
-            && $this->endMonth !== ''
-            && $this->endMonth !== null
-            && $this->endDay !== ''
-            && $this->endDay !== null
-        ) {
-            if (!$this->hasErrors()
-                && Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))
-                >= Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))) {
-                $this->addError('endDay', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
-            }
+        $conditions = [
+            'and',
+            ['user_id' => Yii::$app->user->id],
+            ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+            ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+        ];
 
-            $conditions = [
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
-                ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
-            ];
+        if ($this->off->id !== null) {
+            $conditions[] = ['<>', 'id', $this->off->id];
+        }
 
-            if ($this->off->id !== null) {
-                $conditions[] = ['<>', 'id', $this->off->id];
-            }
-
-            if (!$this->hasErrors() && Off::find()->where($conditions)->exists()) {
-                $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
-            }
+        if (!$this->hasErrors() && Off::find()->where($conditions)->exists()) {
+            $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
         }
     }
 
@@ -230,17 +202,10 @@ class OffForm extends Model
             new \DateTimeZone(Yii::$app->timeZone))
         )->getTimestamp();
 
-        if ($this->endDay !== '' && $this->endDay !== null) {
-            $this->off->end_at = (new \DateTime(
-                $this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59),
-                new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp();
-        } else {
-            $this->off->end_at = (new \DateTime(
-                $this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 23, 59),
-                new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp();
-        }
+        $this->off->end_at = (new \DateTime(
+            $this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59),
+            new \DateTimeZone(Yii::$app->timeZone))
+        )->getTimestamp();
 
         return $this->off->save();
     }

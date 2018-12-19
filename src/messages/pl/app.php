@@ -38,7 +38,7 @@ return [
     'Employees' => 'Pracownicy',
     'End' => 'Koniec',
     'end' => 'zamknij',
-    'End Day (leave empty if off-time is just for one day)' => 'Dzień zakończenia (pozostaw puste, jeśli wolne będzie trwać tylko jeden dzień)',
+    'End Day' => 'Dzień zakończenia',
     'End Session' => 'Zakończ sesję',
     'Error while ending session.' => 'Błąd podczas zamykania sesji.',
     'Error while starting session.' => 'Błąd podczas uruchamiania sesji.',
