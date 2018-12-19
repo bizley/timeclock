@@ -168,9 +168,9 @@ $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
                     <?= $day ?>
                     <?php if (isset($clockDays[$day])): ?>
                         <p>
-                        <?php foreach ($clockDays[$day] as $initials => $times): ?>
-                            <span class="badge" data-toggle="tooltip" data-placement="top" title="<?= $times[0] . ' - ' . $times[1] ?>"><?= $initials ?></span>
-                        <?php endforeach; ?>
+                            <?php foreach ($clockDays[$day] as $initials => $times): ?>
+                                <span class="badge" data-toggle="tooltip" data-placement="top" title="<?= $times[0] . ' - ' . $times[1] ?>"><?= $initials ?></span>
+                            <?php endforeach; ?>
                         </p>
                     <?php endif; ?>
                     <?php if (isset($offDays[$day])): ?>

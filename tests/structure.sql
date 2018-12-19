@@ -33,6 +33,7 @@ CREATE TABLE "off" (
   user_id INTEGER NOT NULL,
   start_at INTEGER NOT NULL,
   end_at INTEGER NOT NULL,
+  note VARCHAR,
   created_at INTEGER DEFAULT NULL,
   updated_at INTEGER DEFAULT NULL,
   CONSTRAINT "fk-off-user" FOREIGN KEY (user_id) REFERENCES "user" (id) ON UPDATE CASCADE
