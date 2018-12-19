@@ -32,9 +32,9 @@ $this->beginPage(); ?>
             <?php if (!Yii::$app->user->isGuest): ?>
                 <ul class="pull-right list-inline menu">
                     <li><a href="<?= Url::to(['profile/index']) ?>"><i class="glyphicon glyphicon-user"></i> <?= Html::encode(Yii::$app->user->identity->name) ?></a></li>
-                    <li><a href="<?= Url::to(['site/index']) ?>"><i class="glyphicon glyphicon-play"></i> <?= Yii::t('app', 'Current Session') ?></li>
-                    <li><a href="<?= Url::to(['clock/add']) ?>"><i class="glyphicon glyphicon-plus"></i> <?= Yii::t('app', 'Add Session') ?></li>
-                    <li><a href="<?= Url::to(['clock/off-add']) ?>"><i class="glyphicon glyphicon-plus-sign"></i> <?= Yii::t('app', 'Add Off-Time') ?></li>
+                    <li><a href="<?= Url::to(['site/index']) ?>"><i class="glyphicon glyphicon-play"></i> <?= Yii::t('app', 'Current Session') ?></a></li>
+                    <li><a href="<?= Url::to(['clock/add']) ?>"><i class="glyphicon glyphicon-plus"></i> <?= Yii::t('app', 'Add Session') ?></a></li>
+                    <li><a href="<?= Url::to(['clock/off-add']) ?>"><i class="glyphicon glyphicon-plus-sign"></i> <?= Yii::t('app', 'Add Off-Time') ?></a></li>
                     <li><a href="<?= Url::to(['clock/history']) ?>"><i class="glyphicon glyphicon-list"></i> <?= Yii::t('app', 'History') ?></a></li>
                     <li><a href="<?= Url::to(['clock/calendar']) ?>"><i class="glyphicon glyphicon-calendar"></i> <?= Yii::t('app', 'Calendar') ?></a></li>
                     <li><a href="<?= Url::to(['site/logout']) ?>" data-method="post"><i class="glyphicon glyphicon-log-out"></i> <?= Yii::t('app', 'Log Out') ?></a></li>
@@ -54,7 +54,16 @@ $this->beginPage(); ?>
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; <?= Yii::$app->params['company'] ?> <?= date('Y') ?></p>
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <p class="pull-right">
+                    <?php if (Yii::$app->user->identity->theme === 'light'): ?>
+                        <a href="<?= Url::to(['profile/dark']) ?>" class="text-muted"><?= Yii::t('app', 'Switch to dark theme') ?></a>
+                    <?php else: ?>
+                        <a href="<?= Url::to(['profile/light']) ?>" class="text-muted"><?= Yii::t('app', 'Switch to light theme') ?></a>
+                    <?php endif; ?>
+                </p>
+            <?php endif; ?>
+            <p>&copy; <?= Yii::$app->params['company'] ?> <?= date('Y') ?></p>
         </div>
     </footer>
 </div>

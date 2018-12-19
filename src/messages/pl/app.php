@@ -115,6 +115,8 @@ return [
     'Status' => 'Status',
     'Sun' => 'Nd',
     'Switch To Calendar' => 'Przełącz na kalendarz',
+    'Switch to dark theme' => 'Przełącz na ciemną skórkę',
+    'Switch to light theme' => 'Przełącz na jasną skórkę',
     'Switch To History' => 'Przełącz na historię',
     'There was an error while deleting off-time.' => 'Wystąpił błąd podczas usuwania wolnego.',
     'There was an error while deleting session.' => 'Wystąpił błąd podczas usuwania sesji.',

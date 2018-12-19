@@ -1,0 +1,24 @@
+html, body {
+    background-color:#212020;
+    color:#666;
+}
+#bg { color:#191818 }
+.footer { background-color:#161515 }
+.menu a { color:#999 }
+.menu-admin a { color:#81ccd3 }
+.list-group-item {
+    background-color:#161515;
+    border-color:#333;
+}
+.calendar {
+    border:1px solid #333;
+    background-color:#161515;
+}
+.calendar.weekend { background-color:#1a1a1a }
+.calendar.holiday { background-color:#b56363 }
+.calendar.today { background-color:#ccc !important }
+.calendar.today.holiday { background-color:#dd9494 !important }
+.calendar.off {
+    border:1px dashed #31b0d5 !important;
+    box-shadow:inset rgba(0,0,0,.5) 10px 10px 10px;
+}
