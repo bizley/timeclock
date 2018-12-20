@@ -37,7 +37,6 @@ return [
     'EMPLOYEE' => 'PRACOWNIK',
     'Employees' => 'Pracownicy',
     'End' => 'Koniec',
-    'end' => 'zamknij',
     'End Day' => 'Dzień zakończenia',
     'End Session' => 'Zakończ sesję',
     'Error while ending session.' => 'Błąd podczas zamykania sesji.',

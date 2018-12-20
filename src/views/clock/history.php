@@ -103,7 +103,7 @@ $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
                     <?php $total += $session->clock_out - $session->clock_in; else: ?>
                         niezamknięta
                         <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-success btn-xs">
-                            <i class="glyphicon glyphicon-stop"></i> <?= Yii::t('app', 'end') ?>
+                            <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
                         </a>
                     <?php endif; ?>
                 </li>
