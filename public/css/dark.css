@@ -1,10 +1,10 @@
 html, body {
     background-color:#212020;
-    color:#666;
+    color:#ccc;
 }
 #bg { color:#191818 }
 .footer { background-color:#161515 }
-.menu a { color:#999 }
+.menu a { color:#eee }
 .menu-admin a { color:#81ccd3 }
 .list-group-item {
     background-color:#161515;
@@ -16,9 +16,13 @@ html, body {
 }
 .calendar.weekend { background-color:#1a1a1a }
 .calendar.holiday { background-color:#b56363 }
-.calendar.today { background-color:#ccc !important }
+.calendar.today {
+    background-color:#ccc !important;
+    color:#333;
+}
 .calendar.today.holiday { background-color:#dd9494 !important }
-.calendar.off {
-    border:1px dashed #31b0d5 !important;
-    box-shadow:inset rgba(0,0,0,.5) 10px 10px 10px;
+.calendar.off { background-color:#222 }
+.calendar.off.holiday {
+    background-color:#d69191;
+    color:#333;
 }
