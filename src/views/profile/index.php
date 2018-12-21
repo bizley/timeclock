@@ -2,6 +2,7 @@
 
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model \app\models\ProfileForm */
@@ -57,4 +58,37 @@ JS
         </div>
     </div>
 
-<?php ActiveForm::end();
+<?php ActiveForm::end(); ?>
+
+<div class="form-group">
+    <h3><?= Yii::t('app', 'API Access') ?></h3>
+</div>
+<div class="form-group">
+    <?php if (empty(Yii::$app->user->identity->api_key)): ?>
+        <p>
+            <?= Yii::t('app', 'You currently don\'t have API access.') ?>
+            <a href="<?= Url::to(['profile/grant']) ?>" data-method="post" class="btn btn-sm btn-primary">
+                <i class="glyphicon glyphicon-flash"></i>
+                <?= Yii::t('app', 'Grant yourself API access') ?>
+            </a>
+        </p>
+    <?php else: ?>
+        <p><?= Yii::t('app', 'Your API identifier is {id} and your access key is {key}.', [
+                'id' => Html::tag('kbd', Yii::$app->user->id),
+                'key' => Html::tag('kbd', Yii::$app->user->identity->api_key),
+            ]) ?></p>
+        <p>
+            <a href="<?= Url::to(['profile/change']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to change API key?') ?>" class="btn btn-sm btn-warning">
+                <i class="glyphicon glyphicon-flash"></i>
+                <?= Yii::t('app', 'Change API key') ?>
+            </a>
+            <a href="<?= Url::to(['profile/revoke']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to revoke API access?') ?>" class="btn btn-sm btn-danger">
+                <i class="glyphicon glyphicon-off"></i>
+                <?= Yii::t('app', 'Revoke API access') ?>
+            </a>
+        </p>
+        <p>
+            <a href="<?= Url::to(['profile/api']) ?>"><i class="glyphicon glyphicon-info-sign"></i> <?= Yii::t('app', 'How to use API?') ?></a>
+        </p>
+    <?php endif; ?>
+</div>

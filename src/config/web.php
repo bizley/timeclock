@@ -6,6 +6,7 @@ use yii\caching\FileCache;
 use yii\debug\Module;
 use yii\i18n\PhpMessageSource;
 use yii\log\FileTarget;
+use yii\rest\UrlRule;
 use yii\swiftmailer\Mailer;
 
 $config = [
@@ -64,6 +65,11 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                [
+                    'class' => UrlRule::class,
+                    'prefix' => 'api',
+                    'controller' => ['session', 'off-time'],
+                ],
                 'site/new-password/<token:\w+>' => 'site/new-password',
                 'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
                 'admin/<action:\w+>/<month:\d+>/<year:\d+>/<id:\d+>' => 'admin/<action>',

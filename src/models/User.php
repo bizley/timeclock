@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace app\models;
 
 use Yii;
-use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 
 /**
@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property string $password_reset_token
  * @property string $auth_key
  * @property string $theme
+ * @property string $api_key
  * @property int $role
  * @property int $status
  * @property int $created_at
@@ -89,12 +90,40 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param mixed $token
      * @param null $type
-     * @return void|IdentityInterface
-     * @throws NotSupportedException
+     * @return self
+     * @throws ForbiddenHttpException
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): self
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        if (!preg_match('/^(\d+):(\d+):(.+)$/', $token, $matches)) {
+            throw new ForbiddenHttpException('Invalid token provided');
+        }
+
+        [, $userId, $stamp, $checksum] = $matches;
+
+        $now = time();
+
+        if ($now > $stamp + 60 || $now < $stamp - 60) {
+            throw new ForbiddenHttpException('Invalid token provided');
+        }
+
+        $user = static::findIdentity($userId);
+
+        if ($user === null || empty($user->api_key) || !$user->verifyChecksum($stamp, $checksum)) {
+            throw new ForbiddenHttpException('Invalid token provided');
+        }
+
+        return $user;
+    }
+
+    /**
+     * @param string $stamp
+     * @param string $checksum
+     * @return bool
+     */
+    public function verifyChecksum(string $stamp, string $checksum): bool
+    {
+        return sha1($stamp . $this->api_key) === $checksum;
     }
 
     /**

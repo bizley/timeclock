@@ -8,6 +8,7 @@ use app\models\ProfileForm;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -32,6 +33,14 @@ class ProfileController extends Controller
                     ],
                 ],
             ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'grant' => ['post'],
+                    'revoke' => ['post'],
+                    'change' => ['post'],
+                ],
+            ],
         ];
     }
 
@@ -51,6 +60,64 @@ class ProfileController extends Controller
         return $this->render('index', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * @return Response
+     * @throws \yii\base\Exception
+     */
+    public function actionGrant(): Response
+    {
+        do {
+            $apiKey = Yii::$app->security->generateRandomString(20);
+        } while (User::find()->where(['api_key' => $apiKey])->exists());
+
+        Yii::$app->user->identity->api_key = $apiKey;
+
+        if (!Yii::$app->user->identity->save()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
+        } else {
+            Yii::$app->alert->success(Yii::t('app', 'API access has been granted.'));
+        }
+
+        return $this->redirect('index');
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionRevoke(): Response
+    {
+        Yii::$app->user->identity->api_key = null;
+
+        if (!Yii::$app->user->identity->save()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
+        } else {
+            Yii::$app->alert->success(Yii::t('app', 'API access has been revoked.'));
+        }
+
+        return $this->redirect('index');
+    }
+
+    /**
+     * @return Response
+     * @throws \yii\base\Exception
+     */
+    public function actionChange(): Response
+    {
+        do {
+            $apiKey = Yii::$app->security->generateRandomString(20);
+        } while (User::find()->where(['api_key' => $apiKey])->exists());
+
+        Yii::$app->user->identity->api_key = $apiKey;
+
+        if (!Yii::$app->user->identity->save()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
+        } else {
+            Yii::$app->alert->success(Yii::t('app', 'API key has been changed.'));
+        }
+
+        return $this->redirect('index');
     }
 
     /**
@@ -91,5 +158,14 @@ class ProfileController extends Controller
         }
 
         return $this->goBack();
+    }
+
+    /**
+     * @return string
+     * @throws \yii\base\Exception
+     */
+    public function actionApi(): string
+    {
+        return $this->render('api');
     }
 }
