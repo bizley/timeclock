@@ -18,5 +18,6 @@ class Api extends Module
         parent::init();
         Yii::$app->user->enableSession = false;
         Yii::$app->request->enableCsrfCookie = false;
+        Yii::$app->errorHandler->errorAction = null;
     }
 }
