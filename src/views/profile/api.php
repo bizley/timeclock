@@ -51,7 +51,7 @@ BootstrapPluginAsset::register($this);
     <p><?= Yii::t('app', 'Every request made to API must be authenticated with Bearer token sent in Authorization header.') ?></p>
     <p><?= Yii::t('app', 'Bearer token must be made like following:') ?></p>
     <p><code><?= Yii::t('app', 'API identifier') ?>:<?= Yii::t('app', 'UNIX timestamp') ?>:<?= Yii::t('app', 'checksum') ?></code></p>
-    <p><?= Yii::t('app', 'where') ?>:</p>
+    <p><?= Yii::t('app', 'where:') ?></p>
     <ul>
         <li>
             <?= Yii::t('app', '{ID} is integer provided at this page and not changing. Your API identifier is {your ID}.', [
