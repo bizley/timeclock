@@ -16,7 +16,7 @@ class Api extends Module
     public function init(): void
     {
         parent::init();
-
         Yii::$app->user->enableSession = false;
+        Yii::$app->request->enableCsrfCookie = false;
     }
 }

@@ -25,6 +25,7 @@ return [
     'Are you sure you want to send password reset link?' => 'Czy na pewno chcesz wysłać link resetujący hasło?',
     'Are you sure you want to start session?' => 'Czy na pewno chcesz rozpocząć sesję?',
     'August' => 'sierpień',
+    'Authentication' => 'Autentykacja',
     'Calendar' => 'Kalendarz',
     'Can not end current session because it overlaps with another ended session.' => 'Nie można zakończyć aktualnej sesji, ponieważ pokrywa się ona z inną już zamkniętą.',
     'Can not find any started session.' => 'Nie znaleziono otwartej sesji.',

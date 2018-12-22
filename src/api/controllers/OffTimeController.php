@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\api\controllers;
 
 use app\api\models\Clock;
+use app\api\models\Off;
 use Yii;
 use yii\base\DynamicModel;
 use yii\data\ActiveDataProvider;
@@ -16,15 +17,15 @@ use yii\rest\IndexAction;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class SessionController
+ * Class OffTimeController
  * @package app\api\controllers
  */
-class SessionController extends ActiveController
+class OffTimeController extends ActiveController
 {
     /**
      * @var string
      */
-    public $modelClass = Clock::class;
+    public $modelClass = Off::class;
 
     /**
      * @var string
@@ -53,7 +54,7 @@ class SessionController extends ActiveController
         $actions = parent::actions();
 
         $findModel = function ($id, Action $action) {
-            /* @var $modelClass Clock */
+            /* @var $modelClass Off */
             $modelClass = $action->modelClass;
 
             $model = $modelClass::findOne([
@@ -75,14 +76,15 @@ class SessionController extends ActiveController
         $actions['index']['dataFilter'] = [
             'class' => ActiveDataFilter::class,
             'attributeMap' => [
-                'clockIn' => 'clock_in',
-                'clockOut' => 'clock_out',
+                'startAt' => 'start_at',
+                'endAt' => 'end_at',
                 'createdAt' => 'created_at',
                 'updatedAt' => 'updated_at',
             ],
             'searchModel' => function () {
-                return (new DynamicModel(['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt']))
-                    ->addRule(['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt'], 'integer', ['min' => 1]);
+                return (new DynamicModel(['id', 'startAt', 'endAt', 'note', 'createdAt', 'updatedAt']))
+                    ->addRule(['id', 'startAt', 'endAt', 'createdAt', 'updatedAt'], 'integer', ['min' => 1])
+                    ->addRule(['note'], 'string');
             },
         ];
         $actions['index']['prepareDataProvider'] = function (IndexAction $action, $filter) {
@@ -107,17 +109,18 @@ class SessionController extends ActiveController
                 'sort' => [
                     'enableMultiSort' => true,
                     'params' => $requestParams,
-                    'defaultOrder' => ['clockIn' => SORT_ASC],
+                    'defaultOrder' => ['start_at' => SORT_ASC],
                     'attributes' => [
                         'id',
-                        'clockIn' => [
-                            'asc' => ['clock_in' => SORT_ASC],
-                            'desc' => ['clock_in' => SORT_DESC],
+                        'note',
+                        'startAt' => [
+                            'asc' => ['start_at' => SORT_ASC],
+                            'desc' => ['start_at' => SORT_DESC],
                             'default' => SORT_ASC,
                         ],
-                        'clockOut' => [
-                            'asc' => ['clock_out' => SORT_ASC],
-                            'desc' => ['clock_out' => SORT_DESC],
+                        'endAt' => [
+                            'asc' => ['end_at' => SORT_ASC],
+                            'desc' => ['end_at' => SORT_DESC],
                             'default' => SORT_ASC,
                         ],
                         'createdAt' => [

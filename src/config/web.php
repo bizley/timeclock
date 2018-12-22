@@ -1,5 +1,7 @@
 <?php
 
+use yii\web\JsonParser;
+use app\api\Api;
 use app\base\Alert;
 use app\models\User;
 use yii\caching\FileCache;
@@ -21,9 +23,15 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'modules' => [
+        'api' => Api::class,
+    ],
     'components' => [
         'request' => [
             'cookieValidationKey' => 'JIaOBg9h_jQT42KwuxzA3M4TxerBjzfx',
+            'parsers' => [
+                'application/json' => JsonParser::class,
+            ],
         ],
         'cache' => [
             'class' => FileCache::class,
@@ -67,8 +75,13 @@ $config = [
             'rules' => [
                 [
                     'class' => UrlRule::class,
-                    'prefix' => 'api',
-                    'controller' => ['session', 'off-time'],
+                    'controller' => ['api/session', 'api/off-time'],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => 'api/holiday',
+                    'only' => ['index', 'fetch', 'options'],
+                    'extraPatterns' => ['POST fetch' => 'fetch']
                 ],
                 'site/new-password/<token:\w+>' => 'site/new-password',
                 'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
