@@ -10,4 +10,15 @@
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory suffix=".php">./src/mail</directory>
+                <directory suffix=".php">./src/messages</directory>
+                <directory suffix=".php">./src/migrations</directory>
+                <directory suffix=".php">./src/views</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

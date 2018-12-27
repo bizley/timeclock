@@ -267,4 +267,85 @@ class ClockFormTest extends DbTestCase
 
         $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
     }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function testRequired(): void
+    {
+        $clockForm = new ClockForm(new Clock());
+
+        $clockForm->validate();
+
+        $this->assertSame('Year must be a number.', $clockForm->getFirstError('year'));
+        $this->assertSame('Month must be a number.', $clockForm->getFirstError('month'));
+        $this->assertSame('Day must be a number.', $clockForm->getFirstError('day'));
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testUpdateClock(): void
+    {
+        $clockForm = new ClockForm(Clock::findOne(1));
+
+        $clockForm->endHour = 9;
+        $clockForm->endMinute = 30;
+
+        $this->assertTrue($clockForm->save());
+
+        $saved = Clock::findOne(1);
+
+        $this->assertSame(1540027800, $saved->clock_out);
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testUpdateClockFail(): void
+    {
+        static::$db->createCommand()->insert('clock', [
+            'user_id' => 1,
+            'clock_in' => 1540002000,
+            'clock_out' => 1540051200,
+        ])->execute();
+
+        $clockForm = new ClockForm(Clock::findOne(1));
+
+        $clockForm->endHour = 9;
+
+        $clockForm->verifyEnd();
+
+        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testSaveClockNoUser(): void
+    {
+        $clockForm = new ClockForm(new Clock([
+            'clock_in' => 1540002000,
+            'clock_out' => 1540051200,
+        ]));
+
+        $this->assertTrue($clockForm->save());
+
+        $saved = Clock::findOne(['clock_in' => 1540002000]);
+
+        $this->assertSame(1, $saved->user_id);
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testSaveValidationFail(): void
+    {
+        $clockForm = new ClockForm(new Clock());
+        $this->assertFalse($clockForm->save());
+    }
 }

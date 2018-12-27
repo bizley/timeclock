@@ -132,28 +132,32 @@ class ClockForm extends Model
 
     public function maxDay(): void
     {
-        $maxDaysInMonth = date('t', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, 1, 1, 0)));
+        if (!$this->hasErrors()) {
+            $maxDaysInMonth = date('t', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, 1, 1, 0)));
 
-        if ($this->day > $maxDaysInMonth) {
-            $this->addError('day', Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
+            if ($this->day > $maxDaysInMonth) {
+                $this->addError('day', Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
+            }
         }
     }
 
     public function verifyStart(): void
     {
-        $conditions = [
-            'and',
-            ['user_id' => Yii::$app->user->id],
-            ['<=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))],
-            ['>=', 'clock_out', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))],
-        ];
+        if (!$this->hasErrors()) {
+            $conditions = [
+                'and',
+                ['user_id' => Yii::$app->user->id],
+                ['<=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))],
+                ['>=', 'clock_out', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))],
+            ];
 
-        if ($this->session->id !== null) {
-            $conditions[] = ['<>', 'id', $this->session->id];
-        }
+            if ($this->session->id !== null) {
+                $conditions[] = ['<>', 'id', $this->session->id];
+            }
 
-        if (!$this->hasErrors() && Clock::find()->where($conditions)->exists()) {
-            $this->addError('startHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
+            if (Clock::find()->where($conditions)->exists()) {
+                $this->addError('startHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
+            }
         }
     }
 

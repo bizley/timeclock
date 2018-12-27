@@ -49,4 +49,14 @@ HTML
 HTML
             , $out);
     }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testNoAlert(): void
+    {
+        $out = Alert::widget();
+
+        $this->assertEmpty($out);
+    }
 }

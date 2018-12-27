@@ -233,4 +233,30 @@ class ClockTest extends DbTestCase
 
         $this->assertEmpty(Clock::session());
     }
+
+    public function testMonths(): void
+    {
+        $this->assertEquals([
+            1 => 'January',
+            2 => 'February',
+            3 => 'March',
+            4 => 'April',
+            5 => 'May',
+            6 => 'June',
+            7 => 'July',
+            8 => 'August',
+            9 => 'September',
+            10 => 'October',
+            11 => 'November',
+            12 => 'December',
+        ], Clock::months());
+    }
+
+    public function testStartValidation(): void
+    {
+        $mock = $this->getMockBuilder(Clock::class)->setMethods(['validate'])->getMock();
+        $mock->method('validate')->willReturn(false);
+
+        $this->assertFalse($mock->start());
+    }
 }
