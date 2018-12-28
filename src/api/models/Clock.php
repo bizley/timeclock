@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace app\api\models;
 
 use app\models\User;
+use DateTime;
+use DateTimeZone;
 use Yii;
 
 /**
@@ -29,10 +31,9 @@ class Clock extends \app\models\Clock
     public function rules(): array
     {
         return [
-            [['clockIn'], 'required'], // can be null before validate
+            [['clockIn', 'user_id'], 'required'], // clockIn can be null before validate
             [['clockIn', 'clockOut'], 'integer'],
             [['clockOut'], 'compare', 'compareAttribute' => 'clockIn', 'operator' => '>'],
-            [['user_id'], 'required'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['clockIn'], 'checkClockIn'],
             [['clockOut'], 'checkClockOut'],
@@ -139,18 +140,21 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockIn', Yii::t('app', 'Can not end session because it overlaps with another ended session.'));
+                $this->addError('clockOut', Yii::t('app', 'Can not end session because it overlaps with another ended session.'));
             }
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function checkOverMidnight(): void
     {
         if ($this->clockOut !== null && !$this->hasErrors()) {
-            $clockInDay = \DateTime::createFromFormat('Ymd', (string)$this->clockIn, new \DateTimeZone(Yii::$app->timeZone));
-            $clockOutDay = \DateTime::createFromFormat('Ymd', (string)$this->clockOut, new \DateTimeZone(Yii::$app->timeZone));
+            $clockInDay = (new DateTime('now', new DateTimeZone(Yii::$app->timeZone)))->setTimestamp($this->clockIn);
+            $clockOutDay = (new DateTime('now', new DateTimeZone(Yii::$app->timeZone)))->setTimestamp($this->clockOut);
 
-            if ($clockInDay !== $clockOutDay) {
+            if ($clockInDay->format('Ymd') !== $clockOutDay->format('Ymd')) {
                 $this->addError('clockOut', Yii::t('app', 'Session can not last through midnight.'));
             }
         }

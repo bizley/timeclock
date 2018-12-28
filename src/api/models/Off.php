@@ -29,12 +29,9 @@ class Off extends \app\models\Off
     public function rules(): array
     {
         return [
-            [['startAt', 'endAt'], 'filter', 'filter' => 'intval'],
-            [['startAt', 'endAt'], 'integer'],
-            [['startAt', 'endAt'], 'required'],
+            [['startAt', 'endAt', 'user_id'], 'required'],
             [['note'], 'string'],
             [['endAt'], 'compare', 'compareAttribute' => 'startAt', 'operator' => '>'],
-            [['user_id'], 'required'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['startAt'], 'checkStartAt'],
             [['endAt'], 'checkEndAt'],
@@ -86,6 +83,13 @@ class Off extends \app\models\Off
             return false;
         }
 
+        if ($this->startAt !== null) {
+            $this->startAt = (int) $this->startAt;
+        }
+        if ($this->endAt !== null) {
+            $this->endAt = (int) $this->endAt;
+        }
+
         $this->user_id = Yii::$app->user->id;
 
         return true;
@@ -104,20 +108,22 @@ class Off extends \app\models\Off
      */
     public function checkStartAt(): void
     {
-        $this->startAt = (new \DateTime(date('Y-m-d 00:00:00', $this->startAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
+        if (!$this->hasErrors()) {
+            $this->startAt = (new \DateTime(date('Y-m-d 00:00:00', $this->startAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
 
-        $conditions = [
-            'and',
-            ['<=', 'start_at', $this->startAt],
-            ['>=', 'end_at', $this->startAt],
-        ];
+            $conditions = [
+                'and',
+                ['<=', 'start_at', $this->startAt],
+                ['>=', 'end_at', $this->startAt],
+            ];
 
-        if ($this->scenario === 'update') {
-            $conditions[] = ['<>', 'id', $this->id];
-        }
+            if ($this->scenario === 'update') {
+                $conditions[] = ['<>', 'id', $this->id];
+            }
 
-        if (static::find()->where($conditions)->exists()) {
-            $this->addError('startAt', Yii::t('app', 'Can not start off-time because it overlaps with another off-time.'));
+            if (static::find()->where($conditions)->exists()) {
+                $this->addError('startAt', Yii::t('app', 'Can not start off-time because it overlaps with another off-time.'));
+            }
         }
     }
 
@@ -126,20 +132,22 @@ class Off extends \app\models\Off
      */
     public function checkEndAt(): void
     {
-        $this->endAt = (new \DateTime(date('Y-m-d 23:59:59', $this->endAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
+        if (!$this->hasErrors()) {
+            $this->endAt = (new \DateTime(date('Y-m-d 23:59:59', $this->endAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
 
-        $conditions = [
-            'and',
-            ['<=', 'start_at', $this->endAt],
-            ['>=', 'end_at', $this->endAt],
-        ];
+            $conditions = [
+                'and',
+                ['<=', 'start_at', $this->endAt],
+                ['>=', 'end_at', $this->endAt],
+            ];
 
-        if ($this->scenario === 'update') {
-            $conditions[] = ['<>', 'id', $this->id];
-        }
+            if ($this->scenario === 'update') {
+                $conditions[] = ['<>', 'id', $this->id];
+            }
 
-        if (static::find()->where($conditions)->exists()) {
-            $this->addError('endAt', Yii::t('app', 'Can not end off-time because it overlaps with another off-time.'));
+            if (static::find()->where($conditions)->exists()) {
+                $this->addError('endAt', Yii::t('app', 'Can not end off-time because it overlaps with another off-time.'));
+            }
         }
     }
 }

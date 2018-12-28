@@ -10,6 +10,7 @@ CREATE TABLE "user" (
   created_at INTEGER DEFAULT NULL,
   updated_at INTEGER DEFAULT NULL,
   theme VARCHAR NOT NULL DEFAULT 'light',
+  api_key VARCHAR DEFAULT NULL,
   CONSTRAINT "email" UNIQUE (email),
   CONSTRAINT "password_reset_token" UNIQUE (password_reset_token)
 );

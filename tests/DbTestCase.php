@@ -10,8 +10,8 @@ use yii\db\Connection;
 use yii\db\Exception;
 
 /**
- * Class CommonDbTestCase
- * @package fronttests
+ * Class DbTestCase
+ * @package tests
  */
 abstract class DbTestCase extends AppTestCase
 {
