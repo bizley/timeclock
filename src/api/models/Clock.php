@@ -29,7 +29,7 @@ class Clock extends \app\models\Clock
     public function rules(): array
     {
         return [
-            [['clockIn', 'clockOut'], 'filter', 'filter' => 'intval'],
+            [['clockIn'], 'required'], // can be null before validate
             [['clockIn', 'clockOut'], 'integer'],
             [['clockOut'], 'compare', 'compareAttribute' => 'clockIn', 'operator' => '>'],
             [['user_id'], 'required'],
@@ -90,6 +90,11 @@ class Clock extends \app\models\Clock
             $this->clockIn = (int) Yii::$app->formatter->asTimestamp('now');
         }
 
+        $this->clockIn = (int) $this->clockIn;
+        if ($this->clockOut !== null) {
+            $this->clockOut = (int) $this->clockOut;
+        }
+
         return true;
     }
 
@@ -103,45 +108,51 @@ class Clock extends \app\models\Clock
 
     public function checkClockIn(): void
     {
-        $conditions = [
-            'and',
-            ['<=', 'clock_in', $this->clockIn],
-            ['>=', 'clock_out', $this->clockIn],
-        ];
+        if (!$this->hasErrors()) {
+            $conditions = [
+                'and',
+                ['<=', 'clock_in', $this->clockIn],
+                ['>=', 'clock_out', $this->clockIn],
+            ];
 
-        if ($this->scenario === 'update') {
-            $conditions[] = ['<>', 'id', $this->id];
-        }
+            if ($this->scenario === 'update') {
+                $conditions[] = ['<>', 'id', $this->id];
+            }
 
-        if (static::find()->where($conditions)->exists()) {
-            $this->addError('clockIn', Yii::t('app', 'Can not start session because it overlaps with another ended session.'));
+            if (static::find()->where($conditions)->exists()) {
+                $this->addError('clockIn', Yii::t('app', 'Can not start session because it overlaps with another ended session.'));
+            }
         }
     }
 
     public function checkClockOut(): void
     {
-        $conditions = [
-            'and',
-            ['<=', 'clock_in', $this->clockOut],
-            ['>=', 'clock_out', $this->clockOut],
-        ];
+        if ($this->clockOut !== null && !$this->hasErrors()) {
+            $conditions = [
+                'and',
+                ['<=', 'clock_in', $this->clockOut],
+                ['>=', 'clock_out', $this->clockOut],
+            ];
 
-        if ($this->scenario === 'update') {
-            $conditions[] = ['<>', 'id', $this->id];
-        }
+            if ($this->scenario === 'update') {
+                $conditions[] = ['<>', 'id', $this->id];
+            }
 
-        if (static::find()->where($conditions)->exists()) {
-            $this->addError('clockIn', Yii::t('app', 'Can not end session because it overlaps with another ended session.'));
+            if (static::find()->where($conditions)->exists()) {
+                $this->addError('clockIn', Yii::t('app', 'Can not end session because it overlaps with another ended session.'));
+            }
         }
     }
 
     public function checkOverMidnight(): void
     {
-        $clockInDay = \DateTime::createFromFormat('Ymd', (string) $this->clockIn, new \DateTimeZone(Yii::$app->timeZone));
-        $clockOutDay = \DateTime::createFromFormat('Ymd', (string) $this->clockOut, new \DateTimeZone(Yii::$app->timeZone));
+        if ($this->clockOut !== null && !$this->hasErrors()) {
+            $clockInDay = \DateTime::createFromFormat('Ymd', (string)$this->clockIn, new \DateTimeZone(Yii::$app->timeZone));
+            $clockOutDay = \DateTime::createFromFormat('Ymd', (string)$this->clockOut, new \DateTimeZone(Yii::$app->timeZone));
 
-        if ($clockInDay !== $clockOutDay) {
-            $this->addError('clockOut', Yii::t('app', 'Session can not last through midnight.'));
+            if ($clockInDay !== $clockOutDay) {
+                $this->addError('clockOut', Yii::t('app', 'Session can not last through midnight.'));
+            }
         }
     }
 }
