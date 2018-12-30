@@ -105,6 +105,7 @@ class OffTimeController extends ActiveController
                 'query' => $query,
                 'pagination' => [
                     'params' => $requestParams,
+                    'validatePage' => false,
                 ],
                 'sort' => [
                     'enableMultiSort' => true,
