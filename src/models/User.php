@@ -17,6 +17,7 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property string $name
  * @property string $password_hash
+ * @property string $pin_hash
  * @property string $password_reset_token
  * @property string $auth_key
  * @property string $theme
@@ -205,6 +206,16 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Validates PIN
+     * @param string $pin PIN to validate
+     * @return bool if PIN provided is valid for current user
+     */
+    public function validatePin(string $pin): bool
+    {
+        return Yii::$app->security->validatePassword($pin, $this->pin_hash);
+    }
+
+    /**
      * Generates password hash from password and sets it to the model
      * @param string $password
      * @throws \yii\base\Exception
@@ -303,5 +314,10 @@ class User extends ActiveRecord implements IdentityInterface
                 'user_id' => $this->id,
             ],
         ])->orderBy(['clock_in' => SORT_ASC])->one();
+    }
+
+    public function getPin(): string
+    {
+
     }
 }

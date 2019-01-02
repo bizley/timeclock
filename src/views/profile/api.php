@@ -668,3 +668,47 @@ BootstrapPluginAsset::register($this);
         </div>
     </div>
 </div>
+
+<hr>
+
+<div class="form-group">
+    <h3><?= $baseUrl ?>/api/key</h3>
+</div>
+
+<div class="panel-group" id="api-key" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="api-key-index-header">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#api-key" href="#api-key-index" aria-expanded="false" aria-controls="api-key-index">
+                    <?= Yii::t('app', 'API Key') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="api-key-index" class="panel-collapse collapse" role="tabpanel" aria-labelledby="api-key-index-header">
+            <div class="panel-body">
+                <p><strong><?= Yii::t('app', 'This request does not require authentication token.') ?></strong></p>
+                <p><?= Yii::t('app', 'You can get API access key only when PIN has been already generated.') ?></p>
+                <span class="label label-primary pull-right"><?= Yii::t('app', 'Methods:') ?> POST</span>
+                <p><?= Yii::t('app', 'Request example:') ?></p>
+                <div class="well well-sm">
+                    POST <?= $baseUrl ?>/api/key
+                </div>
+                <table class="table table-condensed">
+                    <tr>
+                        <th><?= Yii::t('app', 'Data') ?></th>
+                        <th><?= Yii::t('app', 'Value') ?></th>
+                    </tr>
+                    <tr>
+                        <td><code>pin</code></td>
+                        <td><span class="label label-warning">string</span> 1054</td>
+                    </tr>
+                </table>
+                <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
+                <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
+                <pre>{
+    "apiKey": "goBnoSjSSToUTXv744iV"
+}</pre>
+            </div>
+        </div>
+    </div>
+</div>

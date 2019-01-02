@@ -39,6 +39,7 @@ class ProfileController extends Controller
                     'grant' => ['post'],
                     'revoke' => ['post'],
                     'change' => ['post'],
+                    'pin' => ['post'],
                 ],
             ],
         ];
@@ -162,10 +163,39 @@ class ProfileController extends Controller
 
     /**
      * @return string
-     * @throws \yii\base\Exception
      */
     public function actionApi(): string
     {
         return $this->render('api');
+    }
+
+    /**
+     * @return string|Response
+     * @throws \Exception
+     */
+    public function actionPin()
+    {
+        $user = User::findOne(['id' => Yii::$app->user->id]);
+
+        if ($user === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
+            return $this->redirect(['index']);
+        }
+
+        do {
+            $pin = $user->id . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
+            $pinHash = Yii::$app->security->generatePasswordHash($pin, 15);
+        } while (User::find()->where(['pin_hash' => $pinHash])->exists());
+
+        $user->pin_hash = $pinHash;
+
+        if (!$user->save(true, ['pin_hash', 'updated_at'])) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('pin', [
+            'pin' => $pin,
+        ]);
     }
 }

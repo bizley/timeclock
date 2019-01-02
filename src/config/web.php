@@ -83,6 +83,12 @@ $config = [
                     'only' => ['index', 'fetch', 'options'],
                     'extraPatterns' => ['POST fetch' => 'fetch']
                 ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => 'api/key',
+                    'only' => ['index', 'options'],
+                    'extraPatterns' => ['POST' => 'index']
+                ],
                 'site/new-password/<token:\w+>' => 'site/new-password',
                 'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
                 'admin/<action:\w+>/<month:\d+>/<year:\d+>/<id:\d+>' => 'admin/<action>',

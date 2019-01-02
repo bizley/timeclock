@@ -60,6 +60,22 @@ JS
 
 <?php ActiveForm::end(); ?>
 
+<hr>
+
+<div class="form-group">
+    <h3><?= Yii::t('app', 'PIN') ?></h3>
+</div>
+<div class="form-group">
+    <h4>
+        <?= Yii::t('app', 'You can sign in using PIN as well.') ?>
+        <a href="<?= Url::to(['profile/pin']) ?>" class="btn btn-success" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to generate new PIN?') ?>">
+            <i class="glyphicon glyphicon-th"></i> <?= Yii::t('app', 'Generate PIN') ?>
+        </a>
+    </h4>
+</div>
+
+<hr>
+
 <div class="form-group">
     <h3><?= Yii::t('app', 'API Access') ?></h3>
 </div>
@@ -73,22 +89,22 @@ JS
             </a>
         </p>
     <?php else: ?>
-        <p><?= Yii::t('app', 'Your API identifier is {id} and your access key is {key}.', [
-                'id' => Html::tag('kbd', Yii::$app->user->id),
-                'key' => Html::tag('kbd', Yii::$app->user->identity->api_key),
-            ]) ?></p>
-        <p>
-            <a href="<?= Url::to(['profile/change']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to change API key?') ?>" class="btn btn-sm btn-warning">
+        <div class="pull-right">
+            <a href="<?= Url::to(['profile/change']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to change API key?') ?>" class="btn btn-xs btn-warning">
                 <i class="glyphicon glyphicon-flash"></i>
                 <?= Yii::t('app', 'Change API key') ?>
             </a>
-            <a href="<?= Url::to(['profile/revoke']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to revoke API access?') ?>" class="btn btn-sm btn-danger">
+            <a href="<?= Url::to(['profile/revoke']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to revoke API access?') ?>" class="btn btn-xs btn-danger">
                 <i class="glyphicon glyphicon-off"></i>
                 <?= Yii::t('app', 'Revoke API access') ?>
             </a>
-        </p>
-        <p>
-            <a href="<?= Url::to(['profile/api']) ?>"><i class="glyphicon glyphicon-info-sign"></i> <?= Yii::t('app', 'How to use API?') ?></a>
-        </p>
+        </div>
+        <h4>
+            <?= Yii::t('app', 'Your API identifier is {id} and your access key is {key}.', [
+                'id' => Html::tag('kbd', Yii::$app->user->id),
+                'key' => Html::tag('kbd', Yii::$app->user->identity->api_key),
+            ]) ?>
+        </h4>
+        <a href="<?= Url::to(['profile/api']) ?>" class="btn btn-primary"><i class="glyphicon glyphicon-info-sign"></i> <?= Yii::t('app', 'How to use API?') ?></a>
     <?php endif; ?>
 </div>
