@@ -285,6 +285,7 @@ class User extends ActiveRecord implements IdentityInterface
         return Clock::find()->where([
             'and',
             ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
+            ['<=', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 23:59:59'))],
             ['user_id' => $this->id],
         ])->orderBy(['clock_in' => SORT_ASC])->all();
     }
