@@ -27,6 +27,7 @@ class ProfileForm extends RegisterForm
     {
         return [
             [['name'], 'required'],
+            [['name'], 'string'],
             [['password'], 'string', 'min' => self::MIN_PASSWORD, 'max' => self::MAX_PASSWORD],
             [['password'], 'compare', 'compareAttribute' => 'emailAccount', 'operator' => '!='],
             [['password'], function ($attribute) {

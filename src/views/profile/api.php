@@ -672,6 +672,89 @@ BootstrapPluginAsset::register($this);
 <hr>
 
 <div class="form-group">
+    <h3><?= $baseUrl ?>/api/profile</h3>
+</div>
+
+<div class="panel-group" id="api-profile" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="api-profile-view-header">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#api-profile" href="#api-profile-view" aria-expanded="false" aria-controls="api-profile-view">
+                    <?= Yii::t('app', 'View Profile') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="api-profile-view" class="panel-collapse collapse" role="tabpanel" aria-labelledby="api-profile-view-header">
+            <div class="panel-body">
+                <p><?= Yii::t('app', 'Profile details.') ?></p>
+                <span class="label label-primary pull-right"><?= Yii::t('app', 'Methods:') ?> GET, HEAD</span>
+                <p><?= Yii::t('app', 'Request example:') ?></p>
+                <div class="well well-sm">
+                    GET <?= $baseUrl ?>/api/profile
+                </div>
+                <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
+                <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
+                <pre>{
+    "id": 1,
+    "name": "John",
+    "email": "john@company.com",
+    "createdAt": 1545245502,
+    "updatedAt": 1545247839
+}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="api-profile-update-header">
+            <h4 class="panel-title">
+                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#api-profile" href="#api-profile-update" aria-expanded="false" aria-controls="api-profile-update">
+                    <?= Yii::t('app', 'Update Profile') ?>
+                </a>
+            </h4>
+        </div>
+        <div id="api-profile-update" class="panel-collapse collapse" role="tabpanel" aria-labelledby="api-profile-update-header">
+            <div class="panel-body">
+                <p><?= Yii::t('app', 'Update profil with new name.') ?></p>
+                <span class="label label-primary pull-right"><?= Yii::t('app', 'Methods:') ?> PUT,PATCH</span>
+                <p><?= Yii::t('app', 'Request example:') ?></p>
+                <div class="well well-sm">
+                    PUT <?= $baseUrl ?>/api/profile
+                </div>
+                <table class="table table-condensed">
+                    <tr>
+                        <th><?= Yii::t('app', 'Data') ?></th>
+                        <th><?= Yii::t('app', 'Value') ?></th>
+                    </tr>
+                    <tr>
+                        <td><code>name</code></td>
+                        <td><span class="label label-warning">string</span> Bruce Wayne</td>
+                    </tr>
+                </table>
+                <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
+                <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
+                <pre>{
+    "id": 1,
+    "name": "Bruce Wayne",
+    "email": "john@company.com",
+    "createdAt": 1545245502,
+    "updatedAt": 1545255438
+}</pre>
+                <span class="label label-warning pull-right"><?= Yii::t('app', 'Status:') ?> 422</span>
+                <p><?= Yii::t('app', 'Error response example (JSON):') ?></p>
+                <pre>[
+    {
+        "field": "name",
+        "message": "First And Last Name cannot be blank."
+    }
+]</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="form-group">
     <h3><?= $baseUrl ?>/api/key</h3>
 </div>
 

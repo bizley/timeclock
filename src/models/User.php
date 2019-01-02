@@ -315,9 +315,4 @@ class User extends ActiveRecord implements IdentityInterface
             ],
         ])->orderBy(['clock_in' => SORT_ASC])->one();
     }
-
-    public function getPin(): string
-    {
-
-    }
 }

@@ -81,13 +81,28 @@ $config = [
                     'class' => UrlRule::class,
                     'controller' => 'api/holiday',
                     'only' => ['index', 'fetch', 'options'],
-                    'extraPatterns' => ['POST fetch' => 'fetch']
+                    'extraPatterns' => ['POST fetch' => 'fetch'],
                 ],
                 [
                     'class' => UrlRule::class,
                     'controller' => 'api/key',
                     'only' => ['index', 'options'],
-                    'extraPatterns' => ['POST' => 'index']
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST' => 'index',
+                        '' => 'options',
+                    ],
+                ],
+                [
+                    'class' => UrlRule::class,
+                    'controller' => 'api/profile',
+                    'only' => ['view', 'update', 'options'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'GET,HEAD' => 'view',
+                        'PUT,PATCH' => 'update',
+                        '' => 'options',
+                    ],
                 ],
                 'site/new-password/<token:\w+>' => 'site/new-password',
                 'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
