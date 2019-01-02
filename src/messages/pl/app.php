@@ -18,6 +18,7 @@ return [
     'API access has been granted.' => 'Dostęp do API został udzielony.',
     'API access has been revoked.' => 'Dostęp do API został cofnięty.',
     'API identifier' => 'Identyfikator API',
+    'API Key' => 'Klucz API',
     'API key has been changed.' => 'Klucz API został zmieniony.',
     'April' => 'kwiecień',
     'Are you sure you want to change API key?' => 'Czy na pewno chcesz zmienić klucz API?',
