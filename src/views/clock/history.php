@@ -112,6 +112,7 @@ $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
         <ul class="list-group">
             <li class="list-group-item">
                 <?= Yii::t('app', 'Total Hours') ?>
+                <span class="badge"><?= Yii::$app->formatter->asDuration($total) ?></span>
                 <span class="badge"><?= round($total / 3600, 2) ?></span>
             </li>
         </ul>
