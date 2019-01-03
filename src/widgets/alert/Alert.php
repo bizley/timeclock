@@ -11,7 +11,7 @@ use yii\web\Session;
 
 /**
  * Class Alert
- * @package keystone\common\widgets\alert
+ * @package app\widgets\alert
  */
 class Alert extends Widget
 {
@@ -61,6 +61,7 @@ class Alert extends Widget
                 return implode("\n", $output);
             }
         }
+
         return null;
     }
 }

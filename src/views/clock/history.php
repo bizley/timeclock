@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\note\Note;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -20,8 +21,6 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'History');
 
-\yii\bootstrap\BootstrapPluginAsset::register($this);
-$this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'History') ?></h1>
@@ -127,9 +126,7 @@ $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
         <ul class="list-group">
             <?php foreach ($off as $day): ?>
                 <li class="list-group-item">
-                    <?php if ($day->note !== null && $day->note !== ''): ?>
-                        <span class="text-info pull-right" data-toggle="tooltip" data-placement="left" title="<?= Html::encode($day->note) ?>"><i class="glyphicon glyphicon-comment"></i></span>
-                    <?php endif; ?>
+                    <?= Note::widget(['offtime' => $day]) ?>
                     <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>" class="btn btn-danger btn-xs" data-confirm="<?= Yii::t('app', 'Are you sure you want to delete this off-time?') ?>" data-method="post">
                         <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
                     </a>

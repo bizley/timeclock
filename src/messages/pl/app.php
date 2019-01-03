@@ -120,6 +120,7 @@ return [
     'Off-time ending day can not be earlier than starting day.' => 'Dzień zakończenia wolnego nie może być wcześniejszy niż dzień rozpoczęcia.',
     'Off-time has been deleted.' => 'Wolne zostało usunięte.',
     'Off-time has been saved.' => 'Wolne zostało zapisane.',
+    'Off-time Note' => 'Notka do wolnego',
     'Off-Times Index' => 'Indeks wolnych',
     'Off-times index.' => 'Indeks wolnych.',
     'Off-time of given {ID}.' => 'Wolne o podanym {ID}.',

@@ -45,3 +45,12 @@ I really don't want to point obvious links with solutions from there.
 ## Usage of this project
 
 You can use this project in whatever way you like as long as you mention where did you get it from.
+
+## TODO
+
+- [ ] session notes
+- [ ] just notes
+- [ ] default working hours
+- [ ] confirmation modal
+- [ ] admin modals for notes and other
+- [ ] profile phone
