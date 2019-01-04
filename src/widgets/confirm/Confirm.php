@@ -64,13 +64,13 @@ class Confirm extends Widget
 
             $this->view->registerJs(<<<JS
 yii.confirm = function (message, ok, cancel) {
-    jQuery("#confirmationModal .modal-body").html(message);
-    let modal = jQuery("#confirmationModal");
+    $("#confirmationModal .modal-body").html(message);
+    let modal = $("#confirmationModal");
     modal.modal();
     modal.on("hidden.bs.modal", function () {
         !cancel || cancel();
     });
-    jQuery("#confirmationOk").click(function () {
+    $("#confirmationOk").click(function () {
         !ok || ok();
     });
 };
