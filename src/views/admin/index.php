@@ -1,6 +1,7 @@
 <?php
 
 use app\models\User;
+use app\widgets\confirm\Confirm;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -23,22 +24,26 @@ $this->title = Yii::t('app', 'Employees');
                         <?php if ($user->role === User::ROLE_ADMIN): ?>
                             <a href="<?= Url::to(['admin/demote', 'id' => $user->id]) ?>"
                                class="btn btn-default btn-xs"
-                               data-confirm="<?= Yii::t('app', 'Are you sure you want to remove admin access for this user?') ?>"
-                               data-method="post"><i class="glyphicon glyphicon-hand-down"></i> <?= Yii::t('app', 'set as employee') ?></a>
+                               <?= Confirm::ask(Yii::t('app', 'Are you sure you want to remove admin access for this user?')) ?>>
+                                <i class="glyphicon glyphicon-hand-down"></i> <?= Yii::t('app', 'set as employee') ?>
+                            </a>
                         <?php else: ?>
                             <a href="<?= Url::to(['admin/promote', 'id' => $user->id]) ?>"
                                class="btn btn-primary btn-xs"
-                               data-confirm="<?= Yii::t('app', 'Are you sure you want to promote this user for admin?') ?>"
-                               data-method="post"><i class="glyphicon glyphicon-hand-up"></i> <?= Yii::t('app', 'set as admin') ?></a>
+                               <?= Confirm::ask(Yii::t('app', 'Are you sure you want to promote this user for admin?')) ?>>
+                                <i class="glyphicon glyphicon-hand-up"></i> <?= Yii::t('app', 'set as admin') ?>
+                            </a>
                         <?php endif; ?>
                         <a href="<?= Url::to(['admin/reset', 'id' => $user->id]) ?>"
                            class="btn btn-warning btn-xs"
-                           data-confirm="<?= Yii::t('app', 'Are you sure you want to send password reset link?') ?>"
-                           data-method="post"><i class="glyphicon glyphicon-flash"></i> <?= Yii::t('app', 'send password reset link') ?></a>
+                           <?= Confirm::ask(Yii::t('app', 'Are you sure you want to send password reset link?')) ?>>
+                            <i class="glyphicon glyphicon-flash"></i> <?= Yii::t('app', 'send password reset link') ?>
+                        </a>
                         <a href="<?= Url::to(['admin/delete', 'id' => $user->id]) ?>"
                            class="btn btn-danger btn-xs"
-                           data-confirm="<?= Yii::t('app', 'Are you sure you want to delete this user?') ?>"
-                           data-method="post"><i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?></a>
+                           <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this user?')) ?>>
+                            <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
+                        </a>
                     </p>
                     <?= Html::encode($user->name) ?>
                     <a href="mailto:<?= $user->email ?>"><?= $user->email ?></a>

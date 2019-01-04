@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\confirm\Confirm;
 use yii\bootstrap\BootstrapPluginAsset;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -30,11 +31,11 @@ BootstrapPluginAsset::register($this);
         </p>
     <?php else: ?>
         <p class="pull-right">
-            <a href="<?= Url::to(['profile/change']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to change API key?') ?>" class="btn btn-sm btn-warning">
+            <a href="<?= Url::to(['profile/change']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?> class="btn btn-sm btn-warning">
                 <i class="glyphicon glyphicon-flash"></i>
                 <?= Yii::t('app', 'Change API key') ?>
             </a>
-            <a href="<?= Url::to(['profile/revoke']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to revoke API access?') ?>" class="btn btn-sm btn-danger">
+            <a href="<?= Url::to(['profile/revoke']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to revoke API access?')) ?> class="btn btn-sm btn-danger">
                 <i class="glyphicon glyphicon-off"></i>
                 <?= Yii::t('app', 'Revoke API access') ?>
             </a>

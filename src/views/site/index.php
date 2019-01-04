@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\confirm\Confirm;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -17,14 +18,14 @@ $this->title = 'Timeclock';
                 <?= Yii::t('app', 'Session started at {time}', ['time' => Yii::$app->formatter->asTime($user->sessionStartedAt())]) ?>
             </div>
             <div class="form-group">
-                <a href="<?= Url::to(['clock/stop']) ?>" class="btn btn-danger btn-lg btn-block clock" data-confirm="<?= Yii::t('app', 'Are you sure you want to end this session?') ?>">
+                <a href="<?= Url::to(['clock/stop']) ?>" class="btn btn-danger btn-lg btn-block clock" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to end this session?')) ?>>
                     <i class="glyphicon glyphicon-stop"></i>
                     <?= Yii::t('app', 'End Session') ?>
                 </a>
             </div>
         <?php else: ?>
             <div class="form-group">
-                <a href="<?= Url::to(['clock/start']) ?>" class="btn btn-success btn-lg btn-block clock" data-confirm="<?= Yii::t('app', 'Are you sure you want to start session?') ?>">
+                <a href="<?= Url::to(['clock/start']) ?>" class="btn btn-success btn-lg btn-block clock" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to start session?')) ?>>
                     <i class="glyphicon glyphicon-play"></i>
                     <?= Yii::t('app', 'Start Session') ?>
                 </a>

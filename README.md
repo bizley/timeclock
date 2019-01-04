@@ -51,6 +51,5 @@ You can use this project in whatever way you like as long as you mention where d
 - [ ] session notes
 - [ ] just notes
 - [ ] default working hours
-- [ ] confirmation modal
 - [ ] admin modals for notes and other
 - [ ] profile phone

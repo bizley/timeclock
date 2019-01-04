@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\confirm\Confirm;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -23,7 +24,7 @@ $this->title = Yii::t('app', 'Editing Off-Time');
     </div>
     <div class="col-sm-10">
         <div class="form-group">
-            <a href="<?= Url::to(['clock/off-delete', 'id' => $off->id]) ?>" class="btn btn-danger pull-right" data-confirm="<?= Yii::t('app', 'Are you sure you want to delete this off-time?') ?>" data-method="post">
+            <a href="<?= Url::to(['clock/off-delete', 'id' => $off->id]) ?>" class="btn btn-danger pull-right" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
                 <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
             </a>
             <?= Yii::t('app', 'Off-Time') ?> <?= Yii::$app->formatter->asDatetime($off->start_at, 'dd.MM.y') ?> <i class="glyphicon glyphicon-arrow-right"></i> <?= Yii::$app->formatter->asDatetime($off->end_at, 'dd.MM.y') ?>

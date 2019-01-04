@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\confirm\Confirm;
 use app\widgets\note\Note;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -88,7 +89,7 @@ $this->title = Yii::t('app', 'History');
         <ul class="list-group">
             <?php $total = 0; foreach ($clock as $session): ?>
                 <li class="list-group-item">
-                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>" class="btn btn-danger btn-xs" data-confirm="<?= Yii::t('app', 'Are you sure you want to delete this session?') ?>" data-method="post">
+                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>" class="btn btn-danger btn-xs" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
                         <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
                     </a>
                     <?= Yii::$app->formatter->asDatetime($session->clock_in) ?>
@@ -127,7 +128,7 @@ $this->title = Yii::t('app', 'History');
             <?php foreach ($off as $day): ?>
                 <li class="list-group-item">
                     <?= Note::widget(['offtime' => $day]) ?>
-                    <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>" class="btn btn-danger btn-xs" data-confirm="<?= Yii::t('app', 'Are you sure you want to delete this off-time?') ?>" data-method="post">
+                    <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>" class="btn btn-danger btn-xs" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
                         <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
                     </a>
                     <?= Yii::$app->formatter->asDatetime($day->start_at, 'dd.MM.y') ?>

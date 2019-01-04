@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\confirm\Confirm;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -24,7 +25,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
     </div>
     <div class="col-sm-10">
         <div class="form-group">
-            <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>" class="btn btn-danger pull-right" data-confirm="<?= Yii::t('app', 'Are you sure you want to delete this session?') ?>" data-method="post">
+            <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>" class="btn btn-danger pull-right" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
                 <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
             </a>
             <?= Yii::t('app', 'Session') ?> <?= Yii::$app->formatter->asDatetime($session->clock_in) ?>

@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\confirm\Confirm;
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -68,7 +69,7 @@ JS
 <div class="form-group">
     <h4>
         <?= Yii::t('app', 'You can sign in using PIN as well.') ?>
-        <a href="<?= Url::to(['profile/pin']) ?>" class="btn btn-success" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to generate new PIN?') ?>">
+        <a href="<?= Url::to(['profile/pin']) ?>" class="btn btn-success" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to generate new PIN?')) ?>>
             <i class="glyphicon glyphicon-th"></i> <?= Yii::t('app', 'Generate PIN') ?>
         </a>
     </h4>
@@ -90,11 +91,11 @@ JS
         </p>
     <?php else: ?>
         <div class="pull-right">
-            <a href="<?= Url::to(['profile/change']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to change API key?') ?>" class="btn btn-xs btn-warning">
+            <a href="<?= Url::to(['profile/change']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?> class="btn btn-xs btn-warning">
                 <i class="glyphicon glyphicon-flash"></i>
                 <?= Yii::t('app', 'Change API key') ?>
             </a>
-            <a href="<?= Url::to(['profile/revoke']) ?>" data-method="post" data-confirm="<?= Yii::t('app', 'Are you sure you want to revoke API access?') ?>" class="btn btn-xs btn-danger">
+            <a href="<?= Url::to(['profile/revoke']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to revoke API access?')) ?> class="btn btn-xs btn-danger">
                 <i class="glyphicon glyphicon-off"></i>
                 <?= Yii::t('app', 'Revoke API access') ?>
             </a>

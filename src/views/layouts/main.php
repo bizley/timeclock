@@ -4,6 +4,7 @@
 /* @var $content string */
 
 use app\assets\AppAsset;
+use app\widgets\confirm\Confirm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -67,6 +68,8 @@ $this->beginPage(); ?>
         </div>
     </footer>
 </div>
+
+<?= Confirm::widget() ?>
 
 <?php $this->endBody() ?>
 </body>
