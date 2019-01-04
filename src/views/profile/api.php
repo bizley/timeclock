@@ -796,6 +796,7 @@ BootstrapPluginAsset::register($this);
                 <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
                 <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
                 <pre>{
+    "userId": 1,
     "apiKey": "goBnoSjSSToUTXv744iV"
 }</pre>
             </div>

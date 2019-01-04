@@ -66,6 +66,7 @@ class KeyController extends Controller
         Yii::$app->getResponse()->setStatusCode(200);
 
         return [
+            'userId' => $user->id,
             'apiKey' => $user->api_key
         ];
     }
