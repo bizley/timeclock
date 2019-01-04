@@ -26,4 +26,6 @@ html, body {
     background-color:#d69191;
     color:#333;
 }
+.modal-title,
+.modal-body,
 .panel-body { color:#333 }
