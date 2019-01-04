@@ -35,7 +35,9 @@ $this->title = 'Timeclock';
         <div class="form-group">
             <?= Yii::t('app', 'Today Sessions') ?>:
         </div>
-        <?php $todays = $user->todaysSessions();
+        <?php
+        $todays = $user->todaysSessions();
+        $now = time();
         if ($todays): ?>
             <div class="form-group">
                 <ul class="list-group">
@@ -48,6 +50,7 @@ $this->title = 'Timeclock';
                                 <span class="badge"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                             <?php else: ?>
                                 <?= Yii::t('app', 'on-going') ?>
+                                <span class="badge"><?= Yii::$app->formatter->asDuration($now - $session->clock_in) ?></span>
                             <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
