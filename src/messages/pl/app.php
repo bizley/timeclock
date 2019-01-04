@@ -137,6 +137,7 @@ return [
     'Password reset at {company} Timeclock system' => 'Reset hasła w systemie {company} Timeclock',
     'Password reset link email has been sent.' => 'Email z linkiem resetującym hasło został wysłany.',
     'Password reset link has been sent to given email address assuming this address has been registered.' => 'Link resetujący hasło został wysłany na podany adres email, o ile jest on zarejestrowany w systemie.',
+    'Phone Number' => 'Numer telefonu',
     'PIN' => 'PIN',
     'Profile' => 'Profil',
     'Profile details.' => 'Szczegóły profilu.',

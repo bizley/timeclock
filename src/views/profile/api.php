@@ -699,6 +699,7 @@ BootstrapPluginAsset::register($this);
     "id": 1,
     "name": "John",
     "email": "john@company.com",
+    "phone": "7575 333 888",
     "createdAt": 1545245502,
     "updatedAt": 1545247839
 }</pre>
@@ -730,6 +731,10 @@ BootstrapPluginAsset::register($this);
                         <td><code>name</code></td>
                         <td><span class="label label-warning">string</span> Bruce Wayne</td>
                     </tr>
+                    <tr>
+                        <td><code>phone</code></td>
+                        <td><span class="label label-warning">string</span> 7432 999 777</td>
+                    </tr>
                 </table>
                 <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
                 <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
@@ -737,6 +742,7 @@ BootstrapPluginAsset::register($this);
     "id": 1,
     "name": "Bruce Wayne",
     "email": "john@company.com",
+    "phone": "7432 999 777",
     "createdAt": 1545245502,
     "updatedAt": 1545255438
 }</pre>

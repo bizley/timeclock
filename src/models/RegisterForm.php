@@ -49,7 +49,7 @@ class RegisterForm extends Model
     {
         return [
             [['emailAccount', 'emailDomain', 'email', 'password', 'name'], 'required'],
-            [['emailAccount'], 'string'],
+            [['emailAccount', 'name'], 'string'],
             [['emailDomain'], 'in', 'range' => Yii::$app->params['allowedDomains']],
             [['email'], 'email'],
             [['email'], 'unique', 'targetClass' => User::class],

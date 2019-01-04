@@ -2,6 +2,7 @@ CREATE TABLE "user" (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email VARCHAR NOT NULL,
   name VARCHAR NOT NULL,
+  phone VARCHAR,
   auth_key VARCHAR NOT NULL,
   password_hash VARCHAR NOT NULL,
   password_reset_token VARCHAR DEFAULT NULL,

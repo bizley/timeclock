@@ -42,6 +42,8 @@ JS
 
     <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
 
+    <?= $form->field($model, 'phone') ?>
+
     <div class="form-group field-profileform-password <?= $model->hasErrors('password') ? 'has-error' : '' ?>">
         <?= Html::activeLabel($model, 'password', ['class' => 'col-sm-2 control-label']) ?>
         <div class="col-sm-3">

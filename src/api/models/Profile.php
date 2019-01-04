@@ -19,7 +19,8 @@ class Profile extends User
     {
         return [
             [['name'], 'required'],
-            [['name'], 'string'],
+            [['name'], 'string', 'max' => 255],
+            [['phone'], 'string', 'max' => 45],
         ];
     }
 
@@ -32,6 +33,7 @@ class Profile extends User
             'id',
             'name',
             'email',
+            'phone',
             'createdAt' => 'created_at',
             'updatedAt' => 'updated_at',
         ];

@@ -16,6 +16,7 @@ use yii\web\IdentityInterface;
  * @property int $id
  * @property string $email
  * @property string $name
+ * @property string $phone
  * @property string $password_hash
  * @property string $pin_hash
  * @property string $password_reset_token
@@ -72,6 +73,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'email' => Yii::t('app', 'Email'),
             'name' => Yii::t('app', 'First And Last Name'),
+            'phone' => Yii::t('app', 'Phone Number'),
             'password' => Yii::t('app', 'Password'),
             'role' => Yii::t('app', 'Role'),
             'status' => Yii::t('app', 'Status'),

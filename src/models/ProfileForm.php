@@ -13,11 +13,17 @@ use yii\base\Model;
  */
 class ProfileForm extends RegisterForm
 {
+    /**
+     * @var string
+     */
+    public $phone;
+
     public function init(): void
     {
         parent::init();
 
         $this->name = Yii::$app->user->identity->name;
+        $this->phone = Yii::$app->user->identity->phone;
     }
 
     /**
@@ -27,7 +33,7 @@ class ProfileForm extends RegisterForm
     {
         return [
             [['name'], 'required'],
-            [['name'], 'string'],
+            [['name', 'phone'], 'string'],
             [['password'], 'string', 'min' => self::MIN_PASSWORD, 'max' => self::MAX_PASSWORD],
             [['password'], 'compare', 'compareAttribute' => 'emailAccount', 'operator' => '!='],
             [['password'], function ($attribute) {
@@ -60,6 +66,7 @@ class ProfileForm extends RegisterForm
         return [
             'password' => Yii::t('app', 'New Password'),
             'name' => Yii::t('app', 'First And Last Name'),
+            'phone' => Yii::t('app', 'Phone Number'),
         ];
     }
 
@@ -76,6 +83,7 @@ class ProfileForm extends RegisterForm
         /* @var $user User */
         $user = Yii::$app->user->identity;
         $user->name = $this->name;
+        $user->phone = $this->phone;
 
         if (!empty($this->password)) {
             $user->setPassword($this->password);
