@@ -3,23 +3,25 @@
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
-/* @var $this yii\web\View */
-/* @var $session \app\models\Clock */
-/* @var $clock array */
-/* @var $months array */
-/* @var $month int */
-/* @var $year int */
-/* @var $previousMonth int */
-/* @var $previousYear int */
-/* @var $nextMonth int */
-/* @var $nextYear int */
-/* @var $previous string */
-/* @var $next string */
-/* @var $firstDayInMonth int */
-/* @var $daysInMonth int */
-/* @var $holidays array */
-/* @var $off array */
-/* @var $dayOff \app\models\Off */
+/**
+ * @var $this yii\web\View
+ * @var $session \app\models\Clock
+ * @var $clock array
+ * @var $months array
+ * @var $month int
+ * @var $year int
+ * @var $previousMonth int
+ * @var $previousYear int
+ * @var $nextMonth int
+ * @var $nextYear int
+ * @var $previous string
+ * @var $next string
+ * @var $firstDayInMonth int
+ * @var $daysInMonth int
+ * @var $holidays array
+ * @var $off array
+ * @var $dayOff \app\models\Off
+ */
 
 $this->title = Yii::t('app', 'Calendar');
 
@@ -46,6 +48,29 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
     }
 }
 
+$clockUrl = Url::to(['clock/add']);
+$offUrl = Url::to(['clock/off-add']);
+
+$this->registerJs(<<<JS
+$(".selectDay")
+    .click(function () {
+        let calendar = $(this);
+        let year = calendar.data("year");
+        let month = calendar.data("month");
+        let day = calendar.data("day");
+        window.location.href = "$clockUrl/" + day + "/" + month + "/" + year;
+        return false;
+    })
+    .contextmenu(function () {
+        let calendar = $(this);
+        let year = calendar.data("year");
+        let month = calendar.data("month");
+        let day = calendar.data("day");
+        window.location.href = "$offUrl/" + day + "/" + month + "/" + year;
+        return false;
+    });
+JS
+);
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'Calendar') ?></h1>
@@ -125,13 +150,13 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
             <?php
             $dayOfWeek = $firstDayInMonth;
             for ($day = 1; $day <= $daysInMonth; $day++): ?>
-                <div class="calendar
+                <div class="calendar selectDay
                     <?= $dayOfWeek > 5 ? 'weekend' : '' ?>
                     <?= in_array($day, $holidays, true) ? 'holiday' : '' ?>
                     <?= in_array($day, $offDays, true) ? 'off' : '' ?>
                     <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>" style="<?= $day === 1 && $firstDayInMonth !== 1
                     ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 6 + 3) . 'px + ' . (($firstDayInMonth - 1) * 13) . '%'
-                    : '' ?>">
+                    : '' ?>" data-year="<?= $year ?>" data-month="<?= $month ?>" data-day="<?= $day ?>">
                     <?= $day ?>
                     <?php if (!array_key_exists($day, $clockDays)): ?>
                         <p>&nbsp;</p><p>&nbsp;</p>
@@ -148,6 +173,12 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
             endif;
             endfor;
             ?>
+        </div>
+        <div class="form-group"><div class="clearfix"></div></div>
+        <div class="form-group">
+            <p class="text-muted small">
+                <i class="glyphicon glyphicon-info-sign"></i> <?= Yii::t('app', 'Left-click day to add session. Right-click day to add off-time.') ?>
+            </p>
         </div>
     </div>
 </div>

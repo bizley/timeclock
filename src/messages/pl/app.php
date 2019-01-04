@@ -102,6 +102,7 @@ return [
     'January' => 'styczeń',
     'July' => 'lipiec',
     'June' => 'czerwiec',
+    'Left-click day to add session. Right-click day to add off-time.' => 'Kliknij dzień lewym przyciskiem myszy, aby dodać sesję; prawym przycskiem myszy, aby dodać wolne.',
     'Log In' => 'Zaloguj',
     'Log Out' => 'Wyloguj',
     'Login' => 'Logowanie',

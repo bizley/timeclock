@@ -99,3 +99,4 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     margin:0;
     padding:0;
 }
+.selectDay { cursor:pointer }

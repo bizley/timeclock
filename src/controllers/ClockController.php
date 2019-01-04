@@ -250,10 +250,11 @@ class ClockController extends Controller
     /**
      * @param string|int|null $month
      * @param string|int|null $year
+     * @param string|int|null $day
      * @return string|Response
      * @throws \Exception
      */
-    public function actionAdd($month = null, $year = null)
+    public function actionAdd($month = null, $year = null, $day = null)
     {
         if ($month === null || $month < 1 || $month > 12) {
             $month = date('n');
@@ -261,10 +262,13 @@ class ClockController extends Controller
         if ($year === null || $year < 2018) {
             $year = date('Y');
         }
+        if ($day === null || $day < 1 || $day > 31) {
+            $day = date('j');
+        }
 
         $model = new ClockForm(new Clock([
             'clock_in' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . date('d H:i:s'),
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(' H:i:s'),
                 new \DateTimeZone(Yii::$app->timeZone))
             )->getTimestamp()
         ]));
@@ -281,10 +285,11 @@ class ClockController extends Controller
     /**
      * @param string|int|null $month
      * @param string|int|null $year
+     * @param string|int|null $day
      * @return string|Response
      * @throws \Exception
      */
-    public function actionOffAdd($month = null, $year = null)
+    public function actionOffAdd($month = null, $year = null, $day = null)
     {
         if ($month === null || $month < 1 || $month > 12) {
             $month = date('n');
@@ -292,14 +297,17 @@ class ClockController extends Controller
         if ($year === null || $year < 2018) {
             $year = date('Y');
         }
+        if ($day === null || $day < 1 || $day > 31) {
+            $day = date('j');
+        }
 
         $model = new OffForm(new Off([
             'start_at' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . date('d 00:00:00'),
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(' 00:00:00'),
                 new \DateTimeZone(Yii::$app->timeZone))
             )->getTimestamp(),
             'end_at' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . date('d 23:59:59'),
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(' 23:59:59'),
                 new \DateTimeZone(Yii::$app->timeZone))
             )->getTimestamp(),
         ]));
