@@ -1,28 +1,31 @@
 <?php
 
+use app\widgets\tooltip\Tooltip;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
-/* @var $this yii\web\View */
-/* @var $session \app\models\Clock */
-/* @var $clock array */
-/* @var $employee \app\models\User */
-/* @var $user \app\models\User */
-/* @var $users array */
-/* @var $months array */
-/* @var $month int */
-/* @var $year int */
-/* @var $previousMonth int */
-/* @var $previousYear int */
-/* @var $nextMonth int */
-/* @var $nextYear int */
-/* @var $previous string */
-/* @var $next string */
-/* @var $firstDayInMonth int */
-/* @var $daysInMonth int */
-/* @var $holidays array */
-/* @var $off array */
-/* @var $dayOff \app\models\Off */
+/**
+ * @var $this yii\web\View
+ * @var $session \app\models\Clock
+ * @var $clock array
+ * @var $employee \app\models\User
+ * @var $user \app\models\User
+ * @var $users array
+ * @var $months array
+ * @var $month int
+ * @var $year int
+ * @var $previousMonth int
+ * @var $previousYear int
+ * @var $nextMonth int
+ * @var $nextYear int
+ * @var $previous string
+ * @var $next string
+ * @var $firstDayInMonth int
+ * @var $daysInMonth int
+ * @var $holidays array
+ * @var $off array
+ * @var $dayOff \app\models\Off
+ */
 
 $this->title = Yii::t('app', 'Overall Calendar');
 
@@ -72,8 +75,6 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
     }
 }
 
-\yii\bootstrap\BootstrapPluginAsset::register($this);
-$this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'Overall Calendar') ?></h1>
@@ -169,7 +170,7 @@ $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
                     <?php if (isset($clockDays[$day])): ?>
                         <p>
                             <?php foreach ($clockDays[$day] as $initials => $times): ?>
-                                <span class="badge" data-toggle="tooltip" data-placement="top" title="<?= $times[0] . ' - ' . $times[1] ?>"><?= $initials ?></span>
+                                <span class="badge" <?= Tooltip::add( $times[0] . ' - ' . $times[1]) ?>><?= $initials ?></span>
                             <?php endforeach; ?>
                         </p>
                     <?php endif; ?>
