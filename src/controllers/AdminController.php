@@ -151,10 +151,10 @@ class AdminController extends Controller
      */
     public function getMonthsAndYears($month, $year): array
     {
-        if ($month === null || $month < 1 || $month > 12) {
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
             $month = date('n');
         }
-        if ($year === null || $year < 2018) {
+        if (!is_numeric($year) || $year < 2018) {
             $year = date('Y');
         }
 
@@ -244,6 +244,7 @@ class AdminController extends Controller
      * @param string|int|null $id
      * @return string
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function actionCalendar($month = null, $year = null, $id = null): string
     {
@@ -283,6 +284,38 @@ class AdminController extends Controller
         }
         $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_ASC])->all();
 
+        $users = User::find()->indexBy('id')->all();
+
+        $entries = [];
+        foreach ($clock as $session) {
+            $day = Yii::$app->formatter->asDate($session->clock_in, 'd');
+            if (!array_key_exists($day, $entries)) {
+                $entries[$day] = [];
+            }
+
+            if (!array_key_exists($session->user_id, $entries[$day])) {
+                $entries[$day][$session->user_id] = $users[$session->user_id]->initials;
+            }
+        }
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $stamp = (new \DateTime(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . ' 12:00:00',
+                new \DateTimeZone(Yii::$app->timeZone))
+            )->getTimestamp();
+            foreach ($off as $dayOff) {
+                if ($stamp > $dayOff->start_at && $stamp < $dayOff->end_at) {
+                    if (!array_key_exists($day, $entries)) {
+                        $entries[$day] = [];
+                    }
+
+                    if (!array_key_exists($dayOff->user_id, $entries[$day])) {
+                        $entries[$day][$dayOff->user_id] = $users[$dayOff->user_id]->initials;
+                    }
+                }
+            }
+        }
+
         return $this->render('calendar', [
             'months' => Clock::months(),
             'year' => $year,
@@ -295,11 +328,10 @@ class AdminController extends Controller
             'nextMonth' => $nextMonth,
             'firstDayInMonth' => $firstDayInMonth,
             'daysInMonth' => $daysInMonth,
-            'clock' => $clock,
             'employee' => $user,
-            'users' => User::find()->indexBy('id')->all(),
+            'users' => $users,
             'holidays' => Holiday::getMonthHolidays($month, $year),
-            'off' => $off,
+            'entries' => $entries,
         ]);
     }
 
@@ -349,5 +381,52 @@ class AdminController extends Controller
         }
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param int|string $day
+     * @param int|string $month
+     * @param int|string $year
+     * @param int|string $employee
+     * @return string|null
+     */
+    public function actionDay($day, $month, $year, $employee): ?string
+    {
+        if (!Yii::$app->request->isAjax) {
+            return null;
+        }
+
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            $month = date('n');
+        }
+        if (!is_numeric($year) || $year < 2018) {
+            $year = date('Y');
+        }
+        if (!is_numeric($day) || $day < 1 || $day > 31) {
+            $day = date('j');
+        }
+        if (!is_numeric($employee)) {
+            $employee = 0;
+        }
+
+        $date = $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day;
+
+        return $this->renderAjax('day', [
+            'day' => $day,
+            'month' => Clock::months()[$month],
+            'year' => $year,
+            'employee' => (int) $employee,
+            'users' => User::find()->indexBy('id')->all(),
+            'clock' => Clock::find()->where([
+                'and',
+                ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($date . ' 00:00:00')],
+                ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp($date . ' 23:59:59')],
+            ])->orderBy(['clock_in' => SORT_ASC])->all(),
+            'off' => Off::find()->where([
+                'and',
+                ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($date . ' 23:59:59')],
+                ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($date . ' 00:00:00')],
+            ])->orderBy(['start_at' => SORT_ASC])->all(),
+        ]);
     }
 }

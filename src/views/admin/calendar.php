@@ -1,13 +1,12 @@
 <?php
 
-use app\widgets\tooltip\Tooltip;
+use yii\bootstrap\BootstrapPluginAsset;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
 /**
  * @var $this yii\web\View
- * @var $session \app\models\Clock
- * @var $clock array
+ * @var $entries array
  * @var $employee \app\models\User
  * @var $user \app\models\User
  * @var $users array
@@ -23,58 +22,23 @@ use yii\helpers\Url;
  * @var $firstDayInMonth int
  * @var $daysInMonth int
  * @var $holidays array
- * @var $off array
- * @var $dayOff \app\models\Off
  */
 
+BootstrapPluginAsset::register($this);
+$this->registerJs(<<<JS
+$(".day").click(function (e) {
+    e.preventDefault();
+    let url = $(this).attr("href");
+    $("#dayModal .modal-content").load(url, function () {
+        $("#dayModal").modal("toggle");
+    });
+});
+JS
+);
+
+$this->params['dayModal'] = true;
+
 $this->title = Yii::t('app', 'Overall Calendar');
-
-function getInitials(string $name): string {
-    $words = preg_split('/[\s\-_\.,]/', $name);
-    $initials = '';
-    foreach ($words as $word) {
-        $initials .= mb_strtoupper(substr($word, 0, 1), 'UTF-8');
-    }
-
-    return $initials;
-}
-
-$clockDays = [];
-foreach ($clock as $session) {
-    $day = Yii::$app->formatter->asDate($session->clock_in, 'd');
-    if (!isset($clockDays[$day])) {
-        $clockDays[$day] = [];
-    }
-
-    $initials = getInitials($users[$session->user_id]->name);
-
-    if (!isset($clockDays[$day][$initials])) {
-        $clockDays[$day][$initials] = [Yii::$app->formatter->asTime($session->clock_in, 'HH:mm')];
-    }
-    $clockDays[$day][$initials][1] = $session->clock_out !== null ? Yii::$app->formatter->asTime($session->clock_out, 'HH:mm') : '-';
-}
-
-$offDays = [];
-for ($day = 1; $day <= $daysInMonth; $day++) {
-    $stamp = (new \DateTime(
-        $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . ' 12:00:00',
-        new \DateTimeZone(Yii::$app->timeZone))
-    )->getTimestamp();
-    foreach ($off as $dayOff) {
-        if ($stamp > $dayOff->start_at && $stamp < $dayOff->end_at) {
-            if (!array_key_exists($day, $offDays)) {
-                $offDays[$day] = [];
-            }
-
-            $initials = getInitials($users[$dayOff->user_id]->name);
-
-            if (!in_array($initials, $offDays[$day], true)) {
-                $offDays[$day][] = $initials;
-            }
-        }
-    }
-}
-
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'Overall Calendar') ?></h1>
@@ -167,17 +131,12 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
                     ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 6 + 3) . 'px + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>">
                     <?= $day ?>
-                    <?php if (isset($clockDays[$day])): ?>
+                    <?php if (array_key_exists($day, $entries)): ?>
                         <p>
-                            <?php foreach ($clockDays[$day] as $initials => $times): ?>
-                                <span class="badge" <?= Tooltip::add( $times[0] . ' - ' . $times[1]) ?>><?= $initials ?></span>
-                            <?php endforeach; ?>
-                        </p>
-                    <?php endif; ?>
-                    <?php if (isset($offDays[$day])): ?>
-                        <p>
-                            <?php foreach ($offDays[$day] as $initials): ?>
-                                <span class="label label-primary"><?= $initials ?></span>
+                            <?php foreach ($entries[$day] as $userId => $initials): ?>
+                                <a href="<?= Url::to(['admin/day', 'day' => $day, 'month' => $month, 'year' => $year, 'employee' => $userId]) ?>" class="btn btn-primary btn-xs day">
+                                    <?= $initials ?>
+                                </a>
                             <?php endforeach; ?>
                         </p>
                     <?php endif; ?>
@@ -190,6 +149,12 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
             endif;
             endfor;
             ?>
+        </div>
+        <div class="form-group"><div class="clearfix"></div></div>
+        <div class="form-group">
+            <p class="text-muted small">
+                <span class="btn btn-primary btn-xs">&nbsp;&nbsp;</span> <?= Yii::t('app', 'Click the initials to see day details.') ?>
+            </p>
         </div>
     </div>
 </div>

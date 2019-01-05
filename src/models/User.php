@@ -28,6 +28,8 @@ use yii\web\IdentityInterface;
  * @property int $created_at
  * @property int $updated_at
  * @property string $password write-only password
+ *
+ * @property string $initials
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -251,6 +253,25 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken(): void
     {
         $this->password_reset_token = null;
+    }
+
+    private $_initials;
+
+    /**
+     * @return string
+     */
+    public function getInitials(): string
+    {
+        if ($this->_initials === null) {
+            $words = preg_split('/[\s\-_\.,]/', $this->name);
+            $this->_initials = '';
+
+            foreach ($words as $word) {
+                $this->_initials .= mb_strtoupper(substr($word, 0, 1), 'UTF-8');
+            }
+        }
+
+        return $this->_initials;
     }
 
     /**

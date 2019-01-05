@@ -108,6 +108,12 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     margin-top:4px;
     cursor:help;
 }
+.modal-day { padding:20px }
+.modal-day .popover { color:#333 }
+.modal-day .active .note {
+    background-color:#fff;
+    box-shadow:0 0 20px 10px #fff;
+}
 @media (max-width:550px) {
     .calendar {
         float:none;

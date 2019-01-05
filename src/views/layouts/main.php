@@ -4,6 +4,8 @@
 /* @var $content string */
 
 use app\assets\AppAsset;
+use app\models\User;
+use app\widgets\alert\Alert;
 use app\widgets\confirm\Confirm;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -29,7 +31,7 @@ $this->beginPage(); ?>
 <div id="main">
     <div class="wrap">
         <div class="container">
-            <?= \app\widgets\alert\Alert::widget() ?>
+            <?= Alert::widget() ?>
             <?php if (!Yii::$app->user->isGuest): ?>
                 <ul class="pull-right list-inline menu">
                     <li><a href="<?= Url::to(['profile/index']) ?>"><i class="glyphicon glyphicon-user"></i> <?= Html::encode(Yii::$app->user->identity->name) ?></a></li>
@@ -40,7 +42,7 @@ $this->beginPage(); ?>
                     <li><a href="<?= Url::to(['clock/calendar']) ?>"><i class="glyphicon glyphicon-calendar"></i> <?= Yii::t('app', 'Calendar') ?></a></li>
                     <li><a href="<?= Url::to(['site/logout']) ?>" data-method="post"><i class="glyphicon glyphicon-log-out"></i> <?= Yii::t('app', 'Log Out') ?></a></li>
                 </ul>
-                <?php if (Yii::$app->user->identity->role === \app\models\User::ROLE_ADMIN): ?>
+                <?php if (Yii::$app->user->identity->role === User::ROLE_ADMIN): ?>
                     <div class="clearfix"></div>
                     <ul class="pull-right list-inline menu-admin">
                         <li><a href="<?= Url::to(['admin/index']) ?>"><i class="glyphicon glyphicon-user"></i> <?= Yii::t('app', 'Employees') ?></a></li>
@@ -71,6 +73,13 @@ $this->beginPage(); ?>
 
 <?= Confirm::widget() ?>
 
+<?php if (array_key_exists('dayModal', $this->params)): ?>
+<div class="modal fade" id="dayModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content modal-day"></div>
+    </div>
+</div>
+<?php endif; ?>
 <?php $this->endBody() ?>
 </body>
 </html>

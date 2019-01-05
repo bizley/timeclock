@@ -110,6 +110,7 @@ $config = [
                 'site/new-password/<token:\w+>' => 'site/new-password',
                 'clock/<action:[\w\-]+>/<day:\d+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
                 'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
+                'admin/day/<day:\d+>/<month:\d+>/<year:\d+>/<employee:\d+>' => 'admin/day',
                 'admin/<action:\w+>/<month:\d+>/<year:\d+>/<id:\d+>' => 'admin/<action>',
                 'admin/<action:\w+>/<month:\d+>/<year:\d+>' => 'admin/<action>',
                 '<controller:\w+>/<action:[\w\-]+>/<id:\d+>' => '<controller>/<action>',

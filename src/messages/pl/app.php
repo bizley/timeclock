@@ -47,6 +47,7 @@ return [
     'Can not start off-time because it overlaps with another off-time.' => 'Nie można rozpocząć wolnego, ponieważ pokrywa się ono z innym.',
     'Can not start session because it overlaps with another ended session.' => 'Nie można rozpocząć sesji, ponieważ pokrywa się ona z inną już zamkniętą.',
     'Cancel' => 'Anuluj',
+    'Click the initials to see day details.' => 'Kliknij w inicjały, aby zobaczyć szczegóły dla danego dnia.',
     'Confirm' => 'Potwierdź',
     'Confirmation required' => 'Wymagane potwierdzenie',
     'Change API key' => 'Zmień klucz API',

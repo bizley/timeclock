@@ -84,10 +84,10 @@ class ClockController extends Controller
      */
     public function getMonthsAndYears($month, $year): array
     {
-        if ($month === null || $month < 1 || $month > 12) {
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
             $month = date('n');
         }
-        if ($year === null || $year < 2018) {
+        if (!is_numeric($year) || $year < 2018) {
             $year = date('Y');
         }
 
@@ -256,13 +256,13 @@ class ClockController extends Controller
      */
     public function actionAdd($month = null, $year = null, $day = null)
     {
-        if ($month === null || $month < 1 || $month > 12) {
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
             $month = date('n');
         }
-        if ($year === null || $year < 2018) {
+        if (!is_numeric($year) || $year < 2018) {
             $year = date('Y');
         }
-        if ($day === null || $day < 1 || $day > 31) {
+        if (!is_numeric($day) || $day < 1 || $day > 31) {
             $day = date('j');
         }
 
@@ -291,13 +291,13 @@ class ClockController extends Controller
      */
     public function actionOffAdd($month = null, $year = null, $day = null)
     {
-        if ($month === null || $month < 1 || $month > 12) {
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
             $month = date('n');
         }
-        if ($year === null || $year < 2018) {
+        if (!is_numeric($year) || $year < 2018) {
             $year = date('Y');
         }
-        if ($day === null || $day < 1 || $day > 31) {
+        if (!is_numeric($day) || $day < 1 || $day > 31) {
             $day = date('j');
         }
 
