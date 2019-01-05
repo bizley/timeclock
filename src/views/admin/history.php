@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\note\Note;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -44,8 +45,6 @@ foreach ($clock as $session) {
     $list .= '</li>';
 }
 
-\yii\bootstrap\BootstrapPluginAsset::register($this);
-$this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'Sessions') ?></h1>
@@ -140,9 +139,7 @@ $this->registerJs('$("[data-toggle=\"tooltip\"]").tooltip();');
         <ul class="list-group">
             <?php foreach ($off as $day): ?>
                 <li class="list-group-item">
-                    <?php if ($day->note !== null && $day->note !== ''): ?>
-                        <span class="text-info pull-right" data-toggle="tooltip" data-placement="left" title="<?= Html::encode($day->note) ?>"><i class="glyphicon glyphicon-comment"></i></span>
-                    <?php endif; ?>
+                    <?= Note::widget(['offtime' => $day]) ?>
                     <?= Html::encode($users[$day->user_id]->name) ?>
                     <?= Yii::$app->formatter->asDatetime($day->start_at, 'dd.MM.y') ?>
                     <i class="glyphicon glyphicon-arrow-right"></i>
