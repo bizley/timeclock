@@ -108,3 +108,17 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     margin-top:4px;
     cursor:help;
 }
+@media (max-width:550px) {
+    .calendar {
+        float:none;
+        width:100%;
+        margin:0 0 3px 0 !important;
+        padding:3px 10px;
+        text-align:left;
+    }
+    .calendar.fixed { min-height:30px }
+    .calendar.day { display:none }
+    .calendar p {
+        display:inline;
+    }
+}

@@ -77,7 +77,7 @@ JS
 </div>
 
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-md-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
@@ -126,7 +126,7 @@ JS
             ) ?>
         </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-md-9">
         <div class="form-group">
             <div class="pull-right">
                 <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-xs">

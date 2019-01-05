@@ -81,7 +81,7 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
 </div>
 
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-md-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
@@ -140,7 +140,7 @@ for ($day = 1; $day <= $daysInMonth; $day++) {
             </div>
         </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-md-9">
         <div class="form-group">
             <?php if ($employee !== null): ?>
                 <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-xs pull-right"><?= Yii::t('app', 'All Employees') ?></a>
