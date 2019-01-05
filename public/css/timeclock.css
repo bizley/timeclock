@@ -100,3 +100,11 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     padding:0;
 }
 .selectDay { cursor:pointer }
+.note {
+    float:right;
+    width:1em;
+    height:1em;
+    border-radius:1.6em;
+    margin-top:4px;
+    cursor:help;
+}

@@ -28,4 +28,9 @@ html, body {
 }
 .modal-title,
 .modal-body,
-.panel-body { color:#333 }
+.panel-body,
+.popover { color:#333 }
+.note {
+    background-color:#0c7f7f;
+    box-shadow:inset 0 0 2px 1px #0ff, 0 0 20px 5px #0ff;
+}

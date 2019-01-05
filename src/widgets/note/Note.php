@@ -31,11 +31,8 @@ class Note extends Widget
             BootstrapPluginAsset::register($this->view);
             $this->view->registerJs('$("[data-toggle=\"popover\"]").popover();');
 
-            return Html::tag(
-                'span',
-                Html::tag('i', '', ['class' => 'glyphicon glyphicon-comment']),
-                [
-                    'class' => 'text-info pull-right text-danger',
+            return Html::tag('div', '', [
+                    'class' => 'note',
                     'title' => Yii::t('app', 'Off-time Note'),
                     'data-toggle' => 'popover',
                     'data-trigger' => 'hover',

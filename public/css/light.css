@@ -20,3 +20,7 @@ html, body { background-color:#dbf6f9 }
     background-color:#d69191;
     color:#333;
 }
+.note {
+    background-color:#c656ce;
+    box-shadow:inset 0 0 2px 1px #e513f4, 0 0 20px 5px #e513f4;
+}

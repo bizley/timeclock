@@ -33,6 +33,9 @@ $config = [
                 'application/json' => JsonParser::class,
             ],
         ],
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
         'cache' => [
             'class' => FileCache::class,
         ],
