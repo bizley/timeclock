@@ -36,17 +36,28 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 - Off-time must not overlap any other off-time period.
 - Holidays are automatically fetched from `https://www.kalendarzswiat.pl` which is Polish holiday list. If you want to 
   use something different you must prepare your own code for this. Current implementation is at `/src/models/Holiday.php`.
+
+## Features
+
+- account registration
+- password reset
+- profile update
+- signing in with login or PIN
+- session time with note
+- off-time with note
+- session and off-time history
+- calendar
+- holidays
+- admin section
+- REST API
   
 ## General help
 
-For anything related to Yii go to the [Yii 2 Guide](https://www.yiiframework.com/doc/guide/2.0/en) first.  
+Read [TimeClock Wiki](https://github.com/bizley/timeclock/wiki) first.
+
+For anything related to Yii go to the [Yii 2 Guide](https://www.yiiframework.com/doc/guide/2.0/en).  
 I really don't want to point obvious links with solutions from there.
 
 ## Usage of this project
 
 You can use this project in whatever way you like as long as you mention where did you get it from.
-
-## TODO
-
-- [ ] session notes
-- [ ] just notes
