@@ -23,7 +23,7 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
     
 5. Change `/public/index.php` file to set `YII_DEBUG` mode to `false` and `YII_ENV` environment to `prod`.
 6. Apply migrations by running in console `php yii migrate`.
-7. Start website and register first account.
+7. Start webserver and register first account.
 8. If you want to make an account to be admin run in console `php yii admin/set ID` where `ID` is DB identifier of account 
    to be set (usually first one is `1`).
    
@@ -31,7 +31,7 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 
 - Registering account requires its email address to be in one of the provided domains. If you want to change this behavior 
   you must prepare your own code. Current implementation is at `/src/models/RegisterForm.php` and `/src/views/site/register.php`.
-- Session can be start at any time but it must be ended not overlapping any other ended session.
+- Session can be started at any time but it must be ended not overlapping any other ended session.
 - There can be many sessions in one day.
 - Session can not be longer than midnight.
 - Not ended sessions not count for work hours.
