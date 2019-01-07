@@ -1,6 +1,5 @@
 <?php
 
-use yii\web\JsonParser;
 use app\api\Api;
 use app\base\Alert;
 use app\models\User;
@@ -8,8 +7,8 @@ use yii\caching\FileCache;
 use yii\debug\Module;
 use yii\i18n\PhpMessageSource;
 use yii\log\FileTarget;
-use yii\rest\UrlRule;
 use yii\swiftmailer\Mailer;
+use yii\web\JsonParser;
 
 $config = [
     'id' => 'timeclock',
@@ -75,47 +74,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                [
-                    'class' => UrlRule::class,
-                    'controller' => ['api/session', 'api/off-time'],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => 'api/holiday',
-                    'only' => ['index', 'fetch', 'options'],
-                    'extraPatterns' => ['POST fetch' => 'fetch'],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => 'api/key',
-                    'only' => ['index', 'options'],
-                    'pluralize' => false,
-                    'patterns' => [
-                        'POST' => 'index',
-                        '' => 'options',
-                    ],
-                ],
-                [
-                    'class' => UrlRule::class,
-                    'controller' => 'api/profile',
-                    'only' => ['view', 'update', 'options'],
-                    'pluralize' => false,
-                    'patterns' => [
-                        'GET,HEAD' => 'view',
-                        'PUT,PATCH' => 'update',
-                        '' => 'options',
-                    ],
-                ],
-                'site/new-password/<token:\w+>' => 'site/new-password',
-                'clock/<action:[\w\-]+>/<day:\d+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
-                'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
-                'admin/day/<day:\d+>/<month:\d+>/<year:\d+>/<employee:\d+>' => 'admin/day',
-                'admin/<action:\w+>/<month:\d+>/<year:\d+>/<id:\d+>' => 'admin/<action>',
-                'admin/<action:\w+>/<month:\d+>/<year:\d+>' => 'admin/<action>',
-                '<controller:\w+>/<action:[\w\-]+>/<id:\d+>' => '<controller>/<action>',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-            ],
+            'rules' => require __DIR__ . '/rules.php',
         ],
     ],
     'params' => [
