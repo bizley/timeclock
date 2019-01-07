@@ -115,6 +115,7 @@ BootstrapPluginAsset::register($this);
     "userId": 1,
     "clockIn": 1545481724,
     "clockOut": null,
+    "note": "Home office",
     "createdAt": 1545481724,
     "updatedAt": 1545481724
 }</pre>
@@ -145,6 +146,7 @@ BootstrapPluginAsset::register($this);
         "userId": 1,
         "clockIn": 1545481724,
         "clockOut": null,
+        "note": "Home office",
         "createdAt": 1545481724,
         "updatedAt": 1545481724
     }
@@ -160,7 +162,7 @@ BootstrapPluginAsset::register($this);
                 <p>
                     <?= Yii::t('app', 'To sort results send {sort} parameter with attribute name (or many attributes separated with comma). By default attributes are sorted in ascending order - to sort in descending order put minus before the attribute\'s name. Available attributes are: {attributes}.', [
                         'sort' => Html::tag('code', 'sort'),
-                        'attributes' => '<code>' . implode('</code>, <code>', ['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt']) . '</code>',
+                        'attributes' => '<code>' . implode('</code>, <code>', ['id', 'clockIn', 'clockOut', 'note', 'createdAt', 'updatedAt']) . '</code>',
                     ]) ?>
                 </p>
                 <p>
@@ -220,6 +222,10 @@ BootstrapPluginAsset::register($this);
                                 <td><code>clockIn</code></td>
                                 <td><span class="label label-info">int</span> 1545485655</td>
                             </tr>
+                            <tr>
+                                <td><code>note</code></td>
+                                <td><span class="label label-warning">string</span> Home office</td>
+                            </tr>
                         </table>
                     </li>
                     <li>
@@ -250,6 +256,7 @@ BootstrapPluginAsset::register($this);
     "userId": 1,
     "clockIn": 1545485055,
     "clockOut": null,
+    "note": "Home office",
     "createdAt": 1545485055,
     "updatedAt": 1545485055
 }</pre>
@@ -289,6 +296,10 @@ BootstrapPluginAsset::register($this);
                         <td><code>clockOut</code></td>
                         <td><span class="label label-info">int</span> 1545739655</td>
                     </tr>
+                    <tr>
+                        <td><code>note</code></td>
+                        <td><span class="label label-warning">string</span> Birthday</td>
+                    </tr>
                 </table>
                 <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
                 <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
@@ -297,6 +308,7 @@ BootstrapPluginAsset::register($this);
     "userId": 1,
     "clockIn": 1545485055,
     "clockOut": 1545739655,
+    "note": "Birthday",
     "createdAt": 1545485055,
     "updatedAt": 1545739655
 }</pre>
@@ -518,6 +530,10 @@ BootstrapPluginAsset::register($this);
                         <td><code>endAt</code></td>
                         <td><span class="label label-info">int</span> 1545869799</td>
                     </tr>
+                    <tr>
+                        <td><code>note</code></td>
+                        <td><span class="label label-warning">string</span> Doctor</td>
+                    </tr>
                 </table>
                 <p><?= Yii::t('app', 'Start time is always normalized to 00:00:00 and end time is always normalized to 23:59:59 to cover whole day.') ?></p>
                 <span class="label label-success pull-right"><?= Yii::t('app', 'Status:') ?> 200</span>
@@ -527,7 +543,7 @@ BootstrapPluginAsset::register($this);
     "userId": 1,
     "startAt": 1545436800,
     "endAt": 1545868799,
-    "note": null,
+    "note": "Doctor",
     "createdAt": 1545501625,
     "updatedAt": 1545501625
 }</pre>

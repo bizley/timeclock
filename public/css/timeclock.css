@@ -105,7 +105,7 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     width:1em;
     height:1em;
     border-radius:1.6em;
-    margin-top:4px;
+    margin:4px 0 0 10px;
     cursor:help;
 }
 .modal-day { padding:20px }

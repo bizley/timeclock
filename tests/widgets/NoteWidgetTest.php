@@ -27,10 +27,10 @@ class NoteWidgetTest extends DbTestCase
      */
     public function testWithNote(): void
     {
-        $out = Note::widget(['offtime' => new Off(['note' => 'testNote'])]);
+        $out = Note::widget(['model' => new Off(['note' => 'testNote'])]);
 
         $this->assertEquals(
-            '<div class="note" title="Off-time Note" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="testNote"></div>',
+            '<div class="note" title="Note" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="testNote"></div>',
             $out
         );
     }

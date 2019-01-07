@@ -66,7 +66,7 @@ class OffForm extends Model
         $this->endYear = Yii::$app->formatter->asTime($off->end_at, 'y');
         $this->endMonth = Yii::$app->formatter->asTime($off->end_at, 'M');
         $this->endDay = Yii::$app->formatter->asDate($off->end_at, 'd');
-        $this->note = $off->note;
+        $this->note = !empty($off->note) ? $off->note : null;
 
         parent::__construct($config);
     }
@@ -215,7 +215,7 @@ class OffForm extends Model
             new \DateTimeZone(Yii::$app->timeZone))
         )->getTimestamp();
 
-        $this->off->note = $this->note;
+        $this->off->note = $this->note !== '' ? $this->note : null;
 
         return $this->off->save();
     }

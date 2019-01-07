@@ -1,6 +1,6 @@
 <?php
 
-use yii\bootstrap\BootstrapPluginAsset;
+use app\widgets\modal\Day;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
@@ -23,20 +23,6 @@ use yii\helpers\Url;
  * @var $daysInMonth int
  * @var $holidays array
  */
-
-BootstrapPluginAsset::register($this);
-$this->registerJs(<<<JS
-$(".day").click(function (e) {
-    e.preventDefault();
-    let url = $(this).attr("href");
-    $("#dayModal .modal-content").load(url, function () {
-        $("#dayModal").modal("toggle");
-    });
-});
-JS
-);
-
-$this->params['dayModal'] = true;
 
 $this->title = Yii::t('app', 'Overall Calendar');
 ?>
@@ -134,9 +120,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
                     <?php if (array_key_exists($day, $entries)): ?>
                         <p>
                             <?php foreach ($entries[$day] as $userId => $initials): ?>
-                                <a href="<?= Url::to(['admin/day', 'day' => $day, 'month' => $month, 'year' => $year, 'employee' => $userId]) ?>" class="btn btn-primary btn-xs day">
-                                    <?= $initials ?>
-                                </a>
+                                <?= Day::add($initials, $day, $month, $year, $userId) ?>
                             <?php endforeach; ?>
                         </p>
                     <?php endif; ?>

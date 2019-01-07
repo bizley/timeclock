@@ -89,6 +89,7 @@ $this->title = Yii::t('app', 'History');
         <ul class="list-group">
             <?php $total = 0; foreach ($clock as $session): ?>
                 <li class="list-group-item">
+                    <?= Note::widget(['model' => $session]) ?>
                     <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>" class="btn btn-danger btn-xs" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
                         <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
                     </a>
@@ -101,7 +102,7 @@ $this->title = Yii::t('app', 'History');
                         </a>
                         <span class="badge"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                     <?php $total += $session->clock_out - $session->clock_in; else: ?>
-                        niezamknięta
+                        <?= Yii::t('app', 'not ended') ?>
                         <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-success btn-xs">
                             <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
                         </a>
@@ -127,7 +128,7 @@ $this->title = Yii::t('app', 'History');
         <ul class="list-group">
             <?php foreach ($off as $day): ?>
                 <li class="list-group-item">
-                    <?= Note::widget(['offtime' => $day]) ?>
+                    <?= Note::widget(['model' => $day]) ?>
                     <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>" class="btn btn-danger btn-xs" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
                         <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
                     </a>

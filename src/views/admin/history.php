@@ -32,7 +32,8 @@ foreach ($clock as $session) {
     }
 
     $list .= '<li class="list-group-item">';
-    $list .= Html::encode($users[$session->user_id]->name) . ' ';
+    $list .= Note::widget(['model' => $session]);
+    $list .= Html::encode($users[$session->user_id]->name) . ': ';
     $list .= Yii::$app->formatter->asDatetime($session->clock_in) . ' ';
     $list .= '<i class="glyphicon glyphicon-arrow-right"></i>' . ' ';
     if ($session->clock_out !== null) {
@@ -139,7 +140,7 @@ foreach ($clock as $session) {
         <ul class="list-group">
             <?php foreach ($off as $day): ?>
                 <li class="list-group-item">
-                    <?= Note::widget(['offtime' => $day]) ?>
+                    <?= Note::widget(['model' => $day]) ?>
                     <?= Html::encode($users[$day->user_id]->name) ?>
                     <?= Yii::$app->formatter->asDatetime($day->start_at, 'dd.MM.y') ?>
                     <i class="glyphicon glyphicon-arrow-right"></i>

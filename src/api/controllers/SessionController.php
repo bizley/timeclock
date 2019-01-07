@@ -81,8 +81,9 @@ class SessionController extends ActiveController
                 'updatedAt' => 'updated_at',
             ],
             'searchModel' => function () {
-                return (new DynamicModel(['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt']))
-                    ->addRule(['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt'], 'integer', ['min' => 1]);
+                return (new DynamicModel(['id', 'clockIn', 'clockOut', 'note', 'createdAt', 'updatedAt']))
+                    ->addRule(['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt'], 'integer', ['min' => 1])
+                    ->addRule(['note'], 'string');
             },
         ];
         $actions['index']['prepareDataProvider'] = function (IndexAction $action, $filter) {
@@ -111,6 +112,7 @@ class SessionController extends ActiveController
                     'defaultOrder' => ['clockIn' => SORT_ASC],
                     'attributes' => [
                         'id',
+                        'note',
                         'clockIn' => [
                             'asc' => ['clock_in' => SORT_ASC],
                             'desc' => ['clock_in' => SORT_DESC],

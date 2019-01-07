@@ -38,6 +38,7 @@ class Clock extends \app\models\Clock
             [['clockIn'], 'checkClockIn'],
             [['clockOut'], 'checkClockOut'],
             [['clockOut'], 'checkOverMidnight'],
+            [['note'], 'string'],
         ];
     }
 
@@ -59,6 +60,7 @@ class Clock extends \app\models\Clock
             'userId' => 'user_id',
             'clockIn',
             'clockOut',
+            'note',
             'createdAt' => 'created_at',
             'updatedAt' => 'updated_at',
         ];
@@ -103,6 +105,10 @@ class Clock extends \app\models\Clock
     {
         $this->clock_in = $this->clockIn;
         $this->clock_out = $this->clockOut;
+
+        if (empty($this->note)) {
+            $this->note = null;
+        }
 
         parent::afterValidate();
     }

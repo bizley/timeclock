@@ -100,6 +100,10 @@ class Off extends \app\models\Off
         $this->start_at = $this->startAt;
         $this->end_at = $this->endAt;
 
+        if (empty($this->note)) {
+            $this->note = null;
+        }
+
         parent::afterValidate();
     }
 

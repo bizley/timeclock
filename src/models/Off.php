@@ -18,7 +18,7 @@ use yii\db\ActiveRecord;
  * @property int $created_at
  * @property int $updated_at
  */
-class Off extends ActiveRecord
+class Off extends ActiveRecord implements NoteInterface
 {
     /**
      * {@inheritdoc}
@@ -47,5 +47,13 @@ class Off extends ActiveRecord
             [['end_at'], 'compare', 'compareAttribute' => 'start_at', 'operator' => '>'],
             [['note'], 'string'],
         ];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNote(): ?string
+    {
+        return !empty($this->note) ? $this->note : null;
     }
 }

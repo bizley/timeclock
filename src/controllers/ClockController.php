@@ -42,6 +42,8 @@ class ClockController extends Controller
                 'actions' => [
                     'delete' => ['post'],
                     'off-delete' => ['post'],
+                    'start' => ['post'],
+                    'stop' => ['post'],
                 ],
             ],
         ];
@@ -159,7 +161,7 @@ class ClockController extends Controller
     {
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
-        $firstDayInMonth = (int) Yii::$app->formatter->asDate($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00', 'e');
+        $firstDayInMonth = date('N', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
         $daysInMonth = (int) date('t', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
 
         Url::remember();

@@ -1,6 +1,9 @@
 <?php
 
 use app\widgets\confirm\Confirm;
+use app\widgets\modal\Clock;
+use app\widgets\note\Note;
+use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -25,10 +28,7 @@ $this->title = 'Timeclock';
             </div>
         <?php else: ?>
             <div class="form-group">
-                <a href="<?= Url::to(['clock/start']) ?>" class="btn btn-success btn-lg btn-block clock" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to start session?')) ?>>
-                    <i class="glyphicon glyphicon-play"></i>
-                    <?= Yii::t('app', 'Start Session') ?>
-                </a>
+                <?= Clock::button() ?>
             </div>
         <?php endif; ?>
     </div>
@@ -44,13 +44,20 @@ $this->title = 'Timeclock';
                 <ul class="list-group">
                     <?php foreach ($todays as $session): ?>
                         <li class="list-group-item">
+                            <?= Note::widget(['model' => $session]) ?>
                             <?= Yii::$app->formatter->asTime($session->clock_in) ?>
                             <i class="glyphicon glyphicon-arrow-right"></i>
                             <?php if ($session->clock_out !== null): ?>
                                 <?= Yii::$app->formatter->asTime($session->clock_out) ?>
+                                <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-warning btn-xs">
+                                    <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                                </a>
                                 <span class="badge"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                             <?php else: ?>
                                 <?= Yii::t('app', 'on-going') ?>
+                                <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-success btn-xs">
+                                    <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                                </a>
                                 <span class="badge"><?= Yii::$app->formatter->asDuration($now - $session->clock_in) ?></span>
                             <?php endif; ?>
                         </li>

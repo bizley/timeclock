@@ -15,10 +15,11 @@ use yii\db\ActiveRecord;
  * @property int $user_id
  * @property int $clock_in
  * @property int $clock_out
+ * @property string $note
  * @property int $created_at
  * @property int $updated_at
  */
-class Clock extends ActiveRecord
+class Clock extends ActiveRecord implements NoteInterface
 {
     /**
      * @return array
@@ -64,6 +65,8 @@ class Clock extends ActiveRecord
     {
         return [
             [['user_id', 'clock_in'], 'required'],
+            [['clock_in'], 'integer'],
+            [['note'], 'string'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['clock_out'], 'compare', 'compareAttribute' => 'clock_in', 'operator' => '>'],
         ];
@@ -105,6 +108,11 @@ class Clock extends ActiveRecord
         $this->clock_in = Yii::$app->formatter->asTimestamp('now');
         $this->clock_out = null;
         $this->user_id = Yii::$app->user->id;
+
+        $note = Yii::$app->request->post('note');
+        if (!empty($note)) {
+            $this->note = $note;
+        }
 
         if (!$this->validate()) {
             Yii::error($this->errors);
@@ -148,5 +156,13 @@ class Clock extends ActiveRecord
                 'user_id' => Yii::$app->user->id,
             ],
         ])->orderBy(['clock_in' => SORT_DESC])->one();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNote(): ?string
+    {
+        return !empty($this->note) ? $this->note : null;
     }
 }

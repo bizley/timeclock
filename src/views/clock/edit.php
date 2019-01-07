@@ -96,6 +96,8 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
                 </div>
             </div>
 
+            <?= $form->field($model, 'note')->textarea() ?>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <?= Html::submitButton('Zapisz', ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>

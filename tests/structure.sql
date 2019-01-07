@@ -20,6 +20,7 @@ CREATE TABLE "clock" (
   user_id INTEGER NOT NULL,
   clock_in INTEGER NOT NULL,
   clock_out INTEGER DEFAULT NULL,
+  note VARCHAR,
   created_at INTEGER DEFAULT NULL,
   updated_at INTEGER DEFAULT NULL,
   CONSTRAINT "fk-clock-user" FOREIGN KEY (user_id) REFERENCES "user" (id) ON UPDATE CASCADE

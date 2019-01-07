@@ -48,6 +48,11 @@ class ClockForm extends Model
      */
     public $endMinute;
 
+    /**
+     * @var string
+     */
+    public $note;
+
     private $session;
 
     /**
@@ -67,6 +72,7 @@ class ClockForm extends Model
         $this->startMinute = $this->roundToFive((int) Yii::$app->formatter->asTime($session->clock_in, 'm'));
         $this->endHour = $session->clock_out ? Yii::$app->formatter->asTime($session->clock_out, 'H') : null;
         $this->endMinute = $session->clock_out ? $this->roundToFive((int) Yii::$app->formatter->asTime($session->clock_out, 'm')) : null;
+        $this->note = !empty($session->note) ? $session->note : null;
 
         parent::__construct($config);
     }
@@ -101,6 +107,7 @@ class ClockForm extends Model
             [['startMinute', 'endMinute'], 'number', 'min' => 0, 'max' => 59],
             [['startHour', 'startMinute'], 'verifyStart'],
             [['endHour', 'endMinute'], 'verifyEnd'],
+            [['note'], 'string'],
         ];
     }
 
@@ -207,6 +214,7 @@ class ClockForm extends Model
             'day' => Yii::t('app', 'Day'),
             'startHour' => Yii::t('app', 'Start'),
             'endHour' => Yii::t('app', 'End'),
+            'note' => Yii::t('app', 'Note'),
         ];
     }
 
@@ -234,6 +242,8 @@ class ClockForm extends Model
                 new \DateTimeZone(Yii::$app->timeZone))
             )->getTimestamp();
         }
+
+        $this->session->note = $this->note !== '' ? $this->note : null;
 
         return $this->session->save();
     }

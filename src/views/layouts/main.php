@@ -7,6 +7,8 @@ use app\assets\AppAsset;
 use app\models\User;
 use app\widgets\alert\Alert;
 use app\widgets\confirm\Confirm;
+use app\widgets\modal\Clock;
+use app\widgets\modal\Day;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -72,14 +74,9 @@ $this->beginPage(); ?>
 </div>
 
 <?= Confirm::widget() ?>
+<?= Day::widget(['params' => $this->params]) ?>
+<?= Clock::widget(['params' => $this->params]) ?>
 
-<?php if (array_key_exists('dayModal', $this->params)): ?>
-<div class="modal fade" id="dayModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content modal-day"></div>
-    </div>
-</div>
-<?php endif; ?>
 <?php $this->endBody() ?>
 </body>
 </html>
