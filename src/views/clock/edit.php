@@ -14,7 +14,7 @@ $this->title = Yii::t('app', 'Editing Session');
 $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 ?>
 <div class="form-group">
-    <h1>Zmiana sesji</h1>
+    <h1><?= Yii::t('app', 'Editing Session') ?></h1>
 </div>
 
 <div class="row">

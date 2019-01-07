@@ -5,20 +5,22 @@ use app\widgets\note\Note;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 
-/* @var $this yii\web\View */
-/* @var $session \app\models\Clock */
-/* @var $clock array */
-/* @var $months array */
-/* @var $month int */
-/* @var $year int */
-/* @var $previousMonth int */
-/* @var $previousYear int */
-/* @var $nextMonth int */
-/* @var $nextYear int */
-/* @var $previous string */
-/* @var $next string */
-/* @var $day \app\models\Off */
-/* @var $off array */
+/**
+ * @var $this yii\web\View
+ * @var $session \app\models\Clock
+ * @var $clock array
+ * @var $months array
+ * @var $month int
+ * @var $year int
+ * @var $previousMonth int
+ * @var $previousYear int
+ * @var $nextMonth int
+ * @var $nextYear int
+ * @var $previous string
+ * @var $next string
+ * @var $day \app\models\Off
+ * @var $off array
+ */
 
 $this->title = Yii::t('app', 'History');
 

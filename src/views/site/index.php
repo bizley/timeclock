@@ -3,7 +3,6 @@
 use app\widgets\confirm\Confirm;
 use app\widgets\modal\Clock;
 use app\widgets\note\Note;
-use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
