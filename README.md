@@ -2,6 +2,8 @@
 
 Simple work time clocking service built on [Yii 2 framework](https://www.yiiframework.com).
 
+![screen](https://bizley.github.io/timeclock/timeclock.png)
+
 ## Installation
 
 1. Install TimeClock using Composer:
@@ -42,6 +44,7 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 - account registration
 - password reset
 - profile update
+- light and dark theme
 - signing in with login or PIN
 - session time with note
 - off-time with note
