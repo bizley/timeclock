@@ -21,7 +21,7 @@ class UserTest extends DbTestCase
         'user' => [
             [
                 'id' => 1,
-                'email' => 'employee@semfleet.tech',
+                'email' => 'employee@company.com',
                 'name' => 'employee',
                 'auth_key' => 'test',
                 'password_hash' => 'test',

@@ -21,7 +21,7 @@ class RegisterFormTest extends DbTestCase
         'user' => [
             [
                 'id' => 1,
-                'email' => 'employee@semfleet.tech',
+                'email' => 'employee@company.com',
                 'name' => 'employee',
                 'auth_key' => 'test',
                 'password_hash' => 'test',
@@ -47,12 +47,12 @@ class RegisterFormTest extends DbTestCase
     {
         $registerForm = new RegisterForm([
             'emailAccount' => 'employee',
-            'emailDomain' => '@semfleet.tech'
+            'emailDomain' => '@company.com'
         ]);
 
         $this->assertFalse($registerForm->validate());
 
-        $this->assertSame('Email "employee@semfleet.tech" has already been taken.', $registerForm->getFirstError('email'));
+        $this->assertSame('Email "employee@company.com" has already been taken.', $registerForm->getFirstError('email'));
     }
 
     public function testPasswordSameAsAccount(): void
