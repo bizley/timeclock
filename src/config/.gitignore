@@ -1,1 +1,3 @@
-db.php
+# Database credentials. If you're pushing into a public repo,
+# don't forget to comment out the line below
+# db.php
