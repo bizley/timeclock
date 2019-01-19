@@ -40,6 +40,7 @@ return [
     'admin/day/<day:\d+>/<month:\d+>/<year:\d+>/<employee:\d+>' => 'admin/day',
     'admin/<action:\w+>/<month:\d+>/<year:\d+>/<id:\d+>' => 'admin/<action>',
     'admin/<action:\w+>/<month:\d+>/<year:\d+>' => 'admin/<action>',
+    'profile/theme/<theme:\w+>' => 'profile/theme',
     '<controller:\w+>/<action:[\w\-]+>/<id:\d+>' => '<controller>/<action>',
     '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
 ];

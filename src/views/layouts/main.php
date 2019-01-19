@@ -9,6 +9,7 @@ use app\widgets\alert\Alert;
 use app\widgets\confirm\Confirm;
 use app\widgets\modal\Clock;
 use app\widgets\modal\Day;
+use app\widgets\theme\Theme;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -59,15 +60,7 @@ $this->beginPage(); ?>
 
     <footer class="footer">
         <div class="container">
-            <?php if (!Yii::$app->user->isGuest): ?>
-                <p class="pull-right">
-                    <?php if (Yii::$app->user->identity->theme === 'light'): ?>
-                        <a href="<?= Url::to(['profile/dark']) ?>" class="text-muted"><?= Yii::t('app', 'Switch to dark theme') ?></a>
-                    <?php else: ?>
-                        <a href="<?= Url::to(['profile/light']) ?>" class="text-muted"><?= Yii::t('app', 'Switch to light theme') ?></a>
-                    <?php endif; ?>
-                </p>
-            <?php endif; ?>
+            <?= Theme::widget() ?>
             <p>&copy; <?= Yii::$app->params['company'] ?> <?= date('Y') ?></p>
         </div>
     </footer>
