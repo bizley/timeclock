@@ -1,0 +1,189 @@
+:root {
+  --main-bg-color: #F7F6F3;
+  --main-info-color: #8F9BA4;
+  --main-info-color-hover: #BCBFBF;
+  --main-warning-color: #ECB638;
+  --main-warning-color-hover: #F4C150;
+  --main-success-color: #57A286;
+  --main-danger-color: #C64355;
+  --main-danger-color-hover: #C95365;
+  --main-primary-color: #29343F;
+  --main-primary-color-hover: #147593;
+  --main-dark-color: #333640;
+  --main-light-color: #F7F6F3;
+  --dark-pink: #994762;
+  --dark-purple: #42394A;
+  --vibrant-yellow: #ECB638;
+  --vibrant-brown: #894F3D;
+  --pale-brown: #AF8976;
+  --pale-purple: #9995A3;
+  --pale-grey: #FBFAFB;
+  --pale-blue: #C2D6E3;
+  --pale-yellow: #EED5A4;
+  --pale-dark-yellow: #DCCA76;
+  --watermelon: #EB5E68;
+}
+html, body {
+  background-color:var(--main-bg-color);
+  color: var(--main-dark-color);
+}
+hr { border-top: 1px solid var(--main-warning-color) }
+#bg { color: var(--pale-yellow) }
+.alert-success{
+  background-color: var(--main-success-color);
+  border-color: var(--main-success-color);
+  color: var(--main-light-color);
+}
+.alert-danger{
+  background-color: var(--main-danger-color);
+  border-color: var(--main-danger-color);
+  color: var(--main-light-color);
+}
+.alert-warning{
+  background-color: var(--main-warning-color);
+  border-color: var(--main-warning-color);
+  color: var(--main-dark-color);
+}
+.alert-info{
+  background-color: var(--main-info-color);
+  border-color: var(--main-info-color);
+  color: var(--main-light-color);
+}
+.badge {
+  background-color: var(--main-dark-color);
+  color: var(--main-light-color);
+}
+.close span{
+  color: var(--main-dark-color);
+}
+.btn-primary {
+  background-color: var(--main-primary-color);
+  border-color: var(--main-primary-color);
+}
+.btn-primary:hover {
+  background-color: var(--main-primary-color-hover);
+  border-color: var(--main-primary-color-hover);
+}
+.btn-info {
+  background-color: var(--main-info-color);
+  border-color: var(--main-info-color);
+}
+.btn-info:hover{
+  background-color: var(--main-info-color-hover);
+  border-color: var(--main-info-color-hover);
+}
+.btn-success {
+  background-color: var(--main-success-color);
+  border-color: var(--main-success-color);
+}
+.btn-warning {
+  background-color: var(--main-warning-color);
+  border-color: var(--main-warning-color);
+}
+.btn.btn-success.clock {
+  background-color: var(--main-success-color);
+}
+.btn.btn-danger.clock {
+  background-color: var(--main-danger-color);
+}
+.btn.day{
+  background-color: var(--main-primary-color);
+  border-color: var(--main-primary-color);
+  color: var(--main-light-color);
+}
+.btn.day:hover{
+  background-color: var(--main-info-color);
+  border-color: var(--main-info-color);
+  color: var(--main-light-color);
+}
+.calendar {
+  border:1px solid #333;
+  background-color:#161515;
+}
+.calendar.day { color: var(--main-dark-color) }
+.calendar.selectDay, .fixed.calendar{
+  background-color: var(--main-warning-color);
+  color: var(--main-light-color);
+  border-color: var(--main-warning-color);
+}
+.calendar.selectDay:hover{
+  background-color: var(--main-warning-color-hover);
+  border-color: var(--main-warning-color);
+  color: var(--main-light-color);
+}
+.calendar.selectDay.weekend,.fixed.calendar.weekend {
+  background-color: var(--main-danger-color);
+  border-color: var(--main-danger-color);
+}
+.calendar.selectDay.weekend:hover {
+  background-color: var(--main-danger-color-hover);
+  border-color: var(--main-danger-color);
+}
+.calendar.selectDay.holiday,.fixed.calendar.holiday {
+  background-color: var(--main-danger-color);
+  border-color: var(--main-danger-color);
+}
+.calendar.selectDay.holiday:hover {
+  background-color: var(--main-danger-color-hover);
+  border-color: var(--main-danger-color);
+}
+.calendar.selectDay.today {
+  background-color:var(--main-light-color) !important;
+  color: var(--main-dark-color);
+}
+.calendar.today:hover {
+  border-color: var(--main-dark-color)!important;
+}
+.calendar.today.holiday {
+  background-color: var(--main-light-color);
+  color: var(--main-dark-color);
+  border-color: var(--main-danger-color);
+}
+.calendar.off {
+  background-color: var(--watermelon);
+  border-color: var(--watermelon);
+  color: var(--main-light-color);
+}
+.calendar.off:hover {
+  background-color: var(--watermelon);
+  border-color: var(--main-dark-color);
+  color: var(--main-light-color);
+}
+.calendar.off.holiday {
+  background-color: var(--dark-pink);
+  border-color: var(--dark-pink);
+  color: var(--main-light-color);
+}
+.calendar.off.holiday:hover {
+  background-color: var(--dark-pink);
+  border-color: var(--main-dark-color);
+  color: var(--main-light-color);
+}
+.footer { background-color: var(--pale-yellow) }
+.list-group-item {
+  background-color: var(--main-light-color);
+  border-color: var(--main-warning-color);
+}
+.list-group-item.active {
+  background-color: var(--main-warning-color);
+  border-color: var(--main-warning-color);
+}
+.list-group-item.active:hover {
+  background-color: var(--main-warning-color-hover);
+  border-color: var(--main-warning-color);
+}
+.list-group-item.active .badge {
+  background-color: var(--main-light-color);
+  color: var(--main-dark-color);
+}
+.modal-title, .modal-body, .panel-body, .popover { color:#333 }
+.menu a { color: var(--main-dark-color) }
+.menu-admin a { color: var(--main-danger-color) }
+.modal-day {
+  background-color: var(--main-bg-color);
+  color: var(--main-dark-color);
+}
+.note {
+  background-color:#0c7f7f;
+  box-shadow:inset 0 0 2px 1px #0ff, 0 0 20px 5px #0ff;
+}
