@@ -1,18 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace app\base;
 
 use yii\base\Action;
 use yii\helpers\Url;
 use yii\web\Controller;
 
+/**
+ * Class BaseController
+ * @package app\base
+ */
 class BaseController extends Controller
 {
+
     /**
      * Returns controller's ids to remember
      * @return array
      */
-    public function remember(): array {
+    public function remember(): array
+    {
         return [];
     }
 
@@ -27,11 +35,11 @@ class BaseController extends Controller
             return false;
         }
 
-        if (\in_array($action->id, $this->remember(), true)) {
-            $previous = Url::previous('actualUrl');
-            if ($previous !== Url::to('')) {
+        if (in_array($action->id, $this->remember(), true)) {
+            $previous = Url::previous('rememberedUrl');
+            if ($previous !== Url::to()) {
                 Url::remember($previous);
-                Url::remember('', 'actualUrl');
+                Url::remember('', 'rememberedUrl');
             }
         }
 

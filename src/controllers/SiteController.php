@@ -60,9 +60,13 @@ class SiteController extends BaseController
             'error' => ErrorAction::class,
         ];
     }
+
+    /**
+     * {@inheritdoc}
+     */
     public function remember(): array
     {
-        return array_merge(parent::remember(),[
+        return array_merge(parent::remember(), [
            'index'
         ]);
     }
