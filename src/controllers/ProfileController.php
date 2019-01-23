@@ -11,6 +11,7 @@ use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\Response;
 
 /**
@@ -152,7 +153,7 @@ class ProfileController extends BaseController
             }
         }
 
-        return $this->goBack();
+        return $this->redirect(Url::previous('actualUrl'));
     }
 
     /**
@@ -173,7 +174,7 @@ class ProfileController extends BaseController
             }
         }
 
-        return $this->goBack();
+        return $this->redirect(Url::previous('actualUrl'));
     }
 
     /**
@@ -186,7 +187,7 @@ class ProfileController extends BaseController
 
         if ($user === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
-        } elseif (!in_array($theme, AppAsset::themes(), true)) {
+        } elseif (!\in_array($theme, AppAsset::themes(), true)) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find theme of given name.'));
         } else {
             $user->theme = $theme;
@@ -195,8 +196,7 @@ class ProfileController extends BaseController
                 Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             }
         }
-
-        return $this->goBack();
+        return $this->redirect(Url::previous('actualUrl'));
     }
 
     /**

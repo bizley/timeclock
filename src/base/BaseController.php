@@ -28,8 +28,13 @@ class BaseController extends Controller
         }
 
         if (\in_array($action->id, $this->remember(), true)) {
-            Url::remember();
+            $previous = Url::previous('actualUrl');
+            if ($previous !== Url::to('')) {
+                Url::remember($previous);
+                Url::remember('', 'actualUrl');
+            }
         }
+
         return true;
     }
 }
