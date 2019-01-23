@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\base\BaseController;
 use app\assets\AppAsset;
 use app\models\ProfileForm;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
+use yii\helpers\Url;
 use yii\web\Response;
 
 /**
  * Class ProfileController
  * @package app\controllers
  */
-class ProfileController extends Controller
+class ProfileController extends BaseController
 {
     /**
      * @return array
@@ -44,6 +45,18 @@ class ProfileController extends Controller
                 ],
             ],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remember(): array
+    {
+        return array_merge(parent::remember(), [
+            'index',
+            'api',
+            'pin',
+        ]);
     }
 
     /**
@@ -140,7 +153,7 @@ class ProfileController extends Controller
             }
         }
 
-        return $this->goBack();
+        return $this->redirect(Url::previous('rememberedUrl'));
     }
 
     /**
@@ -161,7 +174,7 @@ class ProfileController extends Controller
             }
         }
 
-        return $this->goBack();
+        return $this->redirect(Url::previous('rememberedUrl'));
     }
 
     /**
@@ -183,8 +196,7 @@ class ProfileController extends Controller
                 Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             }
         }
-
-        return $this->goBack();
+        return $this->redirect(Url::previous('rememberedUrl'));
     }
 
     /**

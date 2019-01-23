@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\base\BaseController;
 use app\models\Clock;
 use app\models\ClockForm;
 use app\models\Holiday;
@@ -12,15 +13,13 @@ use app\models\OffForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\Response;
 
 /**
  * Class ClockController
  * @package app\controllers
  */
-class ClockController extends Controller
+class ClockController extends BaseController
 {
     /**
      * @return array
@@ -47,6 +46,21 @@ class ClockController extends Controller
                 ],
             ],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remember(): array
+    {
+        return array_merge(parent::remember(), [
+            'history',
+            'calendar',
+            'edit',
+            'add',
+            'off-add',
+            'off-edit',
+        ]);
     }
 
     /**
@@ -124,8 +138,6 @@ class ClockController extends Controller
     {
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
-        Url::remember();
-
         return $this->render('history', [
             'months' => Clock::months(),
             'year' => $year,
@@ -163,8 +175,6 @@ class ClockController extends Controller
 
         $firstDayInMonth = date('N', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
         $daysInMonth = (int) date('t', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
-
-        Url::remember();
 
         return $this->render('calendar', [
             'months' => Clock::months(),

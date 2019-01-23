@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\base\BaseController;
 use app\models\Clock;
 use app\models\Holiday;
 use app\models\Off;
@@ -12,14 +13,13 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\web\Controller;
 use yii\web\Response;
 
 /**
  * Class AdminController
  * @package app\controllers
  */
-class AdminController extends Controller
+class AdminController extends BaseController
 {
     /**
      * @return array
@@ -46,6 +46,18 @@ class AdminController extends Controller
                 ],
             ],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function remember(): array
+    {
+        return array_merge(parent::remember(), [
+            'index',
+            'history',
+            'calendar',
+        ]);
     }
 
     /**
@@ -199,8 +211,6 @@ class AdminController extends Controller
             }
         }
 
-        Url::remember();
-
         $conditions = [
             'and',
             ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
@@ -261,8 +271,6 @@ class AdminController extends Controller
                 Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
             }
         }
-
-        Url::remember();
 
         $conditions = [
             'and',
