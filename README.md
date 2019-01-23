@@ -1,5 +1,10 @@
 # TimeClock
 
+![Latest Stable Version](https://img.shields.io/packagist/v/bizley/timeclock.svg)
+[![Total Downloads](https://img.shields.io/packagist/dt/bizley/timeclock.svg)](https://packagist.org/packages/bizley/timeclock)
+![License](https://img.shields.io/packagist/l/bizley/timeclock.svg)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
+
 Simple work time clocking service built on [Yii 2 framework](https://www.yiiframework.com).
 
 ![screen](https://bizley.github.io/timeclock/timeclock.png)
@@ -44,7 +49,7 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 - account registration
 - password reset
 - profile update
-- light and dark theme
+- themes
 - signing in with login or PIN
 - session time with note
 - off-time with note
