@@ -12,6 +12,7 @@ html, body { height:100% }
     height:100%;
     z-index:1;
 }
+#themeSwitcher { margin-top:-.5rem }
 .email input {
     width:60%;
     border-top-right-radius:unset;

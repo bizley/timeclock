@@ -34,13 +34,21 @@ class AppAsset extends AssetBundle
     ];
 
     /**
+     * @return array
+     */
+    public static function themes(): array
+    {
+        return ['dark', 'light', 'sunlight'];
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function init()
+    public function init(): void
     {
         $cssTheme = 'light';
 
-        if (!Yii::$app->user->isGuest && \in_array(Yii::$app->user->identity->theme, ['dark', 'light'], true)) {
+        if (!Yii::$app->user->isGuest && in_array(Yii::$app->user->identity->theme, static::themes(), true)) {
             $cssTheme = Yii::$app->user->identity->theme;
         }
 
