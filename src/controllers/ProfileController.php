@@ -55,7 +55,7 @@ class ProfileController extends BaseController
         return array_merge(parent::remember(), [
             'index',
             'api',
-            'pin'
+            'pin',
         ]);
     }
 

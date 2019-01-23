@@ -56,7 +56,7 @@ class AdminController extends BaseController
         return array_merge(parent::remember(), [
             'index',
             'history',
-            'calendar'
+            'calendar',
         ]);
     }
 

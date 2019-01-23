@@ -59,7 +59,7 @@ class ClockController extends BaseController
             'edit',
             'add',
             'off-add',
-            'off-edit'
+            'off-edit',
         ]);
     }
 

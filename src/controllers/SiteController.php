@@ -67,7 +67,7 @@ class SiteController extends BaseController
     public function remember(): array
     {
         return array_merge(parent::remember(), [
-           'index'
+           'index',
         ]);
     }
 
