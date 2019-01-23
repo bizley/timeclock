@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use app\base\BaseController;
 use app\models\LoginForm;
 use app\models\NewPasswordForm;
 use app\models\PinForm;
@@ -13,7 +14,6 @@ use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\Response;
 
@@ -21,7 +21,7 @@ use yii\web\Response;
  * Class SiteController
  * @package app\controllers
  */
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     /**
      * @return array
