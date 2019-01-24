@@ -42,7 +42,7 @@ HTML
 
         $out = Alert::widget();
 
-        $this->assertEquals(<<<HTML
+        $this->assertEqualsWithoutLineEndings(<<<HTML
 <div class="alert alert-danger alert-dismissible fade in" role="alert">test-one<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
 <div class="alert alert-success alert-dismissible fade in" role="alert">test-two<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
 <div class="alert alert-info alert-dismissible fade in" role="alert">test-three<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>

@@ -68,4 +68,18 @@ abstract class AppTestCase extends \PHPUnit\Framework\TestCase
     {
         \Yii::$app = null;
     }
+
+    /**
+     * Asserting two strings equality ignoring line endings.
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    protected function assertEqualsWithoutLineEndings(string $expected, string $actual, string $message = ''): void
+    {
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual = str_replace("\r\n", "\n", $actual);
+
+        $this->assertEquals($expected, $actual, $message);
+    }
 }
