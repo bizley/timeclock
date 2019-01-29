@@ -4,6 +4,7 @@
 /* @var $loginModel app\models\LoginForm */
 /* @var $pinModel app\models\PinForm */
 
+use app\widgets\fontawesome\FA;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 
@@ -14,8 +15,16 @@ $this->title = Yii::t('app', 'Login');
         <div class="card shadow">
             <div class="card-body">
                 <div class="float-right mb-5">
-                    <?= Html::a(Yii::t('app', 'New Account'), ['site/register'], ['class' => 'btn btn-outline-success btn-sm']) ?>
-                    <?= Html::a(Yii::t('app', 'Reset Password'), ['site/reset'], ['class' => 'btn btn-outline-secondary btn-sm']) ?>
+                    <?= Html::a(
+                        FA::icon('user') . ' ' . Yii::t('app', 'New Account'),
+                        ['site/register'],
+                        ['class' => 'btn btn-outline-success btn-sm']
+                    ) ?>
+                    <?= Html::a(
+                        FA::icon('key') . ' ' . Yii::t('app', 'Reset Password'),
+                        ['site/reset'],
+                        ['class' => 'btn btn-outline-secondary btn-sm']
+                    ) ?>
                 </div>
                 <h3 class="card-title mb-5"><?= Yii::t('app', 'Login') ?></h3>
                 <?php $form = ActiveForm::begin([
@@ -38,10 +47,13 @@ $this->title = Yii::t('app', 'Login');
                     ])->checkbox() ?>
 
                     <div class="form-group text-center">
-                        <?= Html::submitButton(Yii::t('app', 'Log In'), [
-                            'class' => 'btn btn-primary btn-lg',
-                            'name' => 'login-button',
-                        ]) ?>
+                        <?= Html::submitButton(
+                            FA::icon('sign-in-alt') . ' ' . Yii::t('app', 'Log In'),
+                            [
+                                'class' => 'btn btn-primary btn-lg',
+                                'name' => 'login-button',
+                            ]
+                        ) ?>
                     </div>
 
                 <?php ActiveForm::end(); ?>
@@ -58,10 +70,13 @@ $this->title = Yii::t('app', 'Login');
                     <?= $form->field($pinModel, 'rememberMe')->checkbox() ?>
 
                     <div class="form-group text-center">
-                        <?= Html::submitButton(Yii::t('app', 'Log In'), [
-                            'class' => 'btn btn-primary btn-lg',
-                            'name' => 'login-button',
-                        ]) ?>
+                        <?= Html::submitButton(
+                            FA::icon('sign-in-alt') . ' ' . Yii::t('app', 'Log In'),
+                            [
+                                'class' => 'btn btn-primary btn-lg',
+                                'name' => 'login-button',
+                            ]
+                        ) ?>
                     </div>
 
                 <?php ActiveForm::end(); ?>

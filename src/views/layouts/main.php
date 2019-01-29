@@ -7,6 +7,7 @@ use app\assets\AppAsset;
 use app\models\User;
 use app\widgets\alert\Alert;
 use app\widgets\confirm\Confirm;
+use app\widgets\fontawesome\FA;
 use app\widgets\modal\Clock;
 use app\widgets\modal\Day;
 use app\widgets\theme\Theme;
@@ -21,7 +22,7 @@ $this->beginPage(); ?>
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?= Html::csrfMetaTags() ?>
     <title><?= Yii::$app->params['company'] . ' | ' . Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -29,7 +30,7 @@ $this->beginPage(); ?>
 <body>
 <?php $this->beginBody() ?>
 
-<div id="bg"><i class="glyphicon glyphicon-time"></i></div>
+<div id="bg"><?= FA::icon('clock', ['style' => 'far']) ?></div>
 
 <div id="main">
     <div class="wrap">

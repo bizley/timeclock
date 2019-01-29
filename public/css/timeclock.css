@@ -2,9 +2,9 @@ html, body { height:100% }
 #bg {
     position:fixed;
     z-index:0;
-    font-size:50em;
-    top:-130px;
-    right:-70px;
+    font-size:50rem;
+    top:-15rem;
+    right:-8rem;
 }
 #main {
     position:absolute;
