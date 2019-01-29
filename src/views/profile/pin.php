@@ -7,7 +7,7 @@ $this->title = Yii::t('app', 'PIN');
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'Your PIN is {pin}', [
-            'pin' => \yii\bootstrap\Html::tag('kbd', $pin),
+            'pin' => \yii\bootstrap4\Html::tag('kbd', $pin),
         ]) ?></h1>
 </div>
 <div class="form-group">

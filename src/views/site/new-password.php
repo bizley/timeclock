@@ -1,7 +1,7 @@
 <?php
 
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Html;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Html;
 
 /* @var $this yii\web\View */
 /* @var $model \app\models\NewPasswordForm */

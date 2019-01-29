@@ -1,7 +1,7 @@
 <?php
 
 use app\widgets\note\Note;
-use yii\bootstrap\Html;
+use yii\bootstrap4\Html;
 
 /**
  * @var $this yii\web\View

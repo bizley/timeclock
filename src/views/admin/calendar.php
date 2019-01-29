@@ -1,7 +1,7 @@
 <?php
 
 use app\widgets\modal\Day;
-use yii\bootstrap\Html;
+use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 /**

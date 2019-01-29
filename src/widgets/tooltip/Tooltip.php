@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\widgets\tooltip;
 
-use yii\bootstrap\BootstrapPluginAsset;
-use yii\bootstrap\Widget;
+use yii\bootstrap4\BootstrapPluginAsset;
+use yii\bootstrap4\Widget;
 
 /**
  * Class Tooltip

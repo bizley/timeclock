@@ -2,7 +2,7 @@
 
 use app\models\User;
 use app\widgets\confirm\Confirm;
-use yii\bootstrap\Html;
+use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */

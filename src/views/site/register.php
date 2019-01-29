@@ -1,11 +1,11 @@
 <?php
 
 /* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
+/* @var $form yii\bootstrap4\ActiveForm */
 /* @var $model app\models\RegisterForm */
 
-use yii\bootstrap\Html;
-use yii\bootstrap\ActiveForm;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\ActiveForm;
 
 $this->title = Yii::t('app', 'New Account');
 

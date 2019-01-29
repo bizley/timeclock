@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use app\widgets\modal\Clock;
-use yii\bootstrap\Html;
+use yii\bootstrap4\Html;
 
 ?>
 <div id="<?= Clock::CLOCK_MODAL ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="<?= Clock::CLOCK_MODAL ?>Label">

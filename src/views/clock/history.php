@@ -2,7 +2,7 @@
 
 use app\widgets\confirm\Confirm;
 use app\widgets\note\Note;
-use yii\bootstrap\Html;
+use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 /**

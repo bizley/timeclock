@@ -6,8 +6,8 @@ namespace app\widgets\theme;
 
 use app\assets\AppAsset;
 use Yii;
-use yii\bootstrap\Html;
-use yii\bootstrap\Widget;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Widget;
 use yii\helpers\Url;
 
 /**

@@ -1,8 +1,8 @@
 <?php
 
 use app\widgets\confirm\Confirm;
-use yii\bootstrap\ActiveForm;
-use yii\bootstrap\Html;
+use yii\bootstrap4\ActiveForm;
+use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
