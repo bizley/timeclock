@@ -1,6 +1,7 @@
 <?php
 
 use app\widgets\confirm\Confirm;
+use app\widgets\fontawesome\FA;
 use app\widgets\modal\Clock;
 use app\widgets\note\Note;
 use yii\helpers\Url;
@@ -20,8 +21,10 @@ $this->title = 'Timeclock';
                 <?= Yii::t('app', 'Session started at {time}', ['time' => Yii::$app->formatter->asTime($user->sessionStartedAt())]) ?>
             </div>
             <div class="form-group">
-                <a href="<?= Url::to(['clock/stop']) ?>" class="btn btn-danger btn-lg btn-block clock" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to end this session?')) ?>>
-                    <i class="glyphicon glyphicon-stop"></i>
+                <a href="<?= Url::to(['clock/stop']) ?>"
+                   class="btn btn-danger btn-lg btn-block clock"
+                    <?= Confirm::ask(Yii::t('app', 'Are you sure you want to end this session?')) ?>>
+                    <?= FA::icon('stop') ?>
                     <?= Yii::t('app', 'End Session') ?>
                 </a>
             </div>
@@ -72,7 +75,7 @@ $this->title = 'Timeclock';
                     'clock/history',
                     'm' => Yii::$app->formatter->asDate($oldestOpened->clock_in, 'M'),
                     'y' => Yii::$app->formatter->asDate($oldestOpened->clock_in, 'y'),
-                ]) ?>" class="btn btn-danger"><i class="glyphicon glyphicon-warning-sign"></i> <?= Yii::t('app', 'Old sessions have not been ended') ?></a>
+                ]) ?>" class="btn btn-danger"><?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'Old sessions have not been ended') ?></a>
             </div>
         <?php endif; ?>
     </div>
