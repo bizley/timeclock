@@ -51,7 +51,7 @@ JS
         return Html::a(
             $initials,
             ['/admin/day', 'day' => $day, 'month' => $month, 'year' => $year, 'employee' => $userId],
-            ['class' => 'btn btn-primary btn-xs day']
+            ['class' => 'btn btn-primary btn-sm day']
         );
     }
 
@@ -71,7 +71,7 @@ JS
                         ['class' => 'modal-content modal-day']
                     ),
                     [
-                        'class' => 'modal-dialog modal-lg',
+                        'class' => 'modal-dialog modal-lg modal-dialog-centered',
                         'role' => 'document',
                     ]
                 ),

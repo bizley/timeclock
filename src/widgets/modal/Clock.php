@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\widgets\modal;
 
+use app\widgets\fontawesome\FA;
 use Yii;
 use yii\bootstrap4\BootstrapPluginAsset;
 use yii\bootstrap4\Html;
@@ -32,7 +33,7 @@ class Clock extends Widget
 
         return Html::tag(
             'span',
-            Html::tag('i', '', ['class' => 'glyphicon glyphicon-play']) . Yii::t('app', 'Start Session'),
+            FA::icon('play')  . Yii::t('app', 'Start Session'),
             [
                 'class' => 'btn btn-success btn-lg btn-block clock',
                 'data-toggle' => 'modal',
