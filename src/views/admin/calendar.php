@@ -1,5 +1,6 @@
 <?php
 
+use app\widgets\fontawesome\FA;
 use app\widgets\modal\Day;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
@@ -38,7 +39,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <?= Html::beginForm(['clock/calendar'], 'get'); ?>
             <?= Html::hiddenInput('id', $employee !== null ? $employee->id : null) ?>
             <div class="form-group">
-                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control']) ?>
+                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -48,26 +49,21 @@ $this->title = Yii::t('app', 'Overall Calendar');
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <?= Html::submitButton('<i class="glyphicon glyphicon-play"></i>', ['class' => 'btn btn-warning btn-block']) ?>
+                        <?= Html::submitButton(FA::icon('play'), ['class' => 'btn btn-warning btn-block']) ?>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="form-group btn-group btn-block months" role="group">
                         <?= Html::a(
-                                "<i class=\"glyphicon glyphicon-step-backward\"></i> $previous",
-                                ['calendar', 'month' => $previousMonth, 'year' => $previousYear, 'id' => $employee !== null ? $employee->id : null],
-                                ['class' => 'btn btn-primary btn-block']
-                        ) ?>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <?= Html::a(
-                                "$next <i class=\"glyphicon glyphicon-step-forward\"></i>",
-                                ['calendar', 'month' => $nextMonth, 'year' => $nextYear, 'id' => $employee !== null ? $employee->id : null],
-                                ['class' => 'btn btn-primary btn-block']
+                            FA::icon('step-backward') . $previous,
+                            ['history', 'month' => $previousMonth, 'year' => $previousYear, 'id' => $employee !== null ? $employee->id : null],
+                            ['class' => 'btn btn-primary']
+                        ) ?><?= Html::a(
+                            FA::icon('step-forward') . $next,
+                            ['history', 'month' => $nextMonth, 'year' => $nextYear, 'id' => $employee !== null ? $employee->id : null],
+                            ['class' => 'btn btn-primary']
                         ) ?>
                     </div>
                 </div>
@@ -75,9 +71,9 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <?= Html::endForm(); ?>
         <div class="form-group">
             <?= Html::a(
-                    '<i class="glyphicon glyphicon-list"></i> ' . Yii::t('app', 'Switch To History'),
-                    ['history', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null],
-                    ['class' => 'btn btn-info btn-block']
+                FA::icon('list-all') . ' ' . Yii::t('app', 'Switch To Sessions'),
+                ['history', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null],
+                ['class' => 'btn btn-info btn-block']
             ) ?>
         </div>
         <div class="form-group">

@@ -80,8 +80,8 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     border-radius:5px;
     float:left;
     width:13%;
-    margin:3px;
-    padding:3px;
+    margin:.25rem;
+    padding:.5rem 1rem;
     text-align:right;
 }
 .calendar.day {

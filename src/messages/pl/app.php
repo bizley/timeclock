@@ -184,6 +184,7 @@ return [
     'Switch theme' => 'Zmień skórkę',
     'Switch To Calendar' => 'Przełącz na kalendarz',
     'Switch To History' => 'Przełącz na historię',
+    'Switch To Sessions' => 'Przełącz na sesje',
     'The current page (1-based)' => 'Aktualna strona (indeksowana od 1)',
     'The number of pages' => 'Liczba stron',
     'The number of resources in each page' => 'Liczba zasobów na każdej stronie',
