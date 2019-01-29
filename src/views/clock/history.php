@@ -51,22 +51,17 @@ $this->title = Yii::t('app', 'History');
                     </div>
                 </div>
             </div>
-            <div class="row no-gutters">
-                <div class="col-sm-6">
-                    <div class="form-group">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group btn-group btn-block months" role="group">
                         <?= Html::a(
-                            FA::icon('step-backward') . ' ' . $previous,
-                                ['history', 'month' => $previousMonth, 'year' => $previousYear],
-                                ['class' => 'btn btn-primary btn-block']
-                        ) ?>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <?= Html::a(
-                            FA::icon('step-forward') . ' ' . $next,
-                                ['history', 'month' => $nextMonth, 'year' => $nextYear],
-                                ['class' => 'btn btn-primary btn-block']
+                            FA::icon('step-backward') . $previous,
+                            ['history', 'month' => $previousMonth, 'year' => $previousYear],
+                            ['class' => 'btn btn-primary']
+                        ) ?><?= Html::a(
+                            FA::icon('step-forward') . $next,
+                            ['history', 'month' => $nextMonth, 'year' => $nextYear],
+                            ['class' => 'btn btn-primary']
                         ) ?>
                     </div>
                 </div>
@@ -74,72 +69,73 @@ $this->title = Yii::t('app', 'History');
         <?= Html::endForm(); ?>
         <div class="form-group">
             <?= Html::a(
-                    '<i class="glyphicon glyphicon-calendar"></i> ' . Yii::t('app', 'Switch To Calendar'),
-                    ['calendar', 'month' => $month, 'year' => $year],
-                    ['class' => 'btn btn-info btn-block']
+            FA::icon('calendar-alt') . ' ' . Yii::t('app', 'Switch To Calendar'),
+                ['calendar', 'month' => $month, 'year' => $year],
+                ['class' => 'btn btn-info btn-block']
             ) ?>
         </div>
     </div>
     <div class="col-sm-9">
         <div class="form-group">
-            <div class="pull-right">
-                <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-xs">
-                    <i class="glyphicon glyphicon-plus"></i> <?= Yii::t('app', 'Add Session') ?>
-                </a>
-            </div>
+            <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-sm float-right">
+                <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
+            </a>
             <?= $months[$month] ?> <?= $year ?>
         </div>
-        <ul class="list-group">
+        <ul class="list-group mb-3">
             <?php $total = 0; foreach ($clock as $session): ?>
                 <li class="list-group-item">
                     <?= Note::widget(['model' => $session]) ?>
-                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>" class="btn btn-danger btn-xs" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
-                        <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
+                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>"
+                       class="btn btn-outline-danger btn-sm"
+                        <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
+                        <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
                     </a>
                     <?= Yii::$app->formatter->asDatetime($session->clock_in) ?>
-                    <i class="glyphicon glyphicon-arrow-right"></i>
+                    <?= FA::icon('long-arrow-alt-right') ?>
                     <?php if ($session->clock_out !== null): ?>
+                        <span class="badge badge-light float-right"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                         <?= Yii::$app->formatter->asTime($session->clock_out) ?>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-warning btn-xs">
-                            <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm">
+                            <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
                         </a>
-                        <span class="badge"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                     <?php $total += $session->clock_out - $session->clock_in; else: ?>
                         <?= Yii::t('app', 'not ended') ?>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-success btn-xs">
-                            <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm">
+                            <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
                         </a>
                     <?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>
-        <ul class="list-group">
+        <ul class="list-group mb-3">
             <li class="list-group-item">
+                <span class="badge badge-light float-right">
+                    <?= round($total / 3600, 2) ?> (<?= Yii::$app->formatter->asDuration($total) ?>)
+                </span>
                 <?= Yii::t('app', 'Total Hours') ?>
-                <span class="badge"><?= Yii::$app->formatter->asDuration($total) ?></span>
-                <span class="badge"><?= round($total / 3600, 2) ?></span>
             </li>
         </ul>
         <div class="form-group">
-            <div class="pull-right">
-                <a href="<?= Url::to(['clock/off-add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-warning btn-xs">
-                    <i class="glyphicon glyphicon-plus-sign"></i> <?= Yii::t('app', 'Add Off-Time') ?>
-                </a>
-            </div>
+            <a href="<?= Url::to(['clock/off-add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-warning btn-sm float-right">
+                <?= FA::icon('plus-circle') ?> <?= Yii::t('app', 'Add Off-Time') ?>
+            </a>
             <?= Yii::t('app', 'Off-Time') ?>
         </div>
         <ul class="list-group">
             <?php foreach ($off as $day): ?>
                 <li class="list-group-item">
                     <?= Note::widget(['model' => $day]) ?>
-                    <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>" class="btn btn-danger btn-xs" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
-                        <i class="glyphicon glyphicon-remove"></i> <?= Yii::t('app', 'delete') ?>
+                    <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
+                       class="btn btn-outline-danger btn-sm"
+                        <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                        <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
                     </a>
-                    <?= Yii::$app->formatter->asDatetime($day->start_at, 'dd.MM.y') ?>
-                    <i class="glyphicon glyphicon-arrow-right"></i>
-                    <?= Yii::$app->formatter->asDatetime($day->end_at, 'dd.MM.y') ?>
-                    <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-warning btn-xs">
-                        <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                    <?= Yii::$app->formatter->asDate($day->start_at) ?>
+                    <?= FA::icon('long-arrow-alt-right') ?>
+                    <?= Yii::$app->formatter->asDate($day->end_at) ?>
+                    <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-outline-warning btn-sm">
+                        <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
                     </a>
                 </li>
             <?php endforeach; ?>
