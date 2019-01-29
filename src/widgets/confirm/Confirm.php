@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\widgets\confirm;
 
+use app\widgets\fontawesome\FA;
 use Yii;
 use yii\bootstrap4\BootstrapPluginAsset;
 use yii\bootstrap4\Html;
@@ -85,38 +86,36 @@ JS
                         'div',
                         Html::tag(
                             'div',
-                            Html::button(
-                                Html::tag('span', '&times;', ['aria-hidden' => 'true']),
-                                [
-                                    'class' => 'close',
-                                    'data-dismiss' => 'modal',
-                                    'aria-label' => Yii::t('app', 'Close')
-                                ]
-                            )
-                            . Html::tag(
+                            Html::tag(
                                 'h4',
                                 Yii::t('app', 'Confirmation required'),
                                 [
                                     'class' => 'modal-title',
                                     'id' => 'confirmationModalLabel',
-                                ]),
+                                ])
+                                . Html::button(
+                                    Html::tag('span', '&times;', ['aria-hidden' => 'true']),
+                                    [
+                                        'class' => 'close',
+                                        'data-dismiss' => 'modal',
+                                        'aria-label' => Yii::t('app', 'Close')
+                                    ]
+                                ),
                             ['class' => 'modal-header']
                         )
                         . Html::tag('div', '', ['class' => 'modal-body'])
                         . Html::tag(
                             'div',
                             Html::button(
-                                Html::tag('i', '', ['class' => 'glyphicon glyphicon-ban-circle text-muted'])
-                                . ' ' . Yii::t('app', 'Cancel'),
+                                FA::icon('times') . ' ' . Yii::t('app', 'Cancel'),
                                 [
                                     'id' => 'confirmationCancel',
-                                    'class' => 'btn btn-outline pull-left',
+                                    'class' => 'btn btn-outline-secondary',
                                     'data-dismiss' => 'modal',
                                 ]
                             )
                             . Html::button(
-                                Html::tag('i', '', ['class' => 'glyphicon glyphicon-ok-circle'])
-                                . ' ' . Yii::t('app', 'Confirm'),
+                                FA::icon('check-circle') . ' ' . Yii::t('app', 'Confirm'),
                                 [
                                     'id' => 'confirmationOk',
                                     'class' => 'btn btn-success',
@@ -129,7 +128,7 @@ JS
                         ['class' => 'modal-content']
                     ),
                     [
-                        'class' => 'modal-dialog',
+                        'class' => 'modal-dialog modal-dialog-centered',
                         'role' => 'document',
                     ]
                 ),
