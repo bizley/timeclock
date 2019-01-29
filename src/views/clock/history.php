@@ -122,23 +122,27 @@ $this->title = Yii::t('app', 'History');
             </a>
             <?= Yii::t('app', 'Off-Time') ?>
         </div>
-        <ul class="list-group">
-            <?php foreach ($off as $day): ?>
-                <li class="list-group-item">
-                    <?= Note::widget(['model' => $day]) ?>
-                    <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
-                       class="btn btn-outline-danger btn-sm"
-                        <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
-                        <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
-                    </a>
-                    <?= Yii::$app->formatter->asDate($day->start_at) ?>
-                    <?= FA::icon('long-arrow-alt-right') ?>
-                    <?= Yii::$app->formatter->asDate($day->end_at) ?>
-                    <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-outline-warning btn-sm">
-                        <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
-                    </a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <?php if ($off): ?>
+            <ul class="list-group">
+                <?php foreach ($off as $day): ?>
+                    <li class="list-group-item">
+                        <?= Note::widget(['model' => $day]) ?>
+                        <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
+                           class="btn btn-outline-danger btn-sm"
+                            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                            <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
+                        </a>
+                        <?= Yii::$app->formatter->asDate($day->start_at) ?>
+                        <?= FA::icon('long-arrow-alt-right') ?>
+                        <?= Yii::$app->formatter->asDate($day->end_at) ?>
+                        <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-outline-warning btn-sm">
+                            <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <div class="form-group"><?= Yii::t('app', 'NONE') ?></div>
+        <?php endif; ?>
     </div>
 </div>

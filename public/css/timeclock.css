@@ -111,6 +111,7 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     background-color:#fff;
     box-shadow:0 0 20px 10px #fff;
 }
+.months .btn { width:50% }
 .months .btn i { display:block }
 @media (max-width:550px) {
     .calendar {
