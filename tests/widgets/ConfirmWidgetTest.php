@@ -17,6 +17,7 @@ class ConfirmWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testWithoutModal(): void
     {
@@ -25,6 +26,7 @@ class ConfirmWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testJustQuestion(): void
     {
@@ -37,6 +39,7 @@ class ConfirmWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testNoPost(): void
     {
@@ -49,6 +52,7 @@ class ConfirmWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testDefault(): void
     {
@@ -61,6 +65,7 @@ class ConfirmWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testMultiple(): void
     {

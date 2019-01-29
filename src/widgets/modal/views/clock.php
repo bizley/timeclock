@@ -9,7 +9,7 @@ use yii\bootstrap\Html;
 <div id="<?= Clock::CLOCK_MODAL ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="<?= Clock::CLOCK_MODAL ?>Label">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <?= Html::beginForm(['clock/start']) ?>
+            <?= Html::beginForm(['/clock/start']) ?>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="<?= Yii::t('app', 'Close') ?>">
                         <span aria-hidden="true">&times;</span>

@@ -2,7 +2,7 @@ CREATE TABLE "user" (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email VARCHAR NOT NULL,
   name VARCHAR NOT NULL,
-  phone VARCHAR,
+  phone VARCHAR DEFAULT NULL,
   auth_key VARCHAR NOT NULL,
   password_hash VARCHAR NOT NULL,
   password_reset_token VARCHAR DEFAULT NULL,
@@ -12,6 +12,7 @@ CREATE TABLE "user" (
   updated_at INTEGER DEFAULT NULL,
   theme VARCHAR NOT NULL DEFAULT 'light',
   api_key VARCHAR DEFAULT NULL,
+  pin_hash VARCHAR DEFAULT NULL,
   CONSTRAINT "email" UNIQUE (email),
   CONSTRAINT "password_reset_token" UNIQUE (password_reset_token)
 );

@@ -16,6 +16,7 @@ class AlertWidgetTest extends AppTestCase
 {
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testOneAlert(): void
     {
@@ -24,14 +25,12 @@ class AlertWidgetTest extends AppTestCase
 
         $out = Alert::widget();
 
-        $this->assertEquals(<<<HTML
-<div class="alert alert-danger alert-dismissible fade in" role="alert">test-one<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
-HTML
-        , $out);
+        $this->assertEquals('<div class="alert alert-danger alert-dismissible fade in" role="alert">test-one<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>', $out);
     }
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testMultipleAlerts(): void
     {
@@ -52,6 +51,7 @@ HTML
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testNoAlert(): void
     {

@@ -50,7 +50,7 @@ JS
 
         return Html::a(
             $initials,
-            ['admin/day', 'day' => $day, 'month' => $month, 'year' => $year, 'employee' => $userId],
+            ['/admin/day', 'day' => $day, 'month' => $month, 'year' => $year, 'employee' => $userId],
             ['class' => 'btn btn-primary btn-xs day']
         );
     }
