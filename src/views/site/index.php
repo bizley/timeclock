@@ -48,19 +48,19 @@ $this->title = 'Timeclock';
                         <li class="list-group-item">
                             <?= Note::widget(['model' => $session]) ?>
                             <?= Yii::$app->formatter->asTime($session->clock_in) ?>
-                            <i class="glyphicon glyphicon-arrow-right"></i>
+                            <?= FA::icon('long-arrow-alt-right') ?>
                             <?php if ($session->clock_out !== null): ?>
+                                <span class="badge badge-light float-right"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                                 <?= Yii::$app->formatter->asTime($session->clock_out) ?>
-                                <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-warning btn-xs">
-                                    <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                                <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm">
+                                    <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
                                 </a>
-                                <span class="badge"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                             <?php else: ?>
+                                <span class="badge badge-light float-right"><?= Yii::$app->formatter->asDuration($now - $session->clock_in) ?></span>
                                 <?= Yii::t('app', 'on-going') ?>
-                                <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-success btn-xs">
-                                    <i class="glyphicon glyphicon-time"></i> <?= Yii::t('app', 'edit') ?>
+                                <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm">
+                                    <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
                                 </a>
-                                <span class="badge"><?= Yii::$app->formatter->asDuration($now - $session->clock_in) ?></span>
                             <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
