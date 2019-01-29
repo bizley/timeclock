@@ -1,6 +1,7 @@
 <?php
 
 use app\widgets\confirm\Confirm;
+use app\widgets\fontawesome\FA;
 use app\widgets\note\Note;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
@@ -36,7 +37,7 @@ $this->title = Yii::t('app', 'History');
         </div>
         <?= Html::beginForm(['clock/history'], 'get'); ?>
             <div class="form-group">
-                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control']) ?>
+                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -46,15 +47,15 @@ $this->title = Yii::t('app', 'History');
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <?= Html::submitButton('<i class="glyphicon glyphicon-play"></i>', ['class' => 'btn btn-warning btn-block']) ?>
+                        <?= Html::submitButton(FA::icon('play'), ['class' => 'btn btn-warning btn-block']) ?>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row no-gutters">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <?= Html::a(
-                                "<i class=\"glyphicon glyphicon-step-backward\"></i> $previous",
+                            FA::icon('step-backward') . ' ' . $previous,
                                 ['history', 'month' => $previousMonth, 'year' => $previousYear],
                                 ['class' => 'btn btn-primary btn-block']
                         ) ?>
@@ -63,7 +64,7 @@ $this->title = Yii::t('app', 'History');
                 <div class="col-sm-6">
                     <div class="form-group">
                         <?= Html::a(
-                                "$next <i class=\"glyphicon glyphicon-step-forward\"></i>",
+                            FA::icon('step-forward') . ' ' . $next,
                                 ['history', 'month' => $nextMonth, 'year' => $nextYear],
                                 ['class' => 'btn btn-primary btn-block']
                         ) ?>
