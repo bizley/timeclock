@@ -22,25 +22,20 @@ $this->title = Yii::t('app', 'Password Reset');
                 </div>
                 <h3 class="card-title mb-5"><?= Yii::t('app', 'Password Reset') ?></h3>
 
-                    <?php $form = ActiveForm::begin([
-                        'layout' => 'horizontal',
-                        'fieldConfig' => [
+                <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+                    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
-                        ],
-                    ]); ?>
-                        <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+                    <div class="form-group text-center">
+                        <?= Html::submitButton(
+                            FA::icon('redo-alt') . ' ' . Yii::t('app', 'Reset'),
+                            [
+                                'class' => 'btn btn-primary btn-lg',
+                                'name' => 'reset-button',
+                            ]
+                        ) ?>
+                    </div>
 
-                        <div class="form-group text-center">
-                            <?= Html::submitButton(
-                                FA::icon('redo-alt') . ' ' . Yii::t('app', 'Reset'),
-                                [
-                                    'class' => 'btn btn-primary btn-lg',
-                                    'name' => 'reset-button',
-                                ]
-                            ) ?>
-                        </div>
-
-                    <?php ActiveForm::end(); ?>
+                <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>

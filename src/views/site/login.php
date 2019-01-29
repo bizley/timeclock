@@ -27,6 +27,7 @@ $this->title = Yii::t('app', 'Login');
                     ) ?>
                 </div>
                 <h3 class="card-title mb-5"><?= Yii::t('app', 'Login') ?></h3>
+
                 <?php $form = ActiveForm::begin([
                     'layout' => 'horizontal',
                     'fieldConfig' => [
@@ -64,6 +65,7 @@ $this->title = Yii::t('app', 'Login');
         <div class="card shadow">
             <div class="card-body text-center">
                 <h3 class="card-title mb-5"><?= Yii::t('app', 'or PIN') ?></h3>
+
                 <?php $form = ActiveForm::begin(); ?>
 
                     <?= $form->field($pinModel, 'pin')->label(false) ?>
