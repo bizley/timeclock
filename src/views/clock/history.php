@@ -31,7 +31,7 @@ $this->title = Yii::t('app', 'History');
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
@@ -67,7 +67,7 @@ $this->title = Yii::t('app', 'History');
                 </div>
             </div>
         <?= Html::endForm(); ?>
-        <div class="form-group">
+        <div class="form-group mb-5">
             <?= Html::a(
             FA::icon('calendar-alt') . ' ' . Yii::t('app', 'Switch To Calendar'),
                 ['calendar', 'month' => $month, 'year' => $year],
@@ -75,7 +75,7 @@ $this->title = Yii::t('app', 'History');
             ) ?>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="form-group">
             <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-sm float-right">
                 <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
@@ -86,23 +86,27 @@ $this->title = Yii::t('app', 'History');
             <?php $total = 0; foreach ($clock as $session): ?>
                 <li class="list-group-item">
                     <?= Note::widget(['model' => $session]) ?>
+                    <?php if ($session->clock_out !== null): ?>
+                        <span class="badge badge-light float-sm-right d-block d-sm-inline mb-3 ml-0 ml-sm-3">
+                            <?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?>
+                        </span>
+                    <?php endif; ?>
                     <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>"
                        class="btn btn-outline-danger btn-sm"
                         <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
-                        <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
+                        <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
                     </a>
                     <?= Yii::$app->formatter->asDatetime($session->clock_in) ?>
                     <?= FA::icon('long-arrow-alt-right') ?>
                     <?php if ($session->clock_out !== null): ?>
-                        <span class="badge badge-light float-right"><?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?></span>
                         <?= Yii::$app->formatter->asTime($session->clock_out) ?>
                         <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm">
-                            <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
+                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
                         </a>
                     <?php $total += $session->clock_out - $session->clock_in; else: ?>
                         <?= Yii::t('app', 'not ended') ?>
                         <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm">
-                            <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
+                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
                         </a>
                     <?php endif; ?>
                 </li>
