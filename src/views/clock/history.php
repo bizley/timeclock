@@ -31,7 +31,7 @@ $this->title = Yii::t('app', 'History');
 </div>
 
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col-md-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
@@ -75,7 +75,7 @@ $this->title = Yii::t('app', 'History');
             ) ?>
         </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-md-9">
         <div class="form-group">
             <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-sm float-right">
                 <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
