@@ -63,7 +63,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
                 </div>
             </div>
 
-            <div class="row form-group field-clockform-endhour field-clockform-endminute <?= $model->hasErrors('endHour') || $model->hasErrors('endMinute') ? 'has-error' : '' ?>">
+            <div class="row form-group field-clockform-endhour field-clockform-endminute <?= $model->hasErrors('endHour') || $model->hasErrors('endMinute') ? 'validating' : '' ?>">
                 <?= Html::activeLabel($model, 'endHour', ['class' => 'col-sm-2']) ?>
                 <div class="col-sm-3">
                     <?= Html::activeDropDownList(

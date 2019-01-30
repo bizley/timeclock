@@ -64,6 +64,7 @@ return [
     'Delete Off-Time' => 'Usuń wolne',
     'Delete Session' => 'Usuń sesję',
     'Delete work session of given {ID}.' => 'Usuń sesję pracy o podanym {ID}.',
+    'Delete' => 'Usuń',
     'delete' => 'usuń',
     'edit' => 'zmień',
     'Editing Off-Time' => 'Zmiana wolnego',
