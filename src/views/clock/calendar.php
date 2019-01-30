@@ -144,8 +144,9 @@ JS
                     <?= $dayOfWeek > 5 ? 'weekend' : '' ?>
                     <?= in_array($day, $holidays, true) ? 'holiday' : '' ?>
                     <?= in_array($day, $offDays, true) ? 'off' : '' ?>
-                    <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>" style="<?= $day === 1 && $firstDayInMonth !== 1
-                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 6 + 3) . 'px + ' . (($firstDayInMonth - 1) * 13) . '%'
+                    <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>"
+                     style="<?= $day === 1 && $firstDayInMonth !== 1
+                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>" data-year="<?= $year ?>" data-month="<?= $month ?>" data-day="<?= $day ?>">
                     <?= $day ?>
                     <?php if (!array_key_exists($day, $clockDays)): ?>

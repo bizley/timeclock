@@ -79,7 +79,8 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <div class="form-group">
             <div class="list-group">
                 <?php foreach ($users as $user): ?>
-                    <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year, 'id' => $user->id]) ?>" class="list-group-item <?= $employee !== null && $employee->id === $user->id ? 'active' : '' ?>">
+                    <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year, 'id' => $user->id]) ?>"
+                       class="list-group-item <?= $employee !== null && $employee->id === $user->id ? 'active' : '' ?>">
                         <?= Html::encode($user->name) ?>
                     </a>
                 <?php endforeach; ?>
@@ -89,7 +90,9 @@ $this->title = Yii::t('app', 'Overall Calendar');
     <div class="col-md-9">
         <div class="form-group">
             <?php if ($employee !== null): ?>
-                <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-xs pull-right"><?= Yii::t('app', 'All Employees') ?></a>
+                <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-sm float-right">
+                    <?= Yii::t('app', 'All Employees') ?>
+                </a>
                 <?= Html::encode($employee->name) ?>
             <?php endif; ?>
             <?= $months[$month] ?> <?= $year ?>
@@ -109,8 +112,9 @@ $this->title = Yii::t('app', 'Overall Calendar');
                 <div class="fixed calendar
                     <?= $dayOfWeek > 5 ? 'weekend' : '' ?>
                     <?= in_array($day, $holidays, true) ? 'holiday' : '' ?>
-                    <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>" style="<?= $day === 1 && $firstDayInMonth !== 1
-                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 6 + 3) . 'px + ' . (($firstDayInMonth - 1) * 13) . '%'
+                    <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>"
+                     style="<?= $day === 1 && $firstDayInMonth !== 1
+                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>">
                     <?= $day ?>
                     <?php if (array_key_exists($day, $entries)): ?>
@@ -133,7 +137,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <div class="form-group"><div class="clearfix"></div></div>
         <div class="form-group">
             <p class="text-muted small">
-                <span class="btn btn-primary btn-xs">&nbsp;&nbsp;</span> <?= Yii::t('app', 'Click the initials to see day details.') ?>
+                <span class="btn btn-primary btn-sm">?</span> <?= Yii::t('app', 'Click the initials to see day details.') ?>
             </p>
         </div>
     </div>
