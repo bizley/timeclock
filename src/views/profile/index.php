@@ -1,6 +1,7 @@
 <?php
 
 use app\widgets\confirm\Confirm;
+use app\widgets\fontawesome\FA;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
@@ -13,30 +14,33 @@ $this->title = Yii::t('app', 'Profile');
 $this->registerJs(<<<JS
 $(".password").click(function () {
     let icon = $(this);
-    if (icon.hasClass("glyphicon-eye-open")) {
-        icon.removeClass("glyphicon-eye-open").addClass("glyphicon-eye-close").closest(".input-group").find("input[type=password]").attr("type", "text");
+    if (icon.hasClass("fa-eye")) {
+        icon.removeClass("fa-eye").addClass("fa-eye-slash").closest(".input-group").find("input[type=password]").attr("type", "text");
     } else {
-        icon.removeClass("glyphicon-eye-close").addClass("glyphicon-eye-open").closest(".input-group").find("input[type=text]").attr("type", "password");
+        icon.removeClass("fa-eye-slash").addClass("fa-eye").closest(".input-group").find("input[type=text]").attr("type", "password");
     }
 });
 JS
 );
 ?>
 <div class="form-group">
-    <h1><?= Html::encode(Yii::$app->user->identity->name) ?></h1>
+    <h1><?= FA::icon('user') ?> <?= Html::encode(Yii::$app->user->identity->name) ?></h1>
 </div>
 
 <?php $form = ActiveForm::begin([
     'layout' => 'horizontal',
     'fieldConfig' => [
-        'template' => "{label}\n<div class=\"col-sm-3\">{input}</div>\n<div class=\"col-sm-7\">{error}</div>",
-        'labelOptions' => ['class' => 'col-sm-2 control-label'],
+        'horizontalCssClasses' => [
+            'offset' => 'offset-sm-3',
+            'label' => 'col-sm-3 text-center',
+            'wrapper' => 'col-sm-4',
+        ],
     ],
 ]); ?>
-    <div class="form-group">
-        <label class="col-sm-2 control-label"><?= Yii::t('app', 'Email') ?></label>
-        <div class="col-sm-3">
-            <p class="form-control-static"><?= Yii::$app->user->identity->email ?></p>
+    <div class="row form-group">
+        <label class="col-sm-3 text-center"><?= Yii::t('app', 'Email') ?></label>
+        <div class="col-sm-4">
+            <p><?= Yii::$app->user->identity->email ?></p>
         </div>
     </div>
 
@@ -44,20 +48,35 @@ JS
 
     <?= $form->field($model, 'phone') ?>
 
-    <div class="form-group field-profileform-password <?= $model->hasErrors('password') ? 'has-error' : '' ?>">
-        <?= Html::activeLabel($model, 'password', ['class' => 'col-sm-2 control-label']) ?>
-        <div class="col-sm-3">
+    <div class="row form-group field-profileform-password <?= $model->hasErrors('password') ? 'validating' : '' ?>">
+        <?= Html::activeLabel($model, 'password', ['class' => 'col-sm-3 text-center']) ?>
+        <div class="col-sm-4">
             <div class="input-group">
-                <?= Html::activePasswordInput($model, 'password', ['class' => 'form-control', 'id' => 'profileform-password']) ?>
-                <div class="input-group-addon"><i class="glyphicon glyphicon-eye-open password"></i></div>
+                <?= Html::activePasswordInput(
+                    $model,
+                    'password',
+                    [
+                        'class' => 'form-control ' . ($model->hasErrors('password') ? 'is-invalid' : ''),
+                        'id' => 'profileform-password',
+                    ]
+                ) ?>
+                <div class="input-group-append">
+                    <div class="input-group-text"><?= FA::icon('eye', ['options' => ['class' => 'password']]) ?></div>
+                </div>
+                <?= Html::error($model, 'password') ?>
             </div>
         </div>
-        <div class="col-sm-6"><?= Html::error($model, 'password', ['class' => 'help-block help-block-error']) ?></div>
     </div>
 
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-primary', 'name' => 'save-button']) ?>
+    <div class="row form-group">
+        <div class="offset-sm-3 col">
+            <?= Html::submitButton(
+                FA::icon('check-circle') . ' ' . Yii::t('app', 'Save'),
+                [
+                    'class' => 'btn btn-primary btn-lg',
+                    'name' => 'save-button',
+                ]
+            ) ?>
         </div>
     </div>
 
@@ -66,13 +85,13 @@ JS
 <hr>
 
 <div class="form-group">
-    <h3><?= Yii::t('app', 'PIN') ?></h3>
+    <h3><?= FA::icon('th') ?> <?= Yii::t('app', 'PIN') ?></h3>
 </div>
 <div class="form-group">
     <h4>
         <?= Yii::t('app', 'You can sign in using PIN as well.') ?>
         <a href="<?= Url::to(['profile/pin']) ?>" class="btn btn-success" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to generate new PIN?')) ?>>
-            <i class="glyphicon glyphicon-th"></i> <?= Yii::t('app', 'Generate PIN') ?>
+            <?= FA::icon('th') ?> <?= Yii::t('app', 'Generate PIN') ?>
         </a>
     </h4>
 </div>
@@ -80,25 +99,25 @@ JS
 <hr>
 
 <div class="form-group">
-    <h3><?= Yii::t('app', 'API Access') ?></h3>
+    <h3><?= FA::icon('cloud') ?> <?= Yii::t('app', 'API Access') ?></h3>
 </div>
 <div class="form-group">
     <?php if (empty(Yii::$app->user->identity->api_key)): ?>
         <p>
             <?= Yii::t('app', 'You currently don\'t have API access.') ?>
             <a href="<?= Url::to(['profile/grant']) ?>" data-method="post" class="btn btn-sm btn-primary">
-                <i class="glyphicon glyphicon-flash"></i>
+                <?= FA::icon('cloud') ?>
                 <?= Yii::t('app', 'Grant yourself API access') ?>
             </a>
         </p>
     <?php else: ?>
-        <div class="pull-right">
-            <a href="<?= Url::to(['profile/change']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?> class="btn btn-xs btn-warning">
-                <i class="glyphicon glyphicon-flash"></i>
+        <div class="float-right">
+            <a href="<?= Url::to(['profile/change']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?> class="btn btn-sm btn-warning">
+                <?= FA::icon('redo-alt') ?>
                 <?= Yii::t('app', 'Change API key') ?>
             </a>
-            <a href="<?= Url::to(['profile/revoke']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to revoke API access?')) ?> class="btn btn-xs btn-danger">
-                <i class="glyphicon glyphicon-off"></i>
+            <a href="<?= Url::to(['profile/revoke']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to revoke API access?')) ?> class="btn btn-sm btn-danger">
+                <?= FA::icon('power-off') ?>
                 <?= Yii::t('app', 'Revoke API access') ?>
             </a>
         </div>
@@ -108,6 +127,8 @@ JS
                 'key' => Html::tag('kbd', Yii::$app->user->identity->api_key),
             ]) ?>
         </h4>
-        <a href="<?= Url::to(['profile/api']) ?>" class="btn btn-primary"><i class="glyphicon glyphicon-info-sign"></i> <?= Yii::t('app', 'How to use API?') ?></a>
+        <a href="<?= Url::to(['profile/api']) ?>" class="btn btn-outline-primary">
+            <?= FA::icon('info-circle') ?> <?= Yii::t('app', 'How to use API?') ?>
+        </a>
     <?php endif; ?>
 </div>
