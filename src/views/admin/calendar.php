@@ -137,7 +137,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <div class="form-group"><div class="clearfix"></div></div>
         <div class="form-group">
             <p class="text-muted small">
-                <span class="btn btn-primary btn-sm">?</span> <?= Yii::t('app', 'Click the initials to see day details.') ?>
+                <span class="badge badge-primary">?</span> <?= Yii::t('app', 'Click the initials to see day details.') ?>
             </p>
         </div>
     </div>

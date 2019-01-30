@@ -81,7 +81,7 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     float:left;
     width:13%;
     margin:.25rem;
-    padding:.5rem 1rem;
+    padding:.5rem;
     text-align:right;
 }
 .calendar.day {
@@ -90,7 +90,10 @@ a.desc:after { content:/*"\e114"*/ "\e152" }
     text-align:center;
     font-weight:bold;
 }
-.calendar.fixed { min-height:100px }
+.calendar.fixed {
+    height:10rem;
+    overflow-y:auto;
+}
 .calendar p {
     text-align:left;
     margin:0;
