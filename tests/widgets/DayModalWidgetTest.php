@@ -23,7 +23,7 @@ class DayModalWidgetTest extends AppTestCase
     {
         $out = Day::widget(['params' => [Day::DAY_MODAL => true]]);
 
-        $this->assertEquals('<div id="dayModal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content modal-day"></div></div></div>', $out);
+        $this->assertEquals('<div id="dayModal" class="modal fade" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg modal-dialog-centered" role="document"><div class="modal-content modal-day"></div></div></div>', $out);
     }
 
     /**
@@ -44,7 +44,7 @@ class DayModalWidgetTest extends AppTestCase
         $view = Yii::$app->view;
         $out = Day::add('PB', 12, 12, 2019, 1);
 
-        $this->assertEquals('<a class="btn btn-primary btn-xs day" href="/index.php?r=admin%2Fday&amp;day=12&amp;month=12&amp;year=2019&amp;employee=1">PB</a>', $out);
+        $this->assertEquals('<a class="badge badge-primary day" href="/index.php?r=admin%2Fday&amp;day=12&amp;month=12&amp;year=2019&amp;employee=1">PB</a>', $out);
 
         $this->assertContains(<<<JS
 $(".day").click(function (e) {
