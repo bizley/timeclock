@@ -46,7 +46,10 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
         <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
             <?= $form->field($model, 'year') ?>
             <?= $form->field($model, 'month')->dropDownList(Clock::months(), ['class' => 'form-control custom-select']) ?>
-            <?= $form->field($model, 'day')->dropDownList(array_combine(range(1, 31), range(1, 31)), ['class' => 'form-control custom-select']) ?>
+            <?= $form->field($model, 'day')->dropDownList(
+                array_combine(range(1, 31), range(1, 31)),
+                ['class' => 'form-control custom-select']
+            ) ?>
 
             <div class="row form-group field-clockform-starthour field-clockform-startminute required <?= $model->hasErrors('startHour') || $model->hasErrors('startMinute') ? 'validating' : '' ?>">
                 <?= Html::activeLabel($model, 'startHour', ['class' => 'col-sm-2']) ?>
