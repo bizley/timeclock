@@ -35,7 +35,7 @@ class Theme extends Widget
                     null,
                     ['' => Yii::t('app', 'Switch theme')] + array_combine($themes, $themes),
                     [
-                        'class' => 'form-control form-control-sm',
+                        'class' => 'form-control form-control-sm custom-select',
                         'id' => 'themeSwitcher'
                     ]
                 ),
