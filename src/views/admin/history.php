@@ -35,17 +35,20 @@ foreach ($clock as $session) {
     }
 
     $list .= '<li class="list-group-item">';
-    $list .= Note::widget(['model' => $session]);
+    if ($session->clock_out !== null) {
+        $list .= '<span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">';
+        $list .= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) . '</span>';
+    }
     $list .= Html::encode($users[$session->user_id]->name) . ': ';
     $list .= Yii::$app->formatter->asDatetime($session->clock_in) . ' ';
     $list .= FA::icon('long-arrow-alt-right') . ' ';
     if ($session->clock_out !== null) {
-        $list .= '<span class="badge badge-light float-right">' . Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) . '</span>';
         $list .= Yii::$app->formatter->asTime($session->clock_out);
         $total[$session->user_id] += $session->clock_out - $session->clock_in;
     } else {
         $list .= Yii::t('app', 'not ended');
     }
+    $list .= Note::widget(['model' => $session]);
     $list .= '</li>';
 }
 
@@ -55,7 +58,7 @@ foreach ($clock as $session) {
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
@@ -99,7 +102,7 @@ foreach ($clock as $session) {
                 ['class' => 'btn btn-info btn-block']
             ) ?>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-5">
             <div class="list-group">
                 <?php foreach ($users as $user): ?>
                     <a href="<?= Url::to(['history', 'month' => $month, 'year' => $year, 'id' => $user->id]) ?>"
@@ -110,7 +113,7 @@ foreach ($clock as $session) {
             </div>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="form-group">
             <?php if ($employee !== null): ?>
                 <a href="<?= Url::to(['history', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-sm float-right">
@@ -122,13 +125,17 @@ foreach ($clock as $session) {
         </div>
         <ul class="list-group mb-3">
             <li class="list-group-item">
-                <span class="badge badge-light float-right"><?= round(array_sum($total) / 3600, 2) ?></span>
+                <span class="badge badge-light float-sm-right d-block d-sm-inline mb-1 ml-0 ml-sm-3">
+                    <?= round(array_sum($total) / 3600, 2) ?>
+                </span>
                 <?= Yii::t('app', 'Total Hours') ?>
             </li>
             <?php if ($employee === null): ?>
                 <?php foreach ($users as $user): ?>
                     <li class="list-group-item">
-                        <span class="badge badge-light float-right"><?= isset($total[$user->id]) ? round($total[$user->id] / 3600, 2) : 0 ?></span>
+                        <span class="badge badge-light float-sm-right d-block d-sm-inline mb-1 ml-0 ml-sm-3">
+                            <?= isset($total[$user->id]) ? round($total[$user->id] / 3600, 2) : 0 ?>
+                        </span>
                         <?= Html::encode($user->name) ?>
                     </li>
                 <?php endforeach; ?>

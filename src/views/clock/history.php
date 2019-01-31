@@ -85,11 +85,17 @@ $this->title = Yii::t('app', 'History');
         <ul class="list-group mb-3">
             <?php $total = 0; foreach ($clock as $session): ?>
                 <li class="list-group-item">
-                    <?= Note::widget(['model' => $session]) ?>
                     <?php if ($session->clock_out !== null): ?>
-                        <span class="badge badge-light float-sm-right d-block d-sm-inline mb-3 ml-0 ml-sm-3">
+                        <span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
                             <?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?>
                         </span>
+                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm float-left mr-1">
+                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                        </a>
+                    <?php else: ?>
+                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm float-left mr-1">
+                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                        </a>
                     <?php endif; ?>
                     <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>"
                        class="btn btn-outline-danger btn-sm"
@@ -100,21 +106,16 @@ $this->title = Yii::t('app', 'History');
                     <?= FA::icon('long-arrow-alt-right') ?>
                     <?php if ($session->clock_out !== null): ?>
                         <?= Yii::$app->formatter->asTime($session->clock_out) ?>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
                     <?php $total += $session->clock_out - $session->clock_in; else: ?>
                         <?= Yii::t('app', 'not ended') ?>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
                     <?php endif; ?>
+                    <?= Note::widget(['model' => $session]) ?>
                 </li>
             <?php endforeach; ?>
         </ul>
         <ul class="list-group mb-3">
             <li class="list-group-item">
-                <span class="badge badge-light float-right">
+                <span class="badge badge-light float-sm-right d-block d-sm-inline mb-1 ml-0 ml-sm-3">
                     <?= round($total / 3600, 2) ?> (<?= Yii::$app->formatter->asDuration($total) ?>)
                 </span>
                 <?= Yii::t('app', 'Total Hours') ?>
@@ -134,14 +135,14 @@ $this->title = Yii::t('app', 'History');
                         <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
                            class="btn btn-outline-danger btn-sm"
                             <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
-                            <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
+                            <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+                        </a>
+                        <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-outline-warning btn-sm float-left mr-1">
+                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
                         </a>
                         <?= Yii::$app->formatter->asDate($day->start_at) ?>
                         <?= FA::icon('long-arrow-alt-right') ?>
                         <?= Yii::$app->formatter->asDate($day->end_at) ?>
-                        <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-outline-warning btn-sm">
-                            <?= FA::icon('clock') ?> <?= Yii::t('app', 'edit') ?>
-                        </a>
                     </li>
                 <?php endforeach; ?>
             </ul>
