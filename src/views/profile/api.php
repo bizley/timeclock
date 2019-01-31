@@ -16,7 +16,7 @@ $sha1 = sha1($timestamp . Yii::$app->user->identity->api_key);
 $baseUrl = Url::base(true);
 
 ?>
-<div class="form-group">
+<div class="form-group mt-5">
     <h1><?= FA::icon('cloud') ?> <?= Yii::t('app', 'How to use API?') ?></h1>
 </div>
 
@@ -30,7 +30,7 @@ $baseUrl = Url::base(true);
             </a>
         </p>
     <?php else: ?>
-        <p class="float-right">
+        <p class="float-sm-right ml-1 mb-3">
             <a href="<?= Url::to(['profile/change']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?> class="btn btn-sm btn-warning">
                 <?= FA::icon('redo-alt') ?>
                 <?= Yii::t('app', 'Change API key') ?>
