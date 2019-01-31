@@ -19,7 +19,7 @@ $this->title = Yii::t('app', 'Editing Off-Time');
 </div>
 
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-lg-2">
         <div class="form-group">
             <a href="<?= Url::previous() ?>" class="btn btn-outline-primary btn-block"><?= FA::icon('backward') ?> <?= Yii::t('app', 'Go Back') ?></a>
         </div>
@@ -31,7 +31,7 @@ $this->title = Yii::t('app', 'Editing Off-Time');
             </a>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-lg-8">
         <div class="form-group">
             <?= Yii::t('app', 'Off-Time') ?>
             <?= Yii::$app->formatter->asDate($off->start_at) ?>
@@ -42,7 +42,7 @@ $this->title = Yii::t('app', 'Editing Off-Time');
 
             <div class="row form-group">
                 <div class="col offset-sm-2">
-                    <p><?= Yii::t('app', 'Start Day') ?></p>
+                    <p class="mb-0"><?= Yii::t('app', 'Start Day') ?></p>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@ $this->title = Yii::t('app', 'Editing Off-Time');
 
             <div class="row form-group">
                 <div class="col offset-sm-2">
-                    <p><?= Yii::t('app', 'End Day') ?></p>
+                    <p class="mb-0 mt-3"><?= Yii::t('app', 'End Day') ?></p>
                 </div>
             </div>
 

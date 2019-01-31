@@ -20,12 +20,12 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 </div>
 
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-lg-2">
         <div class="form-group">
             <a href="<?= Url::previous() ?>" class="btn btn-outline-primary btn-block"><?= FA::icon('backward') ?> <?= Yii::t('app', 'Go Back') ?></a>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-lg-8">
         <div class="form-group">
             <?= Yii::t('app', 'New Session') ?>
         </div>
@@ -40,7 +40,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
             <div class="row form-group field-clockform-starthour field-clockform-startminute required <?= $model->hasErrors('startHour') || $model->hasErrors('startMinute') ? 'validating' : '' ?>">
                 <?= Html::activeLabel($model, 'startHour', ['class' => 'col-sm-2']) ?>
-                <div class="col-sm-3">
+                <div class="col-sm-3 col-6">
                     <?= Html::activeDropDownList(
                         $model,
                         'startHour',
@@ -52,7 +52,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
                     ) ?>
                     <?= Html::error($model, 'startHour') ?>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 col-6">
                     <?= Html::activeDropDownList(
                         $model,
                         'startMinute',
@@ -68,7 +68,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
             <div class="row form-group field-clockform-endhour field-clockform-endminute <?= $model->hasErrors('endHour') || $model->hasErrors('endMinute') ? 'validating' : '' ?>">
                 <?= Html::activeLabel($model, 'endHour', ['class' => 'col-sm-2']) ?>
-                <div class="col-sm-3">
+                <div class="col-sm-3 col-6">
                     <?= Html::activeDropDownList(
                         $model,
                         'endHour',
@@ -80,7 +80,7 @@ $minutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
                     ) ?>
                     <?= Html::error($model, 'endHour', ['class' => 'help-block help-block-error']) ?>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-3 col-6">
                     <?= Html::activeDropDownList(
                         $model,
                         'endMinute',
