@@ -1,12 +1,13 @@
 <?php
 
+use app\models\Clock;
 use app\widgets\fontawesome\FA;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 /**
  * @var $this yii\web\View
- * @var $session \app\models\Clock
+ * @var $session Clock
  * @var $clock array
  * @var $months array
  * @var $month int
@@ -67,12 +68,12 @@ $(".selectDay")
 JS
 );
 ?>
-<div class="form-group">
+<div class="form-group mt-3">
     <h1><?= Yii::t('app', 'Calendar') ?></h1>
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
@@ -108,7 +109,7 @@ JS
                 </div>
             </div>
         <?= Html::endForm(); ?>
-        <div class="form-group">
+        <div class="form-group mb-5">
             <?= Html::a(
                 FA::icon('history') . ' ' . Yii::t('app', 'Switch To History'),
                 ['history', 'month' => $month, 'year' => $year],
@@ -116,7 +117,7 @@ JS
             ) ?>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="form-group">
             <div class="float-right">
                 <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-sm">
@@ -129,13 +130,9 @@ JS
             <?= $months[$month] ?> <?= $year ?>
         </div>
         <div class="form-group">
-            <div class="calendar day"><?= Yii::t('app', 'Mon') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Tue') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Wed') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Thu') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Fri') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Sat') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Sun') ?></div>
+            <?php foreach (Clock::days() as $day): ?>
+                <div class="calendar day"><?= $day ?></div>
+            <?php endforeach; ?>
             <div class="clearfix"></div>
             <?php
             $dayOfWeek = $firstDayInMonth;
@@ -148,11 +145,12 @@ JS
                      style="<?= $day === 1 && $firstDayInMonth !== 1
                     ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>" data-year="<?= $year ?>" data-month="<?= $month ?>" data-day="<?= $day ?>">
+                    <span class="float-right d-block d-md-none"><?= Clock::days()[$dayOfWeek] ?></span>
                     <?= $day ?>
                     <?php if (!array_key_exists($day, $clockDays)): ?>
                         <p>&nbsp;</p><p>&nbsp;</p>
                     <?php else: ?>
-                        <p><small><?= FA::icon('play') ?></small> <?= $clockDays[$day][0] ?></p>
+                        <p class="ml-3 ml-md-0"><small><?= FA::icon('play') ?></small> <?= $clockDays[$day][0] ?></p>
                         <p><small><?= FA::icon('stop') ?></small> <?= $clockDays[$day][1] ?></p>
                     <?php endif; ?>
                 </div>

@@ -90,7 +90,7 @@ html, body { height:100% }
 .months .btn { width:50% }
 .months .btn i { display:block }
 .accordion .card-body { color:#333 }
-@media (max-width:550px) {
+@media (max-width:768px) {
     .calendar {
         float:none;
         width:100%;

@@ -43,6 +43,22 @@ class Clock extends ActiveRecord implements NoteInterface
     }
 
     /**
+     * @return array
+     */
+    public static function days(): array
+    {
+        return [
+            1 => Yii::t('app', 'Mon'),
+            2 => Yii::t('app', 'Tue'),
+            3 => Yii::t('app', 'Wed'),
+            4 => Yii::t('app', 'Thu'),
+            5 => Yii::t('app', 'Fri'),
+            6 => Yii::t('app', 'Sat'),
+            7 => Yii::t('app', 'Sun'),
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName(): string

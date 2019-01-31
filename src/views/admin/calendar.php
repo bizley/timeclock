@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Clock;
 use app\widgets\fontawesome\FA;
 use app\widgets\modal\Day;
 use yii\bootstrap4\Html;
@@ -98,13 +99,9 @@ $this->title = Yii::t('app', 'Overall Calendar');
             <?= $months[$month] ?> <?= $year ?>
         </div>
         <div class="form-group">
-            <div class="calendar day"><?= Yii::t('app', 'Mon') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Tue') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Wed') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Thu') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Fri') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Sat') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Sun') ?></div>
+            <?php foreach (Clock::days() as $day): ?>
+                <div class="calendar day"><?= $day ?></div>
+            <?php endforeach; ?>
             <div class="clearfix"></div>
             <?php
             $dayOfWeek = $firstDayInMonth;
@@ -116,6 +113,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
                      style="<?= $day === 1 && $firstDayInMonth !== 1
                     ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>">
+                    <span class="float-right d-block d-md-none"><?= Clock::days()[$dayOfWeek] ?></span>
                     <?= $day ?>
                     <?php if (array_key_exists($day, $entries)): ?>
                         <p>
