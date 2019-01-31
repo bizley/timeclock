@@ -41,29 +41,29 @@ $this->title = Yii::t('app', 'Employees');
                                 <span class="badge badge-secondary"><?= Yii::t('app', 'EMPLOYEE') ?></span>
                             <?php endif; ?>
                         </td>
-                        <td class="text-right">
+                        <td class="text-right text-nowrap">
                             <?php if ($user->role === User::ROLE_ADMIN): ?>
                                 <a href="<?= Url::to(['admin/demote', 'id' => $user->id]) ?>"
                                    class="btn btn-outline-warning btn-sm"
                                     <?= Confirm::ask(Yii::t('app', 'Are you sure you want to remove admin access for this user?')) ?>>
-                                    <?= FA::icon('hand-point-down') ?> <?= Yii::t('app', 'set as employee') ?>
+                                    <?= FA::icon('hand-point-down') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'set as employee') ?></span>
                                 </a>
                             <?php else: ?>
                                 <a href="<?= Url::to(['admin/promote', 'id' => $user->id]) ?>"
                                    class="btn btn-outline-success btn-sm"
                                     <?= Confirm::ask(Yii::t('app', 'Are you sure you want to promote this user for admin?')) ?>>
-                                    <?= FA::icon('hand-point-up') ?> <?= Yii::t('app', 'set as admin') ?>
+                                    <?= FA::icon('hand-point-up') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'set as admin') ?></span>
                                 </a>
                             <?php endif; ?>
                             <a href="<?= Url::to(['admin/reset', 'id' => $user->id]) ?>"
                                class="btn btn-warning btn-sm"
                                 <?= Confirm::ask(Yii::t('app', 'Are you sure you want to send password reset link?')) ?>>
-                                <?= FA::icon('key') ?> <?= Yii::t('app', 'send password reset link') ?>
+                                <?= FA::icon('key') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'send password reset link') ?></span>
                             </a>
                             <a href="<?= Url::to(['admin/delete', 'id' => $user->id]) ?>"
                                class="btn btn-danger btn-sm"
                                 <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this user?')) ?>>
-                                <?= FA::icon('times') ?> <?= Yii::t('app', 'delete') ?>
+                                <?= FA::icon('times') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'delete') ?></span>
                             </a>
                         </td>
                     </tr>
