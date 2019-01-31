@@ -23,7 +23,7 @@ $(".password").click(function () {
 JS
 );
 ?>
-<div class="form-group">
+<div class="form-group mt-5">
     <h1><?= FA::icon('user') ?> <?= Html::encode(Yii::$app->user->identity->name) ?></h1>
 </div>
 
@@ -32,15 +32,15 @@ JS
     'fieldConfig' => [
         'horizontalCssClasses' => [
             'offset' => 'offset-sm-3',
-            'label' => 'col-sm-3 text-center',
-            'wrapper' => 'col-sm-4',
+            'label' => 'col-lg-3 col-md-4 text-center',
+            'wrapper' => 'col-lg-4 col-md-6',
         ],
     ],
 ]); ?>
     <div class="row form-group">
-        <label class="col-sm-3 text-center"><?= Yii::t('app', 'Email') ?></label>
-        <div class="col-sm-4">
-            <p><?= Yii::$app->user->identity->email ?></p>
+        <label class="col-lg-3 col-md-4 text-center"><?= Yii::t('app', 'Email') ?></label>
+        <div class="col-lg-4 col-md-6">
+            <p class="text-center text-md-left"><?= Yii::$app->user->identity->email ?></p>
         </div>
     </div>
 
@@ -49,8 +49,8 @@ JS
     <?= $form->field($model, 'phone') ?>
 
     <div class="row form-group field-profileform-password <?= $model->hasErrors('password') ? 'validating' : '' ?>">
-        <?= Html::activeLabel($model, 'password', ['class' => 'col-sm-3 text-center']) ?>
-        <div class="col-sm-4">
+        <?= Html::activeLabel($model, 'password', ['class' => 'col-lg-3 col-md-4 text-center']) ?>
+        <div class="col-lg-4 col-md-6">
             <div class="input-group">
                 <?= Html::activePasswordInput(
                     $model,
@@ -69,7 +69,7 @@ JS
     </div>
 
     <div class="row form-group">
-        <div class="offset-sm-3 col">
+        <div class="offset-lg-3 offset-md-4 col text-center text-md-left">
             <?= Html::submitButton(
                 FA::icon('check-circle') . ' ' . Yii::t('app', 'Save'),
                 [
@@ -111,12 +111,16 @@ JS
             </a>
         </p>
     <?php else: ?>
-        <div class="float-right">
-            <a href="<?= Url::to(['profile/change']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?> class="btn btn-sm btn-warning">
+        <div class="float-sm-right ml-1 mb-3">
+            <a href="<?= Url::to(['profile/change']) ?>"
+                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to change API key?')) ?>
+               class="btn btn-sm btn-warning mb-1">
                 <?= FA::icon('redo-alt') ?>
                 <?= Yii::t('app', 'Change API key') ?>
             </a>
-            <a href="<?= Url::to(['profile/revoke']) ?>" <?= Confirm::ask(Yii::t('app', 'Are you sure you want to revoke API access?')) ?> class="btn btn-sm btn-danger">
+            <a href="<?= Url::to(['profile/revoke']) ?>"
+                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to revoke API access?')) ?>
+               class="btn btn-sm btn-danger mb-1">
                 <?= FA::icon('power-off') ?>
                 <?= Yii::t('app', 'Revoke API access') ?>
             </a>
