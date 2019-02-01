@@ -23,17 +23,20 @@ foreach ($clock as $session) {
     }
 
     $list .= '<li class="list-group-item ' . ($employee === $session->user_id ? 'active' : '') . '">';
-    $list .= Note::widget(['model' => $session]);
+    if ($session->clock_out !== null) {
+        $list .= '<span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">';
+        $list .= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) . '</span>';
+        $total[$session->user_id] += $session->clock_out - $session->clock_in;
+    }
     $list .= Html::encode($users[$session->user_id]->name) . ': ';
     $list .= Yii::$app->formatter->asDatetime($session->clock_in) . ' ';
     $list .= FA::icon('long-arrow-alt-right') . ' ';
     if ($session->clock_out !== null) {
-        $list .= '<span class="badge badge-light float-right">' . Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) . '</span>';
         $list .= Yii::$app->formatter->asTime($session->clock_out);
-        $total[$session->user_id] += $session->clock_out - $session->clock_in;
     } else {
         $list .= Yii::t('app', 'not ended');
     }
+    $list .= Note::widget(['model' => $session]);
     $list .= '</li>';
 }
 
@@ -62,11 +65,11 @@ foreach ($clock as $session) {
 <ul class="list-group mb-3">
     <?php foreach ($off as $day): ?>
         <li class="list-group-item <?= $employee === $day->user_id ? 'active' : '' ?>">
-            <?= Note::widget(['model' => $day]) ?>
             <?= Html::encode($users[$day->user_id]->name) ?>
             <?= Yii::$app->formatter->asDate($day->start_at) ?>
             <?= FA::icon('long-arrow-alt-right') ?>
             <?= Yii::$app->formatter->asDate($day->end_at) ?>
+            <?= Note::widget(['model' => $day]) ?>
         </li>
     <?php endforeach; ?>
 </ul>

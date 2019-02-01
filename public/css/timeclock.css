@@ -98,7 +98,10 @@ html, body { height:100% }
         padding:3px 10px;
         text-align:left;
     }
-    .calendar.fixed { min-height:30px }
+    .calendar.fixed {
+        min-height:2.5rem;
+        height:auto;
+    }
     .calendar.day { display:none }
     .calendar p { display:inline }
 }

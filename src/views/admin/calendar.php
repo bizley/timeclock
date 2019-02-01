@@ -33,11 +33,11 @@ $this->title = Yii::t('app', 'Overall Calendar');
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
-        <?= Html::beginForm(['clock/calendar'], 'get'); ?>
+        <?= Html::beginForm(['admin/calendar'], 'get'); ?>
             <?= Html::hiddenInput('id', $employee !== null ? $employee->id : null) ?>
             <div class="form-group">
                 <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
@@ -59,11 +59,11 @@ $this->title = Yii::t('app', 'Overall Calendar');
                     <div class="form-group btn-group btn-block months" role="group">
                         <?= Html::a(
                             FA::icon('step-backward') . $previous,
-                            ['history', 'month' => $previousMonth, 'year' => $previousYear, 'id' => $employee !== null ? $employee->id : null],
+                            ['calendar', 'month' => $previousMonth, 'year' => $previousYear, 'id' => $employee !== null ? $employee->id : null],
                             ['class' => 'btn btn-primary']
                         ) ?><?= Html::a(
                             FA::icon('step-forward') . $next,
-                            ['history', 'month' => $nextMonth, 'year' => $nextYear, 'id' => $employee !== null ? $employee->id : null],
+                            ['calendar', 'month' => $nextMonth, 'year' => $nextYear, 'id' => $employee !== null ? $employee->id : null],
                             ['class' => 'btn btn-primary']
                         ) ?>
                     </div>
@@ -72,7 +72,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <?= Html::endForm(); ?>
         <div class="form-group">
             <?= Html::a(
-                FA::icon('list-all') . ' ' . Yii::t('app', 'Switch To Sessions'),
+                FA::icon('list-alt') . ' ' . Yii::t('app', 'Switch To Sessions'),
                 ['history', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null],
                 ['class' => 'btn btn-info btn-block']
             ) ?>
@@ -88,7 +88,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
             </div>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="form-group">
             <?php if ($employee !== null): ?>
                 <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-sm float-right">

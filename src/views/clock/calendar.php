@@ -98,11 +98,11 @@ JS
                     <div class="form-group btn-group btn-block months" role="group">
                         <?= Html::a(
                             FA::icon('step-backward') . $previous,
-                            ['history', 'month' => $previousMonth, 'year' => $previousYear],
+                            ['calendar', 'month' => $previousMonth, 'year' => $previousYear],
                             ['class' => 'btn btn-primary']
                         ) ?><?= Html::a(
                             FA::icon('step-forward') . $next,
-                            ['history', 'month' => $nextMonth, 'year' => $nextYear],
+                            ['calendar', 'month' => $nextMonth, 'year' => $nextYear],
                             ['class' => 'btn btn-primary']
                         ) ?>
                     </div>

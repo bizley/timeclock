@@ -131,7 +131,6 @@ $this->title = Yii::t('app', 'History');
             <ul class="list-group">
                 <?php foreach ($off as $day): ?>
                     <li class="list-group-item">
-                        <?= Note::widget(['model' => $day]) ?>
                         <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
                            class="btn btn-outline-danger btn-sm"
                             <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
@@ -143,6 +142,7 @@ $this->title = Yii::t('app', 'History');
                         <?= Yii::$app->formatter->asDate($day->start_at) ?>
                         <?= FA::icon('long-arrow-alt-right') ?>
                         <?= Yii::$app->formatter->asDate($day->end_at) ?>
+                        <?= Note::widget(['model' => $day]) ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
