@@ -92,7 +92,7 @@ $this->title = Yii::t('app', 'Overall Calendar');
         <div class="form-group">
             <?php if ($employee !== null): ?>
                 <a href="<?= Url::to(['calendar', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-sm float-right">
-                    <?= Yii::t('app', 'All Employees') ?>
+                    <?= FA::icon('users') ?> <?= Yii::t('app', 'All Employees') ?>
                 </a>
                 <?= Html::encode($employee->name) ?>
             <?php endif; ?>
