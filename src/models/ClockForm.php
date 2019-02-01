@@ -137,10 +137,33 @@ class ClockForm extends Model
             . ':00';
     }
 
+    /**
+     * @param int|string $year
+     * @param int|string $month
+     * @param int|string $day
+     * @param int|string $hour
+     * @param int|string $minute
+     * @return int
+     * @throws \Exception
+     */
+    public function prepareTimestamp($year, $month, $day, $hour, $minute): int
+    {
+        return (new \DateTime(
+            $this->prepareDate($year, $month, $day, $hour, $minute),
+            new \DateTimeZone(Yii::$app->timeZone)
+        ))->getTimestamp();
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function maxDay(): void
     {
         if (!$this->hasErrors()) {
-            $maxDaysInMonth = date('t', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, 1, 1, 0)));
+            $maxDaysInMonth = date(
+                't',
+                $this->prepareTimestamp($this->year, $this->month, 1, 10, 10)
+            );
 
             if ($this->day > $maxDaysInMonth) {
                 $this->addError('day', Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
@@ -148,14 +171,17 @@ class ClockForm extends Model
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function verifyStart(): void
     {
         if (!$this->hasErrors()) {
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))],
-                ['>=', 'clock_out', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))],
+                ['<=', 'clock_in', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)],
+                ['>=', 'clock_out', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)],
             ];
 
             if ($this->session->id !== null) {
@@ -168,6 +194,9 @@ class ClockForm extends Model
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function verifyEnd(): void
     {
         if (!$this->hasErrors()) {
@@ -181,16 +210,16 @@ class ClockForm extends Model
 
         if ($this->endMinute !== '' && $this->endHour !== '' && $this->endMinute !== null && $this->endHour !== null) {
             if (!$this->hasErrors()
-                && Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute))
-                >= Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->endHour, $this->endMinute))) {
+                && $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)
+                >= $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)) {
                 $this->addError('endHour', Yii::t('app', 'Session ending hour must be later than starting hour.'));
             }
 
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->endHour, $this->endMinute))],
-                ['>=', 'clock_out', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->year, $this->month, $this->day, $this->endHour, $this->endMinute))],
+                ['<=', 'clock_in', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)],
+                ['>=', 'clock_out', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)],
             ];
 
             if ($this->session->id !== null) {
@@ -231,16 +260,10 @@ class ClockForm extends Model
         if ($this->session->user_id === null) {
             $this->session->user_id = Yii::$app->user->id;
         }
-        $this->session->clock_in = (new \DateTime(
-            $this->prepareDate($this->year, $this->month, $this->day, $this->startHour, $this->startMinute),
-            new \DateTimeZone(Yii::$app->timeZone))
-        )->getTimestamp();
+        $this->session->clock_in = $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute);
 
         if ($this->endHour !== '' && $this->endHour !== null) {
-            $this->session->clock_out = (new \DateTime(
-                $this->prepareDate($this->year, $this->month, $this->day, $this->endHour, $this->endMinute),
-                new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp();
+            $this->session->clock_out = $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute);
         }
 
         $this->session->note = $this->note !== '' ? $this->note : null;

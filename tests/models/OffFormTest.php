@@ -82,6 +82,41 @@ class OffFormTest extends DbTestCase
     /**
      * @return array
      */
+    public function prepareTimestampProvider(): array
+    {
+        return [
+            ['UTC', [1563202800, 1547564400]],
+            ['Europe/Warsaw', [1563195600, 1547560800]],
+            ['America/Chicago', [1563220800, 1547586000]],
+        ];
+    }
+
+    /**
+     * @dataProvider prepareTimestampProvider
+     * @param string $timezone
+     * @param array $expected
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testPrepareTimestamp(string $timezone, array $expected): void
+    {
+        Yii::$app->timeZone = $timezone;
+
+        $offForm = new OffForm(new Off([
+            'user_id' => 1,
+            'start_at' => 1,
+            'end_at' => 10,
+        ]));
+
+        $this->assertSame($expected[0], $offForm->prepareTimestamp(2019, 7, 15, 15, 0));
+        $this->assertSame($expected[1], $offForm->prepareTimestamp(2019, 1, 15, 15, 0));
+
+        Yii::$app->timeZone = 'UTC';
+    }
+
+    /**
+     * @return array
+     */
     public function maxDayProvider(): array
     {
         return [
@@ -98,6 +133,7 @@ class OffFormTest extends DbTestCase
      * @param int $year
      * @param int $month
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testMaxDay(string $expected, int $year, int $month): void
     {
@@ -118,6 +154,7 @@ class OffFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyStartOverlap(): void
     {
@@ -134,6 +171,7 @@ class OffFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyStartNoOverlap(): void
     {
@@ -150,6 +188,7 @@ class OffFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEnd(): void
     {
@@ -170,13 +209,14 @@ class OffFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEndSwapped(): void
     {
         $offForm = new OffForm(new Off([
             'user_id' => 1,
             'start_at' => 1543622400,
-            'end_at' => 1543621000,
+            'end_at'   => 1543611000,
         ]));
 
         $offForm->verifyEnd();
@@ -186,6 +226,7 @@ class OffFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEndOverlap(): void
     {

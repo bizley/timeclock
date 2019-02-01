@@ -115,7 +115,25 @@ class OffForm extends Model
     }
 
     /**
+     * @param int|string $year
+     * @param int|string $month
+     * @param int|string $day
+     * @param int|string $hour
+     * @param int|string $minute
+     * @return int
+     * @throws \Exception
+     */
+    public function prepareTimestamp($year, $month, $day, $hour, $minute): int
+    {
+        return (new \DateTime(
+            $this->prepareDate($year, $month, $day, $hour, $minute),
+            new \DateTimeZone(Yii::$app->timeZone)
+        ))->getTimestamp();
+    }
+
+    /**
      * @param string $attribute
+     * @throws \Exception
      */
     public function maxDay(string $attribute): void
     {
@@ -127,20 +145,26 @@ class OffForm extends Model
             $month = $this->endMonth;
         }
 
-        $maxDaysInMonth = date('t', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($year, $month, 1, 1, 0)));
+        $maxDaysInMonth = date(
+            't',
+            $this->prepareTimestamp($year, $month, 1, 1, 0)
+        );
 
         if ($this->$attribute > $maxDaysInMonth) {
             $this->addError($attribute, Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function verifyStart(): void
     {
         $conditions = [
             'and',
             ['user_id' => Yii::$app->user->id],
-            ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))],
-            ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))],
+            ['<=', 'start_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
+            ['>=', 'end_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
         ];
 
         if ($this->off->id !== null) {
@@ -152,18 +176,21 @@ class OffForm extends Model
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function verifyEnd(): void
     {
-        if (Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))
-            >= Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))) {
+        if ($this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)
+            >= $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59)) {
             $this->addError('endDay', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
         }
 
         $conditions = [
             'and',
             ['user_id' => Yii::$app->user->id],
-            ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
-            ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+            ['<=', 'start_at', $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59)],
+            ['>=', 'end_at', $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59)],
         ];
 
         if ($this->off->id !== null) {
@@ -205,16 +232,8 @@ class OffForm extends Model
             $this->off->user_id = Yii::$app->user->id;
         }
 
-        $this->off->start_at = (new \DateTime(
-            $this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0),
-            new \DateTimeZone(Yii::$app->timeZone))
-        )->getTimestamp();
-
-        $this->off->end_at = (new \DateTime(
-            $this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59),
-            new \DateTimeZone(Yii::$app->timeZone))
-        )->getTimestamp();
-
+        $this->off->start_at = $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0);
+        $this->off->end_at = $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59);
         $this->off->note = $this->note !== '' ? $this->note : null;
 
         return $this->off->save();

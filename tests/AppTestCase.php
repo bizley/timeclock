@@ -41,6 +41,7 @@ abstract class AppTestCase extends \PHPUnit\Framework\TestCase
                 'basePath' => __DIR__ . '/../src',
                 'runtimePath' => __DIR__ . '/runtime',
                 'vendorPath' => __DIR__ . '/../vendor',
+                'timezone' => 'UTC',
                 'components' => [
                     'assetManager' => [
                         'basePath' => __DIR__ . '/runtime/assets',
