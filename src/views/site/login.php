@@ -14,16 +14,16 @@ $this->title = Yii::t('app', 'Login');
     <div class="col-lg-8">
         <div class="card shadow">
             <div class="card-body">
-                <div class="float-right mb-5">
+                <div class="float-right">
                     <?= Html::a(
                         FA::icon('user') . ' ' . Yii::t('app', 'New Account'),
                         ['site/register'],
-                        ['class' => 'btn btn-outline-success btn-sm']
+                        ['class' => 'btn btn-outline-success btn-sm mb-1']
                     ) ?>
                     <?= Html::a(
                         FA::icon('key') . ' ' . Yii::t('app', 'Reset Password'),
                         ['site/reset'],
-                        ['class' => 'btn btn-outline-secondary btn-sm']
+                        ['class' => 'btn btn-outline-secondary btn-sm mb-1']
                     ) ?>
                 </div>
                 <h3 class="card-title mb-5"><?= Yii::t('app', 'Login') ?></h3>
