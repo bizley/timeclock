@@ -1,187 +1,185 @@
 :root {
-  --main-bg-color: #F7F6F3;
-  --main-info-color: #8F9BA4;
-  --main-info-color-hover: #BCBFBF;
-  --main-warning-color: #ECB638;
-  --main-warning-color-hover: #F4C150;
-  --main-success-color: #57A286;
-  --main-danger-color: #C64355;
-  --main-danger-color-hover: #C95365;
-  --main-primary-color: #29343F;
-  --main-primary-color-hover: #147593;
-  --main-dark-color: #333640;
-  --main-light-color: #F7F6F3;
-  --dark-pink: #994762;
-  --dark-purple: #42394A;
-  --vibrant-yellow: #ECB638;
-  --vibrant-brown: #894F3D;
-  --pale-brown: #AF8976;
-  --pale-purple: #9995A3;
-  --pale-grey: #FBFAFB;
-  --pale-blue: #C2D6E3;
-  --pale-yellow: #EED5A4;
-  --pale-dark-yellow: #DCCA76;
-  --watermelon: #EB5E68;
+  --main-bg:#f7f6f3;
+  --main-info:#8f9ba4;
+  --main-info-hover:#bcbfbf;
+  --main-warning:#ecb638;
+  --main-warning-hover:#f4c150;
+  --main-success:#57a286;
+  --main-danger:#c64355;
+  --main-danger-hover:#c95365;
+  --main-primary:#29343f;
+  --main-primary-hover:#147593;
+  --main-dark: #333640;
+  --main-light:#f7f6f3;
+  --dark-pink:#994762;
+  --dark-purple:#42394a;
+  --vibrant-yellow:#ecb638;
+  --vibrant-brown:#894f3d;
+  --pale-brown:#af8976;
+  --pale-purple:#9995a3;
+  --pale-grey:#fbfafb;
+  --pale-blue:#c2d6e3;
+  --pale-yellow:#eed5a4;
+  --pale-dark-yellow:#dcca76;
+  --watermelon:#eb5e68;
 }
 html, body {
-  background-color:var(--main-bg-color);
-  color: var(--main-dark-color);
+  background-color:var(--main-bg);
+  color:var(--main-dark);
 }
-hr { border-top: 1px solid var(--main-warning-color) }
-#bg { color: var(--pale-yellow) }
-.alert-success{
-  background-color: var(--main-success-color);
-  border-color: var(--main-success-color);
-  color: var(--main-light-color);
+hr { border-top:1px solid var(--main-warning) }
+#bg { color:var(--pale-yellow) }
+.alert-success {
+  background-color:var(--main-success);
+  border-color:var(--main-success);
+  color:var(--main-light);
 }
-.alert-danger{
-  background-color: var(--main-danger-color);
-  border-color: var(--main-danger-color);
-  color: var(--main-light-color);
+.alert-danger {
+  background-color:var(--main-danger);
+  border-color:var(--main-danger);
+  color:var(--main-light);
 }
-.alert-warning{
-  background-color: var(--main-warning-color);
-  border-color: var(--main-warning-color);
-  color: var(--main-dark-color);
+.alert-warning {
+  background-color:var(--main-warning);
+  border-color:var(--main-warning);
+  color:var(--main-dark);
 }
-.alert-info{
-  background-color: var(--main-info-color);
-  border-color: var(--main-info-color);
-  color: var(--main-light-color);
+.alert-info {
+  background-color:var(--main-info);
+  border-color:var(--main-info);
+  color:var(--main-light);
 }
 .badge {
-  background-color: var(--main-dark-color);
-  color: var(--main-light-color);
+  background-color:var(--main-dark);
+  color:var(--main-light);
 }
-.close span{
-  color: var(--main-dark-color);
-}
+.close span { color:var(--main-dark) }
 .btn-primary {
-  background-color: var(--main-primary-color);
-  border-color: var(--main-primary-color);
+  background-color:var(--main-primary);
+  border-color:var(--main-primary);
 }
 .btn-primary:hover {
-  background-color: var(--main-primary-color-hover);
-  border-color: var(--main-primary-color-hover);
+  background-color:var(--main-primary-hover);
+  border-color:var(--main-primary-hover);
 }
 .btn-info {
-  background-color: var(--main-info-color);
-  border-color: var(--main-info-color);
+  background-color:var(--main-info);
+  border-color:var(--main-info);
 }
-.btn-info:hover{
-  background-color: var(--main-info-color-hover);
-  border-color: var(--main-info-color-hover);
+.btn-info:hover {
+  background-color:var(--main-info-hover);
+  border-color:var(--main-info-hover);
 }
 .btn-success {
-  background-color: var(--main-success-color);
-  border-color: var(--main-success-color);
+  background-color:var(--main-success);
+  border-color:var(--main-success);
 }
 .btn-warning {
-  background-color: var(--main-warning-color);
-  border-color: var(--main-warning-color);
+  background-color:var(--main-warning);
+  border-color:var(--main-warning);
 }
-.btn.btn-success.clock {
-  background-color: var(--main-success-color);
+.btn.btn-success.clock { background-color:var(--main-success) }
+.btn.btn-danger.clock { background-color:var(--main-danger) }
+.btn.day {
+  background-color:var(--main-primary);
+  border-color:var(--main-primary);
+  color:var(--main-light);
 }
-.btn.btn-danger.clock {
-  background-color: var(--main-danger-color);
-}
-.btn.day{
-  background-color: var(--main-primary-color);
-  border-color: var(--main-primary-color);
-  color: var(--main-light-color);
-}
-.btn.day:hover{
-  background-color: var(--main-info-color);
-  border-color: var(--main-info-color);
-  color: var(--main-light-color);
+.btn.day:hover {
+  background-color:var(--main-info);
+  border-color:var(--main-info);
+  color:var(--main-light);
 }
 .calendar {
   border:1px solid #333;
   background-color:#161515;
 }
-.calendar.day { color: var(--main-dark-color) }
-.calendar.selectDay, .fixed.calendar{
-  background-color: var(--main-warning-color);
-  color: var(--main-light-color);
-  border-color: var(--main-warning-color);
+.calendar.day { color:var(--main-dark) }
+.calendar.selectDay,
+.fixed.calendar {
+  background-color:var(--main-warning);
+  color:var(--main-light);
+  border-color:var(--main-warning);
 }
-.calendar.selectDay:hover{
-  background-color: var(--main-warning-color-hover);
-  border-color: var(--main-warning-color);
-  color: var(--main-light-color);
+.calendar.selectDay:hover {
+  background-color:var(--main-warning-hover);
+  border-color:var(--main-warning);
+  color:var(--main-light);
 }
-.calendar.selectDay.weekend,.fixed.calendar.weekend {
-  background-color: var(--main-danger-color);
-  border-color: var(--main-danger-color);
+.calendar.selectDay.weekend,
+.fixed.calendar.weekend {
+  background-color:var(--main-danger);
+  border-color:var(--main-danger);
 }
 .calendar.selectDay.weekend:hover {
-  background-color: var(--main-danger-color-hover);
-  border-color: var(--main-danger-color);
+  background-color:var(--main-danger-hover);
+  border-color:var(--main-danger);
 }
-.calendar.selectDay.holiday,.fixed.calendar.holiday {
-  background-color: var(--main-danger-color);
-  border-color: var(--main-danger-color);
+.calendar.selectDay.holiday,
+.fixed.calendar.holiday {
+  background-color:var(--main-danger);
+  border-color:var(--main-danger);
 }
 .calendar.selectDay.holiday:hover {
-  background-color: var(--main-danger-color-hover);
-  border-color: var(--main-danger-color);
+  background-color:var(--main-danger-hover);
+  border-color:var(--main-danger);
 }
 .calendar.selectDay.today {
-  background-color:var(--main-light-color) !important;
-  color: var(--main-dark-color);
+  background-color:var(--main-light) !important;
+  color:var(--main-dark);
 }
-.calendar.today:hover {
-  border-color: var(--main-dark-color)!important;
-}
+.calendar.today:hover { border-color:var(--main-dark) !important }
 .calendar.today.holiday {
-  background-color: var(--main-light-color);
-  color: var(--main-dark-color);
-  border-color: var(--main-danger-color);
+  background-color:var(--main-light);
+  color:var(--main-dark);
+  border-color:var(--main-danger);
 }
 .calendar.off {
-  background-color: var(--watermelon);
-  border-color: var(--watermelon);
-  color: var(--main-light-color);
+  background-color:var(--watermelon);
+  border-color:var(--watermelon);
+  color:var(--main-light);
 }
 .calendar.off:hover {
-  background-color: var(--watermelon);
-  border-color: var(--main-dark-color);
-  color: var(--main-light-color);
+  background-color:var(--watermelon);
+  border-color:var(--main-dark);
+  color:var(--main-light);
 }
 .calendar.off.holiday {
-  background-color: var(--dark-pink);
-  border-color: var(--dark-pink);
-  color: var(--main-light-color);
+  background-color:var(--dark-pink);
+  border-color:var(--dark-pink);
+  color:var(--main-light);
 }
 .calendar.off.holiday:hover {
-  background-color: var(--dark-pink);
-  border-color: var(--main-dark-color);
-  color: var(--main-light-color);
+  background-color:var(--dark-pink);
+  border-color:var(--main-dark);
+  color:var(--main-light);
 }
 .footer { background-color: var(--pale-yellow) }
 .list-group-item {
-  background-color: var(--main-light-color);
-  border-color: var(--main-warning-color);
+  background-color:var(--main-light);
+  border-color:var(--main-warning);
 }
 .list-group-item.active {
-  background-color: var(--main-warning-color);
-  border-color: var(--main-warning-color);
+  background-color:var(--main-warning);
+  border-color:var(--main-warning);
 }
 .list-group-item.active:hover {
-  background-color: var(--main-warning-color-hover);
-  border-color: var(--main-warning-color);
+  background-color:var(--main-warning-hover);
+  border-color:var(--main-warning);
 }
 .list-group-item.active .badge {
-  background-color: var(--main-light-color);
-  color: var(--main-dark-color);
+  background-color:var(--main-light);
+  color:var(--main-dark);
 }
-.modal-title, .modal-body, .panel-body, .popover { color:#333 }
-.menu a { color: var(--main-dark-color) }
-.menu-admin a { color: var(--main-danger-color) }
+.modal-title,
+.modal-body,
+.panel-body,
+.popover { color:#333 }
+.menu a { color:var(--main-dark) }
+.menu-admin a { color:var(--main-danger) }
 .modal-day {
-  background-color: var(--main-bg-color);
-  color: var(--main-dark-color);
+  background-color:var(--main-bg);
+  color:var(--main-dark);
 }
 .note {
   background-color:#0c7f7f;
