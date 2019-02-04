@@ -3,28 +3,40 @@
 /* @var $this yii\web\View */
 /* @var $model app\models\LoginForm */
 
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
+use app\widgets\fontawesome\FA;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\ActiveForm;
 
 $this->title = Yii::t('app', 'Password Reset');
 ?>
-<div class="form-group">
-    <h1><?= Yii::t('app', 'Password Reset') ?></h1>
-</div>
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="float-right mb-5">
+                    <?= Html::a(
+                        FA::icon('user') . ' ' . Yii::t('app', 'Login'),
+                        ['site/login'],
+                        ['class' => 'btn btn-outline-primary btn-sm']
+                    ) ?>
+                </div>
+                <h3 class="card-title mb-5"><?= Yii::t('app', 'Password Reset') ?></h3>
 
-<?php $form = ActiveForm::begin([
-    'layout' => 'horizontal',
-    'fieldConfig' => [
-        'template' => "{label}\n<div class=\"col-sm-3\">{input}</div>\n<div class=\"col-sm-8\">{error}</div>",
-        'labelOptions' => ['class' => 'col-sm-1 control-label'],
-    ],
-]); ?>
-    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+                <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+                    <?= $form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
-    <div class="form-group">
-        <div class="col-sm-offset-1 col-sm-11">
-            <?= Html::submitButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-primary', 'name' => 'reset-button']) ?>
+                    <div class="form-group text-center">
+                        <?= Html::submitButton(
+                            FA::icon('redo-alt') . ' ' . Yii::t('app', 'Reset'),
+                            [
+                                'class' => 'btn btn-primary btn-lg',
+                                'name' => 'reset-button',
+                            ]
+                        ) ?>
+                    </div>
+
+                <?php ActiveForm::end(); ?>
+            </div>
         </div>
     </div>
-
-<?php ActiveForm::end();
+</div>

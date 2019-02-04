@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace app\widgets\alert;
 
-use yii\bootstrap\Html;
-use yii\bootstrap\Widget;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Widget;
 use yii\di\Instance;
 use yii\web\Session;
 

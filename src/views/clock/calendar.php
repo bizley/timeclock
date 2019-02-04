@@ -1,11 +1,13 @@
 <?php
 
-use yii\bootstrap\Html;
+use app\models\Clock;
+use app\widgets\fontawesome\FA;
+use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
 /**
  * @var $this yii\web\View
- * @var $session \app\models\Clock
+ * @var $session Clock
  * @var $clock array
  * @var $months array
  * @var $month int
@@ -55,35 +57,29 @@ $this->registerJs(<<<JS
 $(".selectDay")
     .click(function () {
         let calendar = $(this);
-        let year = calendar.data("year");
-        let month = calendar.data("month");
-        let day = calendar.data("day");
-        window.location.href = "$clockUrl/" + day + "/" + month + "/" + year;
+        window.location.href = "$clockUrl/" + calendar.data("day") + "/" + calendar.data("month") + "/" + calendar.data("year");
         return false;
     })
     .contextmenu(function () {
         let calendar = $(this);
-        let year = calendar.data("year");
-        let month = calendar.data("month");
-        let day = calendar.data("day");
-        window.location.href = "$offUrl/" + day + "/" + month + "/" + year;
+        window.location.href = "$offUrl/" + calendar.data("day") + "/" + calendar.data("month") + "/" + calendar.data("year");
         return false;
     });
 JS
 );
 ?>
-<div class="form-group">
+<div class="form-group mt-3">
     <h1><?= Yii::t('app', 'Calendar') ?></h1>
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-lg-3">
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
         <?= Html::beginForm(['clock/calendar'], 'get'); ?>
             <div class="form-group">
-                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control']) ?>
+                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -93,59 +89,50 @@ JS
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <?= Html::submitButton('<i class="glyphicon glyphicon-play"></i>', ['class' => 'btn btn-warning btn-block']) ?>
+                        <?= Html::submitButton(FA::icon('play'), ['class' => 'btn btn-warning btn-block']) ?>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="form-group btn-group btn-block months" role="group">
                         <?= Html::a(
-                                "<i class=\"glyphicon glyphicon-step-backward\"></i> $previous",
-                                ['calendar', 'month' => $previousMonth, 'year' => $previousYear],
-                                ['class' => 'btn btn-primary btn-block']
-                        ) ?>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <?= Html::a(
-                                "$next <i class=\"glyphicon glyphicon-step-forward\"></i>",
-                                ['calendar', 'month' => $nextMonth, 'year' => $nextYear],
-                                ['class' => 'btn btn-primary btn-block']
+                            FA::icon('step-backward') . $previous,
+                            ['calendar', 'month' => $previousMonth, 'year' => $previousYear],
+                            ['class' => 'btn btn-primary']
+                        ) ?><?= Html::a(
+                            FA::icon('step-forward') . $next,
+                            ['calendar', 'month' => $nextMonth, 'year' => $nextYear],
+                            ['class' => 'btn btn-primary']
                         ) ?>
                     </div>
                 </div>
             </div>
         <?= Html::endForm(); ?>
-        <div class="form-group">
+        <div class="form-group mb-5">
             <?= Html::a(
-                    '<i class="glyphicon glyphicon-list"></i> ' . Yii::t('app', 'Switch To History'),
-                    ['history', 'month' => $month, 'year' => $year],
-                    ['class' => 'btn btn-info btn-block']
+                FA::icon('history') . ' ' . Yii::t('app', 'Switch To History'),
+                ['history', 'month' => $month, 'year' => $year],
+                ['class' => 'btn btn-info btn-block']
             ) ?>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="form-group">
-            <div class="pull-right">
-                <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-xs">
-                    <i class="glyphicon glyphicon-plus"></i> <?= Yii::t('app', 'Add Session') ?>
+            <div class="float-right">
+                <a href="<?= Url::to(['clock/add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-success btn-sm">
+                    <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
                 </a>
-                <a href="<?= Url::to(['clock/off-add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-warning btn-xs">
-                    <i class="glyphicon glyphicon-plus-sign"></i> <?= Yii::t('app', 'Add Off-Time') ?>
+                <a href="<?= Url::to(['clock/off-add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-warning btn-sm">
+                    <?= FA::icon('plus-circle') ?> <?= Yii::t('app', 'Add Off-Time') ?>
                 </a>
             </div>
             <?= $months[$month] ?> <?= $year ?>
         </div>
         <div class="form-group">
-            <div class="calendar day"><?= Yii::t('app', 'Mon') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Tue') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Wed') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Thu') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Fri') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Sat') ?></div>
-            <div class="calendar day"><?= Yii::t('app', 'Sun') ?></div>
+            <?php foreach (Clock::days() as $day): ?>
+                <div class="calendar day"><?= $day ?></div>
+            <?php endforeach; ?>
             <div class="clearfix"></div>
             <?php
             $dayOfWeek = $firstDayInMonth;
@@ -154,15 +141,17 @@ JS
                     <?= $dayOfWeek > 5 ? 'weekend' : '' ?>
                     <?= in_array($day, $holidays, true) ? 'holiday' : '' ?>
                     <?= in_array($day, $offDays, true) ? 'off' : '' ?>
-                    <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>" style="<?= $day === 1 && $firstDayInMonth !== 1
-                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 6 + 3) . 'px + ' . (($firstDayInMonth - 1) * 13) . '%'
+                    <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>"
+                     style="<?= $day === 1 && $firstDayInMonth !== 1
+                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>" data-year="<?= $year ?>" data-month="<?= $month ?>" data-day="<?= $day ?>">
+                    <span class="float-right d-block d-md-none"><?= Clock::days()[$dayOfWeek] ?></span>
                     <?= $day ?>
                     <?php if (!array_key_exists($day, $clockDays)): ?>
                         <p>&nbsp;</p><p>&nbsp;</p>
                     <?php else: ?>
-                        <p><small><i class="glyphicon glyphicon-play"></i></small> <?= $clockDays[$day][0] ?></p>
-                        <p><small><i class="glyphicon glyphicon-stop"></i></small> <?= $clockDays[$day][1] ?></p>
+                        <p class="ml-3 ml-md-0"><small><?= FA::icon('play') ?></small> <?= $clockDays[$day][0] ?></p>
+                        <p><small><?= FA::icon('stop') ?></small> <?= $clockDays[$day][1] ?></p>
                     <?php endif; ?>
                 </div>
             <?php
@@ -177,7 +166,7 @@ JS
         <div class="form-group"><div class="clearfix"></div></div>
         <div class="form-group">
             <p class="text-muted small">
-                <i class="glyphicon glyphicon-info-sign"></i> <?= Yii::t('app', 'Left-click day to add session. Right-click day to add off-time.') ?>
+                <?= FA::icon('info-circle') ?> <?= Yii::t('app', 'Left-click day to add session. Right-click day to add off-time.') ?>
             </p>
         </div>
     </div>

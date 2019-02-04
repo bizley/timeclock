@@ -6,8 +6,8 @@ namespace app\widgets\theme;
 
 use app\assets\AppAsset;
 use Yii;
-use yii\bootstrap\Html;
-use yii\bootstrap\Widget;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Widget;
 use yii\helpers\Url;
 
 /**
@@ -35,11 +35,11 @@ class Theme extends Widget
                     null,
                     ['' => Yii::t('app', 'Switch theme')] + array_combine($themes, $themes),
                     [
-                        'class' => 'form-control input-sm',
+                        'class' => 'form-control form-control-sm custom-select',
                         'id' => 'themeSwitcher'
                     ]
                 ),
-                ['class' => 'pull-right']
+                ['class' => 'float-right']
             );
         }
 

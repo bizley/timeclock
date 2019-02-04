@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace app\widgets\modal;
 
-use yii\bootstrap\BootstrapPluginAsset;
-use yii\bootstrap\Html;
-use yii\bootstrap\Widget;
+use yii\bootstrap4\BootstrapPluginAsset;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Widget;
 
 /**
  * Class Day
@@ -51,7 +51,7 @@ JS
         return Html::a(
             $initials,
             ['/admin/day', 'day' => $day, 'month' => $month, 'year' => $year, 'employee' => $userId],
-            ['class' => 'btn btn-primary btn-xs day']
+            ['class' => 'badge badge-primary day']
         );
     }
 
@@ -71,7 +71,7 @@ JS
                         ['class' => 'modal-content modal-day']
                     ),
                     [
-                        'class' => 'modal-dialog modal-lg',
+                        'class' => 'modal-dialog modal-lg modal-dialog-centered',
                         'role' => 'document',
                     ]
                 ),
