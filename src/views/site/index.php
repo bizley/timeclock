@@ -80,8 +80,8 @@ $this->title = 'Timeclock';
             <div class="form-group">
                 <a href="<?= Url::to([
                     'clock/history',
-                    'm' => Yii::$app->formatter->asDate($oldestOpened->clock_in, 'M'),
-                    'y' => Yii::$app->formatter->asDate($oldestOpened->clock_in, 'y'),
+                    'month' => Yii::$app->formatter->asDate($oldestOpened->clock_in, 'M'),
+                    'year' => Yii::$app->formatter->asDate($oldestOpened->clock_in, 'y'),
                 ]) ?>" class="btn btn-warning">
                     <?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'Old sessions have not been ended') ?>
                 </a>
