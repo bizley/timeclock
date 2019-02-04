@@ -7,7 +7,7 @@
 
 Simple work time clocking service built on [Yii 2 framework](https://www.yiiframework.com).
 
-![screen](https://bizley.github.io/timeclock/timeclock.png)
+![screen](https://bizley.github.io/timeclock/tc-dark.png)
 
 ## Installation
 
@@ -58,6 +58,7 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 - holidays
 - admin section
 - REST API
+- Bootstrap 4 layout
   
 ## General help
 
@@ -69,3 +70,13 @@ I really don't want to point obvious links with solutions from there.
 ## Usage of this project
 
 You can use this project in whatever way you like as long as you mention where did you get it from.
+
+## Screenshots
+
+![screen2](https://bizley.github.io/timeclock/tc-light.png)
+
+![screen3](https://bizley.github.io/timeclock/tc-sunlight.png)
+
+![screen4](https://bizley.github.io/timeclock/tc-history.png)
+
+![screen5](https://bizley.github.io/timeclock/tc-calendar.png)
