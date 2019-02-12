@@ -210,7 +210,7 @@ class ClockController extends BaseController
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id, $stay = false): Response
+    public function actionDelete($id, bool $stay = false): Response
     {
         $clock = Clock::find()->where([
             'id' => (int) $id,
