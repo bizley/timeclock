@@ -49,15 +49,16 @@ class BaseController extends Controller
 
     /**
      * Overloaded goBack() function with extra stayOnPage param.
-     * If stayOnPage is false it calling parent goBack(), when stayOnPage is true it redirect to url that is stored in
+     * If stayOnPage is false it's calling parent goBack(), when stayOnPage is true it redirects to URL that is stored in
      * session with key 'rememberedUrl'.
      *
      * @param null|string $defaultUrl
      * @param bool $stayOnPage
      * @return Response
      */
-    public function goBack($defaultUrl = null, $stayOnPage = false): Response
-    {   if (!$stayOnPage) {
+    public function goBack($defaultUrl = null, bool $stayOnPage = false): Response
+    {
+        if (!$stayOnPage) {
             return parent::goBack($defaultUrl);
         }
         return $this->redirect(\Yii::$app->getSession()->get('rememberedUrl', $defaultUrl));
