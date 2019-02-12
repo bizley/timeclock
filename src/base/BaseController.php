@@ -15,7 +15,6 @@ use yii\web\Response;
  */
 class BaseController extends Controller
 {
-
     /**
      * Returns controller's ids to remember
      * @return array
@@ -51,16 +50,17 @@ class BaseController extends Controller
      * Overloaded goBack() function with extra stayOnPage param.
      * If stayOnPage is false it's calling parent goBack(), when stayOnPage is true it redirects to URL that is stored in
      * session with key 'rememberedUrl'.
-     *
      * @param null|string $defaultUrl
      * @param bool $stayOnPage
      * @return Response
+     * @since 2.1.0
      */
     public function goBack($defaultUrl = null, bool $stayOnPage = false): Response
     {
         if (!$stayOnPage) {
             return parent::goBack($defaultUrl);
         }
+
         return $this->redirect(\Yii::$app->getSession()->get('rememberedUrl', $defaultUrl));
     }
 }
