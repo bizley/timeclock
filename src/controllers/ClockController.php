@@ -167,7 +167,6 @@ class ClockController extends BaseController
      * @param string|int|null $month
      * @param string|int|null $year
      * @return string
-     * @throws \yii\base\InvalidConfigException
      */
     public function actionCalendar($month = null, $year = null): string
     {

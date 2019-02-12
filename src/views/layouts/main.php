@@ -7,6 +7,7 @@ use app\assets\AppAsset;
 use app\models\User;
 use app\widgets\alert\Alert;
 use app\widgets\confirm\Confirm;
+use app\widgets\fontawesome\FA;
 use app\widgets\modal\Clock;
 use app\widgets\modal\Day;
 use app\widgets\theme\Theme;
@@ -21,7 +22,7 @@ $this->beginPage(); ?>
 <head>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?= Html::csrfMetaTags() ?>
     <title><?= Yii::$app->params['company'] . ' | ' . Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -29,28 +30,48 @@ $this->beginPage(); ?>
 <body>
 <?php $this->beginBody() ?>
 
-<div id="bg"><i class="glyphicon glyphicon-time"></i></div>
+<div id="bg"><?= FA::icon('clock', ['style' => 'far']) ?></div>
 
 <div id="main">
     <div class="wrap">
         <div class="container">
             <?= Alert::widget() ?>
             <?php if (!Yii::$app->user->isGuest): ?>
-                <ul class="pull-right list-inline menu">
-                    <li><a href="<?= Url::to(['profile/index']) ?>"><i class="glyphicon glyphicon-user"></i> <?= Html::encode(Yii::$app->user->identity->name) ?></a></li>
-                    <li><a href="<?= Url::to(['site/index']) ?>"><i class="glyphicon glyphicon-play"></i> <?= Yii::t('app', 'Current Session') ?></a></li>
-                    <li><a href="<?= Url::to(['clock/add']) ?>"><i class="glyphicon glyphicon-plus"></i> <?= Yii::t('app', 'Add Session') ?></a></li>
-                    <li><a href="<?= Url::to(['clock/off-add']) ?>"><i class="glyphicon glyphicon-plus-sign"></i> <?= Yii::t('app', 'Add Off-Time') ?></a></li>
-                    <li><a href="<?= Url::to(['clock/history']) ?>"><i class="glyphicon glyphicon-list"></i> <?= Yii::t('app', 'History') ?></a></li>
-                    <li><a href="<?= Url::to(['clock/calendar']) ?>"><i class="glyphicon glyphicon-calendar"></i> <?= Yii::t('app', 'Calendar') ?></a></li>
-                    <li><a href="<?= Url::to(['site/logout']) ?>" data-method="post"><i class="glyphicon glyphicon-log-out"></i> <?= Yii::t('app', 'Log Out') ?></a></li>
+                <ul class="float-right list-inline menu">
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['profile/index']) ?>"><?= FA::icon('user') ?> <?= Html::encode(Yii::$app->user->identity->name) ?></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['site/index']) ?>"><?= FA::icon('play-circle') ?> <?= Yii::t('app', 'Current Session') ?></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['clock/add']) ?>"><?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['clock/off-add']) ?>"><?= FA::icon('plus-circle') ?> <?= Yii::t('app', 'Add Off-Time') ?></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['clock/history']) ?>"><?= FA::icon('history') ?> <?= Yii::t('app', 'History') ?></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['clock/calendar']) ?>"><?= FA::icon('calendar-alt') ?> <?= Yii::t('app', 'Calendar') ?></a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="<?= Url::to(['site/logout']) ?>" data-method="post"><?= FA::icon('sign-out-alt') ?> <?= Yii::t('app', 'Log Out') ?></a>
+                    </li>
                 </ul>
                 <?php if (Yii::$app->user->identity->role === User::ROLE_ADMIN): ?>
                     <div class="clearfix"></div>
-                    <ul class="pull-right list-inline menu-admin">
-                        <li><a href="<?= Url::to(['admin/index']) ?>"><i class="glyphicon glyphicon-user"></i> <?= Yii::t('app', 'Employees') ?></a></li>
-                        <li><a href="<?= Url::to(['admin/history']) ?>"><i class="glyphicon glyphicon-list"></i> <?= Yii::t('app', 'Sessions') ?></a></li>
-                        <li><a href="<?= Url::to(['admin/calendar']) ?>"><i class="glyphicon glyphicon-calendar"></i> <?= Yii::t('app', 'Overall Calendar') ?></a></li>
+                    <ul class="float-right list-inline menu-admin">
+                        <li class="list-inline-item">
+                            <a href="<?= Url::to(['admin/index']) ?>"><?= FA::icon('users') ?> <?= Yii::t('app', 'Employees') ?></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="<?= Url::to(['admin/history']) ?>"><?= FA::icon('list-alt') ?> <?= Yii::t('app', 'Sessions') ?></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="<?= Url::to(['admin/calendar']) ?>"><?= FA::icon('calendar-alt') ?> <?= Yii::t('app', 'Overall Calendar') ?></a>
+                        </li>
                     </ul>
                 <?php endif; ?>
             <?php endif; ?>

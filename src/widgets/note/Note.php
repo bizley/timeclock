@@ -6,9 +6,9 @@ namespace app\widgets\note;
 
 use app\models\NoteInterface;
 use Yii;
-use yii\bootstrap\BootstrapPluginAsset;
-use yii\bootstrap\Html;
-use yii\bootstrap\Widget;
+use yii\bootstrap4\BootstrapPluginAsset;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Widget;
 
 /**
  * Class Note

@@ -38,6 +38,18 @@ class ClockFormTest extends DbTestCase
                 'clock_in' => 1540000000,
                 'clock_out' => 1540001000,
             ],
+            [
+                'id' => 2,
+                'user_id' => 1,
+                'clock_in' => 1546434000, // 13:00
+                'clock_out' => 1546440300, // 14:45
+            ],
+            [
+                'id' => 3,
+                'user_id' => 1,
+                'clock_in' => 1546441800, // 15:10
+                'clock_out' => 1546447200, // 16:40
+            ],
         ],
     ];
 
@@ -115,6 +127,40 @@ class ClockFormTest extends DbTestCase
     /**
      * @return array
      */
+    public function prepareTimestampProvider(): array
+    {
+        return [
+            ['UTC', [1563202800, 1547564400]],
+            ['Europe/Warsaw', [1563195600, 1547560800]],
+            ['America/Chicago', [1563220800, 1547586000]],
+        ];
+    }
+
+    /**
+     * @dataProvider prepareTimestampProvider
+     * @param string $timezone
+     * @param array $expected
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testPrepareTimestamp(string $timezone, array $expected): void
+    {
+        Yii::$app->timeZone = $timezone;
+
+        $clockForm = new ClockForm(new Clock([
+            'user_id' => 1,
+            'clock_in' => 1,
+        ]));
+
+        $this->assertSame($expected[0], $clockForm->prepareTimestamp(2019, 7, 15, 15, 0));
+        $this->assertSame($expected[1], $clockForm->prepareTimestamp(2019, 1, 15, 15, 0));
+
+        Yii::$app->timeZone = 'UTC';
+    }
+
+    /**
+     * @return array
+     */
     public function maxDayProvider(): array
     {
         return [
@@ -131,6 +177,7 @@ class ClockFormTest extends DbTestCase
      * @param int $year
      * @param int $month
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testMaxDay(string $expected, int $year, int $month): void
     {
@@ -150,6 +197,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyStartOverlap(): void
     {
@@ -165,6 +213,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyStartNoOverlap(): void
     {
@@ -180,6 +229,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEnd(): void
     {
@@ -198,6 +248,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEndMinutesMissing(): void
     {
@@ -216,6 +267,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEndHourMissing(): void
     {
@@ -234,6 +286,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEndSwapped(): void
     {
@@ -252,6 +305,7 @@ class ClockFormTest extends DbTestCase
 
     /**
      * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
      */
     public function testVerifyEndOverlap(): void
     {
@@ -303,6 +357,7 @@ class ClockFormTest extends DbTestCase
     /**
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
+     * @throws \Exception
      */
     public function testUpdateClockFail(): void
     {
@@ -347,5 +402,25 @@ class ClockFormTest extends DbTestCase
     {
         $clockForm = new ClockForm(new Clock());
         $this->assertFalse($clockForm->save());
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testUpdateWithTimezoneClock(): void
+    {
+        Yii::$app->timeZone = 'Europe/Warsaw';
+
+        $clockForm = new ClockForm(Clock::findOne(2));
+
+        $clockForm->endHour = 15;
+        $clockForm->endMinute = 50;
+
+        $this->assertTrue($clockForm->save());
+
+        $saved = Clock::findOne(2);
+
+        $this->assertSame(1546440600, $saved->clock_out);
     }
 }

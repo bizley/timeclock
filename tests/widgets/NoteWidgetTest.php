@@ -29,9 +29,6 @@ class NoteWidgetTest extends DbTestCase
     {
         $out = Note::widget(['model' => new Off(['note' => 'testNote'])]);
 
-        $this->assertEquals(
-            '<div class="note" title="Note" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="testNote"></div>',
-            $out
-        );
+        $this->assertEquals('<div class="note" title="Note" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="testNote"></div>', $out);
     }
 }

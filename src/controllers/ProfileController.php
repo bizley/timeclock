@@ -136,48 +136,6 @@ class ProfileController extends BaseController
     }
 
     /**
-     * @return Response
-     * @deprecated will be removed in 1.7.0
-     */
-    public function actionDark(): Response
-    {
-        $user = User::findOne(['id' => Yii::$app->user->id]);
-
-        if ($user === null) {
-            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
-        } else {
-            $user->theme = 'dark';
-
-            if (!$user->save()) {
-                Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
-            }
-        }
-
-        return $this->redirect(Url::previous('rememberedUrl'));
-    }
-
-    /**
-     * @return Response
-     * @deprecated will be removed in 1.7.0
-     */
-    public function actionLight(): Response
-    {
-        $user = User::findOne(['id' => Yii::$app->user->id]);
-
-        if ($user === null) {
-            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
-        } else {
-            $user->theme = 'light';
-
-            if (!$user->save()) {
-                Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
-            }
-        }
-
-        return $this->redirect(Url::previous('rememberedUrl'));
-    }
-
-    /**
      * @param string $theme
      * @return Response
      */

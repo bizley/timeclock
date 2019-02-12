@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
+use app\widgets\fontawesome\FA;
 use app\widgets\modal\Clock;
-use yii\bootstrap\Html;
+use yii\bootstrap4\Html;
 
 ?>
 <div id="<?= Clock::CLOCK_MODAL ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="<?= Clock::CLOCK_MODAL ?>Label">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <?= Html::beginForm(['clock/start']) ?>
+            <?= Html::beginForm(['/clock/start']) ?>
                 <div class="modal-header">
+                    <h4 id="<?= Clock::CLOCK_MODAL ?>Label" class="modal-title"><?= Yii::t('app', 'Confirmation required') ?></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="<?= Yii::t('app', 'Close') ?>">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 id="<?= Clock::CLOCK_MODAL ?>Label" class="modal-title"><?= Yii::t('app', 'Confirmation required') ?></h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -25,18 +26,16 @@ use yii\bootstrap\Html;
                         '',
                         [
                             'class' => 'form-control',
-                            'style' => 'resize:vertical',
                             'placeholder' => Yii::t('app', 'Optional Session Note'),
                         ]
                     ) ?>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="clockCancel" class="btn btn-outline pull-left" data-dismiss="modal">
-                        <i class="glyphicon glyphicon-ban-circle text-muted"></i> <?= Yii::t('app', 'Cancel') ?>
+                    <button type="button" id="clockCancel" class="btn btn-outline-secondary" data-dismiss="modal">
+                        <?= FA::icon('times') ?> <?= Yii::t('app', 'Cancel') ?>
                     </button>
                     <?= Html::submitButton(
-                        Html::tag('i', '', ['class' => 'glyphicon glyphicon-ok-circle'])
-                        . ' ' . Yii::t('app', 'Confirm'),
+                        FA::icon('check-circle') . ' ' . Yii::t('app', 'Confirm'),
                         [
                             'id' => 'clockOk',
                             'class' => 'btn btn-success',

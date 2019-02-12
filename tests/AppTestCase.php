@@ -41,6 +41,7 @@ abstract class AppTestCase extends \PHPUnit\Framework\TestCase
                 'basePath' => __DIR__ . '/../src',
                 'runtimePath' => __DIR__ . '/runtime',
                 'vendorPath' => __DIR__ . '/../vendor',
+                'timezone' => 'UTC',
                 'components' => [
                     'assetManager' => [
                         'basePath' => __DIR__ . '/runtime/assets',
@@ -67,5 +68,19 @@ abstract class AppTestCase extends \PHPUnit\Framework\TestCase
     public static function tearDownAfterClass(): void
     {
         \Yii::$app = null;
+    }
+
+    /**
+     * Asserting two strings equality ignoring line endings.
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    protected function assertEqualsWithoutLineEndings(string $expected, string $actual, string $message = ''): void
+    {
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual = str_replace("\r\n", "\n", $actual);
+
+        $this->assertEquals($expected, $actual, $message);
     }
 }

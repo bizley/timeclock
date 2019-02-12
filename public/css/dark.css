@@ -1,37 +1,43 @@
-html, body {
-    background-color:#212020;
-    color:#ccc;
+:root {
+  --light-gray:#333;
+  --lighter-gray:#191818;
+  --dark-gray:#161515;
+  --semi-white:#ccc;
 }
-#bg { color:#191818 }
-.footer { background-color:#161515 }
+html, body {
+  background-color:#212020;
+  color:var(--semi-white);
+}
+#bg { color:var(--lighter-gray) }
+.footer { background-color:var(--dark-gray) }
 .menu a { color:#eee }
 .menu-admin a { color:#81ccd3 }
 .list-group-item {
-    background-color:#161515;
-    border-color:#333;
+  background-color:var(--dark-gray);
+  border-color:var(--light-gray);
 }
 .calendar {
-    border:1px solid #333;
-    background-color:#161515;
+  border:1px solid var(--light-gray);
+  background-color:var(--dark-gray);
 }
 .calendar.weekend { background-color:#1a1a1a }
 .calendar.holiday { background-color:#b56363 }
 .calendar.today {
-    background-color:#ccc !important;
-    color:#333;
+  background-color:var(--semi-white) !important;
+  color:var(--light-gray);
 }
 .calendar.today.holiday { background-color:#dd9494 !important }
 .calendar.off { background-color:#222 }
 .calendar.off.holiday {
-    background-color:#d69191;
-    color:#333;
+  background-color:#d69191;
+  color:var(--light-gray);
 }
-.modal-title, .modal-body, .panel-body, .popover { color:#333 }
+.modal-title, .modal-body, .panel-body, .popover { color:var(--light-gray) }
 .note {
-    background-color:#0c7f7f;
-    box-shadow:inset 0 0 2px 1px #0ff, 0 0 20px 5px #0ff;
+  background-color:#0c7f7f;
+  box-shadow:inset 0 0 2px 1px #0ff, 0 0 20px 5px #0ff;
 }
 .modal-day {
-    background-color:#333;
-    color:#ccc;
+  background-color:var(--light-gray);
+  color:var(--semi-white);
 }

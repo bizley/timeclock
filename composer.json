@@ -6,9 +6,10 @@
   "minimum-stability": "stable",
   "require": {
     "ext-mbstring": "*",
+    "npm-asset/fortawesome--fontawesome-free": "^5.6",
     "php": ">=7.1.0",
     "yiisoft/yii2": ">=2.0.15.1 <2.1.0",
-    "yiisoft/yii2-bootstrap": "^2.0",
+    "yiisoft/yii2-bootstrap4": "^2.0",
     "yiisoft/yii2-swiftmailer": "^2.0"
   },
   "require-dev": {

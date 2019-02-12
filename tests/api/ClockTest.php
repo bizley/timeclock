@@ -37,6 +37,18 @@ class ClockTest extends ApiTestCase
                 'clock_in' => 10,
                 'clock_out' => 100,
             ],
+            [
+                'id' => 2,
+                'user_id' => 1,
+                'clock_in' => 1546434000, // 13:00
+                'clock_out' => 1546440300, // 14:45
+            ],
+            [
+                'id' => 3,
+                'user_id' => 1,
+                'clock_in' => 1546441800, // 15:10
+                'clock_out' => 1546447200, // 16:40
+            ],
         ],
     ];
 
@@ -115,5 +127,15 @@ class ClockTest extends ApiTestCase
         $this->assertTrue($clock->save());
 
         $this->assertSame(1000, Clock::findOne(1)->clockOut);
+    }
+
+    public function testUpdateSessionBefore(): void
+    {
+        $clock = Clock::findOne(2);
+
+        $clock->scenario = 'update';
+        $clock->clockOut = 1546440600; // 14:50
+
+        $this->assertTrue($clock->save());
     }
 }
