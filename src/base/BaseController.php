@@ -7,6 +7,7 @@ namespace app\base;
 use yii\base\Action;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\Response;
 
 /**
  * Class BaseController
@@ -44,5 +45,21 @@ class BaseController extends Controller
         }
 
         return true;
+    }
+
+    /**
+     * Overloaded goBack() function with extra stayOnPage param.
+     * If stayOnPage is false it calling parent goBack(), when stayOnPage is true it redirect to url that is stored in
+     * session with key 'rememberedUrl'.
+     *
+     * @param null|string $defaultUrl
+     * @param bool $stayOnPage
+     * @return Response
+     */
+    public function goBack($defaultUrl = null, $stayOnPage = false): Response
+    {   if (!$stayOnPage) {
+            return parent::goBack($defaultUrl);
+        }
+        return $this->redirect(\Yii::$app->getSession()->get('rememberedUrl', $defaultUrl));
     }
 }
