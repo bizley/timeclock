@@ -205,11 +205,12 @@ class ClockController extends BaseController
 
     /**
      * @param string|int $id
+     * @param bool $stay
      * @return Response
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id): Response
+    public function actionDelete($id, bool $stay = false): Response
     {
         $clock = Clock::find()->where([
             'id' => (int) $id,
@@ -225,8 +226,7 @@ class ClockController extends BaseController
                 Yii::$app->alert->success(Yii::t('app', 'Session has been deleted.'));
             }
         }
-
-        return $this->goBack();
+        return $this->goBack(null, $stay);
     }
 
     /**

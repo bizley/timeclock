@@ -97,7 +97,7 @@ $this->title = Yii::t('app', 'History');
                             <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
                         </a>
                     <?php endif; ?>
-                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id]) ?>"
+                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id, 'stay' => true]) ?>"
                        class="btn btn-outline-danger btn-sm"
                         <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
                         <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
