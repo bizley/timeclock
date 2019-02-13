@@ -29,6 +29,15 @@ class OffTest extends ApiTestCase
                 'role' => User::ROLE_EMPLOYEE,
                 'status' => User::STATUS_ACTIVE,
             ],
+            [
+                'id' => 2,
+                'email' => 'employee2@company.com',
+                'name' => 'employee2',
+                'auth_key' => 'test2',
+                'password_hash' => 'test2',
+                'role' => User::ROLE_EMPLOYEE,
+                'status' => User::STATUS_ACTIVE,
+            ],
         ],
         'off' => [
             [
@@ -36,6 +45,12 @@ class OffTest extends ApiTestCase
                 'user_id' => 1,
                 'start_at' => 1543968000, // 2018-12-05 00:00:00
                 'end_at' => 1544140740, // 2018-12-06 23:59:00
+            ],
+            [
+                'id' => 2,
+                'user_id' => 2,
+                'start_at' => 500,
+                'end_at' => 10000,
             ],
         ],
     ];
@@ -66,6 +81,16 @@ class OffTest extends ApiTestCase
         $this->assertSame('End At must be greater than "Start At".', $off->getFirstError('endAt'));
     }
 
+    public function testOverlappingWithAnotherUser(): void
+    {
+        $off = new Off();
+
+        $off->startAt = 600;
+        $off->endAt = 9000;
+
+        $this->assertTrue($off->validate());
+    }
+
     public function testStartAtOverlapping(): void
     {
         $off = new Off();
@@ -86,6 +111,17 @@ class OffTest extends ApiTestCase
 
         $this->assertFalse($off->validate());
         $this->assertSame('Can not end off-time because it overlaps with another off-time.', $off->getFirstError('endAt'));
+    }
+
+    public function testBetweenOverlapping(): void
+    {
+        $off = new Off();
+
+        $off->startAt = 1533968000;
+        $off->endAt = 1554140740;
+
+        $this->assertFalse($off->validate());
+        $this->assertSame('Can not modify off-time because it overlaps with another off-time.', $off->getFirstError('endAt'));
     }
 
     public function testUpdateOffTime(): void

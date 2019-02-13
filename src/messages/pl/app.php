@@ -42,6 +42,8 @@ return [
     'Can not find session of given ID.' => 'Nie znaleziono sesji o podanym ID.',
     'Can not find theme of given name.' => 'Nie znaleziono skórki o podanej nazwie.',
     'Can not find user of given ID.' => 'Nie znaleziono użytkownika o podanym ID.',
+    'Can not modify off-time because it overlaps with another off-time.' => 'Nie można zmodyfikować wolnego, ponieważ pokrywa się ono z innym.',
+    'Can not modify session because it overlaps with another ended session.' => 'Nie można zmodyfikować sesji, ponieważ pokrywa się ona z inną już zamkniętą.',
     'Can not start off-time because it overlaps with another off-time.' => 'Nie można rozpocząć wolnego, ponieważ pokrywa się ono z innym.',
     'Can not start session because it overlaps with another ended session.' => 'Nie można rozpocząć sesji, ponieważ pokrywa się ona z inną już zamkniętą.',
     'Cancel' => 'Anuluj',

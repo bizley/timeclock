@@ -96,8 +96,19 @@ class Clock extends ActiveRecord implements NoteInterface
         $conditions = [
             'and',
             ['user_id' => Yii::$app->user->id],
-            ['<=', 'clock_in', $this->clock_out],
-            ['>=', 'clock_out', $this->clock_out],
+            [
+                'or',
+                [
+                    'and',
+                    ['<=', 'clock_in', $this->clock_out],
+                    ['>=', 'clock_out', $this->clock_out],
+                ],
+                [
+                    'and',
+                    ['>=', 'clock_in', $this->clock_in],
+                    ['<=', 'clock_out', $this->clock_out],
+                ],
+            ],
         ];
 
         return static::find()->where($conditions)->exists();

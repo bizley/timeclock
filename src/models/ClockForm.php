@@ -107,6 +107,7 @@ class ClockForm extends Model
             [['startMinute', 'endMinute'], 'number', 'min' => 0, 'max' => 59],
             [['startHour', 'startMinute'], 'verifyStart'],
             [['endHour', 'endMinute'], 'verifyEnd'],
+            [['endHour', 'endMinute'], 'verifyBetween'],
             [['note'], 'string'],
         ];
     }
@@ -227,6 +228,29 @@ class ClockForm extends Model
             }
 
             if (!$this->hasErrors() && Clock::find()->where($conditions)->exists()) {
+                $this->addError('endHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
+            }
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function verifyBetween(): void
+    {
+        if ($this->endMinute !== '' && $this->endHour !== '' && $this->endMinute !== null && $this->endHour !== null && !$this->hasErrors()) {
+            $conditions = [
+                'and',
+                ['user_id' => Yii::$app->user->id],
+                ['>=', 'clock_in', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)],
+                ['<=', 'clock_out', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)],
+            ];
+
+            if ($this->session->id !== null) {
+                $conditions[] = ['<>', 'id', $this->session->id];
+            }
+
+            if (Clock::find()->where($conditions)->exists()) {
                 $this->addError('endHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
             }
         }

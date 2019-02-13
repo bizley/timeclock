@@ -58,6 +58,7 @@ class ClockTest extends DbTestCase
     {
         $clock = new Clock([
             'user_id' => 1,
+            'clock_in' => 5,
         ]);
 
         $clock->clock_out = 10;
@@ -71,6 +72,9 @@ class ClockTest extends DbTestCase
 
         $clock->clock_out = 1;
         $this->assertFalse($clock->isAnotherSessionSaved());
+
+        $clock->clock_out = 150;
+        $this->assertTrue($clock->isAnotherSessionSaved());
     }
 
     public function testStart(): void
