@@ -240,4 +240,21 @@ class OffFormTest extends DbTestCase
 
         $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDay'));
     }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public function testVerifyBetweenOverlap(): void
+    {
+        $offForm = new OffForm(new Off([
+            'user_id' => 1,
+            'start_at' => 1543967000,
+            'end_at' => 1544141740,
+        ]));
+
+        $offForm->verifyBetween();
+
+        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDay'));
+    }
 }
