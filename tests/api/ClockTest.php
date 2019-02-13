@@ -29,6 +29,15 @@ class ClockTest extends ApiTestCase
                 'role' => User::ROLE_EMPLOYEE,
                 'status' => User::STATUS_ACTIVE,
             ],
+            [
+                'id' => 2,
+                'email' => 'employee2@company.com',
+                'name' => 'employee2',
+                'auth_key' => 'test2',
+                'password_hash' => 'test2',
+                'role' => User::ROLE_EMPLOYEE,
+                'status' => User::STATUS_ACTIVE,
+            ],
         ],
         'clock' => [
             [
@@ -48,6 +57,12 @@ class ClockTest extends ApiTestCase
                 'user_id' => 1,
                 'clock_in' => 1546441800, // 15:10
                 'clock_out' => 1546447200, // 16:40
+            ],
+            [
+                'id' => 4,
+                'user_id' => 2,
+                'clock_in' => 200,
+                'clock_out' => 300,
             ],
         ],
     ];
@@ -84,6 +99,16 @@ class ClockTest extends ApiTestCase
         $this->assertSame('Clock Out must be greater than "Clock In".', $clock->getFirstError('clockOut'));
     }
 
+    public function testClockOverlappingWithOtherUsers(): void
+    {
+        $clock = new Clock();
+
+        $clock->clockIn = 210;
+        $clock->clockOut = 290;
+
+        $this->assertTrue($clock->validate());
+    }
+
     public function testClockInOverlapping(): void
     {
         $clock = new Clock();
@@ -104,6 +129,17 @@ class ClockTest extends ApiTestCase
 
         $this->assertFalse($clock->validate());
         $this->assertSame('Can not end session because it overlaps with another ended session.', $clock->getFirstError('clockOut'));
+    }
+
+    public function testClockBetweenOverlapping(): void
+    {
+        $clock = new Clock();
+
+        $clock->clockIn = 5;
+        $clock->clockOut = 150;
+
+        $this->assertFalse($clock->validate());
+        $this->assertSame('Can not modify session because it overlaps with another ended session.', $clock->getFirstError('clockOut'));
     }
 
     public function testOverMidnightSession(): void
@@ -127,6 +163,18 @@ class ClockTest extends ApiTestCase
         $this->assertTrue($clock->save());
 
         $this->assertSame(1000, Clock::findOne(1)->clockOut);
+    }
+
+    public function testUpdateSessionOverlappingWithOtherUser(): void
+    {
+        $clock = Clock::findOne(1);
+
+        $clock->scenario = 'update';
+        $clock->clockOut = 250;
+
+        $this->assertTrue($clock->save());
+
+        $this->assertSame(250, Clock::findOne(1)->clockOut);
     }
 
     public function testUpdateSessionBefore(): void

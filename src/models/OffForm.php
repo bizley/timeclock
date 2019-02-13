@@ -84,6 +84,7 @@ class OffForm extends Model
             [['startDay', 'endDay'], 'maxDay'],
             [['startDay'], 'verifyStart'],
             [['endDay'], 'verifyEnd'],
+            [['endDay'], 'verifyBetween'],
             [['note'], 'string'],
         ];
     }
@@ -160,19 +161,21 @@ class OffForm extends Model
      */
     public function verifyStart(): void
     {
-        $conditions = [
-            'and',
-            ['user_id' => Yii::$app->user->id],
-            ['<=', 'start_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
-            ['>=', 'end_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
-        ];
+        if (!$this->hasErrors()) {
+            $conditions = [
+                'and',
+                ['user_id' => Yii::$app->user->id],
+                ['<=', 'start_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
+                ['>=', 'end_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
+            ];
 
-        if ($this->off->id !== null) {
-            $conditions[] = ['<>', 'id', $this->off->id];
-        }
+            if ($this->off->id !== null) {
+                $conditions[] = ['<>', 'id', $this->off->id];
+            }
 
-        if (!$this->hasErrors() && Off::find()->where($conditions)->exists()) {
-            $this->addError('startDay', Yii::t('app', 'Selected day overlaps another off-time.'));
+            if (Off::find()->where($conditions)->exists()) {
+                $this->addError('startDay', Yii::t('app', 'Selected day overlaps another off-time.'));
+            }
         }
     }
 
@@ -184,19 +187,39 @@ class OffForm extends Model
         if ($this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)
             >= $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59)) {
             $this->addError('endDay', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
-        } else {
+        } elseif (!$this->hasErrors()) {
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'start_at', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
-                ['>=', 'end_at', (int)Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+                ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+                ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
             ];
 
             if ($this->off->id !== null) {
                 $conditions[] = ['<>', 'id', $this->off->id];
             }
 
-            if (!$this->hasErrors() && Off::find()->where($conditions)->exists()) {
+            if (Off::find()->where($conditions)->exists()) {
+                $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
+            }
+        }
+    }
+
+    public function verifyBetween(): void
+    {
+        if (!$this->hasErrors()) {
+            $conditions = [
+                'and',
+                ['user_id' => Yii::$app->user->id],
+                ['>=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))],
+                ['<=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+            ];
+
+            if ($this->off->id !== null) {
+                $conditions[] = ['<>', 'id', $this->off->id];
+            }
+
+            if (Off::find()->where($conditions)->exists()) {
                 $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
             }
         }

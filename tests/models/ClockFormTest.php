@@ -250,6 +250,23 @@ class ClockFormTest extends DbTestCase
      * @throws \yii\base\InvalidConfigException
      * @throws \Exception
      */
+    public function testVerifyBetweenOverlap(): void
+    {
+        $clockForm = new ClockForm(new Clock([
+            'user_id' => 1,
+            'clock_in' => 1546433000,
+            'clock_out' => 1546441300,
+        ]));
+
+        $clockForm->verifyBetween();
+
+        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
+    }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
     public function testVerifyEndMinutesMissing(): void
     {
         $clockForm = new ClockForm(new Clock([

@@ -35,6 +35,7 @@ class Off extends \app\models\Off
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['startAt'], 'checkStartAt'],
             [['endAt'], 'checkEndAt'],
+            [['endAt'], 'checkBetween'],
         ];
     }
 
@@ -117,6 +118,7 @@ class Off extends \app\models\Off
 
             $conditions = [
                 'and',
+                ['user_id' => Yii::$app->user->id],
                 ['<=', 'start_at', $this->startAt],
                 ['>=', 'end_at', $this->startAt],
             ];
@@ -141,6 +143,7 @@ class Off extends \app\models\Off
 
             $conditions = [
                 'and',
+                ['user_id' => Yii::$app->user->id],
                 ['<=', 'start_at', $this->endAt],
                 ['>=', 'end_at', $this->endAt],
             ];
@@ -151,6 +154,32 @@ class Off extends \app\models\Off
 
             if (static::find()->where($conditions)->exists()) {
                 $this->addError('endAt', Yii::t('app', 'Can not end off-time because it overlaps with another off-time.'));
+            }
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function checkBetween(): void
+    {
+        if (!$this->hasErrors()) {
+            $this->startAt = (new \DateTime(date('Y-m-d 00:00:00', $this->startAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
+            $this->endAt = (new \DateTime(date('Y-m-d 23:59:59', $this->endAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
+
+            $conditions = [
+                'and',
+                ['user_id' => Yii::$app->user->id],
+                ['>=', 'start_at', $this->startAt],
+                ['<=', 'end_at', $this->endAt],
+            ];
+
+            if ($this->scenario === 'update') {
+                $conditions[] = ['<>', 'id', $this->id];
+            }
+
+            if (static::find()->where($conditions)->exists()) {
+                $this->addError('endAt', Yii::t('app', 'Can not modify off-time because it overlaps with another off-time.'));
             }
         }
     }
