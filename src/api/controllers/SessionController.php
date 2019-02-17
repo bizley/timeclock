@@ -140,4 +140,41 @@ class SessionController extends ActiveController
 
         return $actions;
     }
+
+    /**
+     * @return DynamicModel|null|array
+     */
+    public function actionSummary()
+    {
+        $form = (new DynamicModel(['from', 'to']))
+            ->addRule(['from', 'to'], 'integer', ['min' => 0]);
+
+        $form->load(Yii::$app->request->get(), '');
+
+        if (!$form->validate()) {
+            return $form;
+        }
+
+        $from = (int) ($form->from ?? 0);
+        $to = (int) ($form->to ?? time());
+
+        if ($from > $to) {
+            $temp = $from;
+            $from = $to;
+            $to = $temp;
+        }
+
+        return [
+            'userId' => (int) Yii::$app->user->id,
+            'from' => $from,
+            'to' => $to,
+            'summary' => (int) Clock::find()->where([
+                    'and',
+                    ['user_id' => Yii::$app->user->id],
+                    ['is not', 'clock_out', null],
+                    ['>=', 'clock_in', $from],
+                    ['<=', 'clock_out', $to],
+                ])->sum('clock_out - clock_in'),
+        ];
+    }
 }

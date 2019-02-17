@@ -183,6 +183,8 @@ return [
     'Start' => 'Start',
     'Status' => 'Status',
     'Status:' => 'Status:',
+    'Summarize Sessions' => 'Podsumuj sesje',
+    'Summarize sessions time of all sessions that are closed and lasted between {FROM} and {TO} timestamps (default 0 and current timestamp, respectively).' => 'Podsumuj czas sesji pracy, które zostały zakończone i trwały pomiędzy znacznikami czasu {FROM} i {TO} (domyślnie przyjmują wartości odpowiednio: 0 i aktualny znacznik czasu).',
     'Sun' => 'Nd',
     'Switch theme' => 'Zmień skórkę',
     'Switch To Calendar' => 'Przełącz na kalendarz',

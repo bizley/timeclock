@@ -304,6 +304,42 @@ $baseUrl = Url::base(true);
         <span class="badge badge-success float-right"><?= Yii::t('app', 'Status:') ?> 204</span>
         <p>&nbsp;</p>
     <?php Accordion::end(); ?>
+
+    <?php Accordion::begin([
+        'parentId' => 'api-sessions',
+        'header' => Yii::t('app', 'Summarize Sessions') . ' <span class="badge badge-success">GET, HEAD</span>',
+    ]); ?>
+    <p><?= Yii::t('app', 'Summarize sessions time of all sessions that are closed and lasted between {FROM} and {TO} timestamps (default 0 and current timestamp, respectively).', [
+            'FROM' => Html::tag('code', 'from'),
+            'TO' => Html::tag('code', 'to')
+        ]) ?></p>
+    <p><?= Yii::t('app', 'Request example:') ?></p>
+    <p><kbd class="p-2">
+            GET <?= $baseUrl ?>/api/sessions/summary
+        </kbd></p>
+    <table class="table table-sm">
+        <tr>
+            <th><?= Yii::t('app', 'Data') ?></th>
+            <th><?= Yii::t('app', 'Value') ?></th>
+        </tr>
+        <tr>
+            <td><code>from</code></td>
+            <td><span class="badge badge-info">int</span> 0</td>
+        </tr>
+        <tr>
+            <td><code>to</code></td>
+            <td><span class="badge badge-info">int</span> 1546124340</td>
+        </tr>
+    </table>
+    <span class="badge badge-success float-right"><?= Yii::t('app', 'Status:') ?> 200</span>
+    <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
+    <pre>{
+    "userId": 1,
+    "from": 0,
+    "to": 1546124340,
+    "summary": 1705
+}</pre>
+    <?php Accordion::end(); ?>
 </div>
 
 <hr>
