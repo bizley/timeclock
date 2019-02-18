@@ -25,6 +25,21 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'History');
 
+$total = 0;
+$sessions = [];
+
+foreach ($clock as $session) {
+    $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = [
+        'id' => $session->id,
+        'clock_in' => $session->clock_in,
+        'clock_out' => $session->clock_out,
+    ];
+
+    if ($session->clock_out !== null) {
+        $total += $session->clock_out - $session->clock_in;
+    }
+}
+
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'History') ?></h1>
@@ -83,34 +98,20 @@ $this->title = Yii::t('app', 'History');
             <?= $months[$month] ?> <?= $year ?>
         </div>
         <ul class="list-group mb-3">
-            <?php $total = 0; foreach ($clock as $session): ?>
-                <li class="list-group-item">
-                    <?php if ($session->clock_out !== null): ?>
-                        <span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
-                            <?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?>
-                        </span>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm float-left mr-1">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+            <?php foreach ($sessions as $day => $sessionsInDay): ?>
+                <?php if (count($sessionsInDay) === 1): ?>
+                    <?= $this->render('history-row', ['session' => $sessionsInDay[0]]) ?>
+                <?php else: ?>
+                    <li class="list-group-item">
+                        <a href="" class="btn btn-outline-secondary btn-sm float-left mr-1">
+                            <?= FA::icon('angle-double-down') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'show details') ?></span>
                         </a>
-                    <?php else: ?>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm float-left mr-1">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
-                    <?php endif; ?>
-                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id, 'stay' => true]) ?>"
-                       class="btn btn-outline-danger btn-sm"
-                        <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
-                        <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
-                    </a>
-                    <?= Yii::$app->formatter->asDatetime($session->clock_in) ?>
-                    <?= FA::icon('long-arrow-alt-right') ?>
-                    <?php if ($session->clock_out !== null): ?>
-                        <?= Yii::$app->formatter->asTime($session->clock_out) ?>
-                    <?php $total += $session->clock_out - $session->clock_in; else: ?>
-                        <?= Yii::t('app', 'not ended') ?>
-                    <?php endif; ?>
-                    <?= Note::widget(['model' => $session]) ?>
-                </li>
+                        <?= Yii::$app->formatter->asDate($sessionsInDay[0]['clock_in']) ?>
+                    </li>
+                    <?php foreach ($sessionsInDay as $session): ?>
+                        <?= $this->render('history-row', ['session' => $session]) ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             <?php endforeach; ?>
         </ul>
         <ul class="list-group mb-3">
