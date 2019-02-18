@@ -8,6 +8,7 @@ use app\api\models\Clock;
 use Yii;
 use yii\base\DynamicModel;
 use yii\data\ActiveDataProvider;
+use yii\db\Query;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Action;
 use yii\rest\ActiveController;
@@ -164,17 +165,25 @@ class SessionController extends ActiveController
             $to = $temp;
         }
 
+        $query = (new Query())->from(Clock::tableName())
+            ->select([
+                'SUM(clock_out - clock_in) summary',
+                'COUNT(id) sessions',
+            ])
+            ->where([
+                'and',
+                ['user_id' => Yii::$app->user->id],
+                ['is not', 'clock_out', null],
+                ['>=', 'clock_in', $from],
+                ['<=', 'clock_out', $to],
+            ])->one();
+
         return [
             'userId' => (int) Yii::$app->user->id,
             'from' => $from,
             'to' => $to,
-            'summary' => (int) Clock::find()->where([
-                    'and',
-                    ['user_id' => Yii::$app->user->id],
-                    ['is not', 'clock_out', null],
-                    ['>=', 'clock_in', $from],
-                    ['<=', 'clock_out', $to],
-                ])->sum('clock_out - clock_in'),
+            'summary' => (int) ($query['summary'] ?? 0),
+            'sessions' => (int) ($query['sessions'] ?? 0),
         ];
     }
 }

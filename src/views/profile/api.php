@@ -337,7 +337,8 @@ $baseUrl = Url::base(true);
     "userId": 1,
     "from": 0,
     "to": 1546124340,
-    "summary": 1705
+    "summary": 1705,
+    "sessions": 4
 }</pre>
     <?php Accordion::end(); ?>
 </div>
