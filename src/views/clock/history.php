@@ -29,17 +29,40 @@ $total = 0;
 $sessions = [];
 
 foreach ($clock as $session) {
-    $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = [
-        'id' => $session->id,
-        'clock_in' => $session->clock_in,
-        'clock_out' => $session->clock_out,
-    ];
+    $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = $session;
 
     if ($session->clock_out !== null) {
         $total += $session->clock_out - $session->clock_in;
     }
 }
 
+$buttonTexts = [
+    'show' => Yii::t('app', 'show details'),
+    'hide' => Yii::t('app', 'hide details'),
+];
+
+$this->registerJs(<<<JS
+$(".sessionDetailsButton").click(function (e) {
+    e.preventDefault();
+    let details = $($(this).data("target"));
+    let button = $(this);
+    if ($(this).hasClass("detailsDisplayed")) {
+        details.animate({"opacity": 0}, 100).hide("fast", function () {
+            button.removeClass("detailsDisplayed");
+            button.find("span").text("{$buttonTexts['show']}");
+            button.find("i").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
+        });
+    } else {
+        details.show("fast", function () {
+            $(this).animate({"opacity": 1});
+            button.addClass("detailsDisplayed");
+            button.find("span").text("{$buttonTexts['hide']}");
+            button.find("i").removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
+        });
+    }
+});
+JS
+);
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'History') ?></h1>
@@ -100,17 +123,38 @@ foreach ($clock as $session) {
         <ul class="list-group mb-3">
             <?php foreach ($sessions as $day => $sessionsInDay): ?>
                 <?php if (count($sessionsInDay) === 1): ?>
-                    <?= $this->render('history-row', ['session' => $sessionsInDay[0]]) ?>
+                    <?= $this->render('history-row', [
+                        'session' => $sessionsInDay[0],
+                        'day' => null,
+                    ]) ?>
                 <?php else: ?>
+                    <?php
+                    $daySessions = '';
+                    $dayTime = 0;
+                    foreach ($sessionsInDay as $session) {
+                        $daySessions .= $this->render('history-row', [
+                            'session' => $session,
+                            'day' => $day,
+                        ]);
+                        if ($session->clock_out !== null) {
+                            $dayTime += $session->clock_out - $session->clock_in;
+                        }
+                    } ?>
                     <li class="list-group-item">
-                        <a href="" class="btn btn-outline-secondary btn-sm float-left mr-1">
+                        <?php if ($dayTime): ?>
+                            <span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
+                                <?= Yii::$app->formatter->asDuration($dayTime) ?>
+                            </span>
+                        <?php endif; ?>
+                        <a href="#" class="btn btn-outline-secondary btn-sm float-left mr-1 sessionDetailsButton" data-target=".day<?= $day ?>">
                             <?= FA::icon('angle-double-down') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'show details') ?></span>
                         </a>
-                        <?= Yii::$app->formatter->asDate($sessionsInDay[0]['clock_in']) ?>
+                        <?= Yii::$app->formatter->asDate($sessionsInDay[0]->clock_in) ?>
+                        <span class="badge badge-pill badge-primary">
+                            <?= Yii::t('app', '{n} sessions', ['n' => count($sessionsInDay)]) ?>
+                        </span>
                     </li>
-                    <?php foreach ($sessionsInDay as $session): ?>
-                        <?= $this->render('history-row', ['session' => $session]) ?>
-                    <?php endforeach; ?>
+                    <?= $daySessions ?>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ul>
