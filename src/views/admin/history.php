@@ -29,29 +29,99 @@ $this->title = Yii::t('app', 'Sessions');
 
 $total = [];
 $list = '';
+$sessions = [];
+
 foreach ($clock as $session) {
-    if (!isset($total[$session->user_id])) {
+    $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = $session;
+
+    if (!array_key_exists($session->user_id, $total)) {
         $total[$session->user_id] = 0;
     }
 
-    $list .= '<li class="list-group-item">';
     if ($session->clock_out !== null) {
-        $list .= '<span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">';
-        $list .= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) . '</span>';
-    }
-    $list .= Html::encode($users[$session->user_id]->name) . ': ';
-    $list .= Yii::$app->formatter->asDatetime($session->clock_in) . ' ';
-    $list .= FA::icon('long-arrow-alt-right') . ' ';
-    if ($session->clock_out !== null) {
-        $list .= Yii::$app->formatter->asTime($session->clock_out);
         $total[$session->user_id] += $session->clock_out - $session->clock_in;
-    } else {
-        $list .= Yii::t('app', 'not ended');
     }
-    $list .= Note::widget(['model' => $session]);
-    $list .= '</li>';
 }
 
+$buttonTexts = [
+    'show' => Yii::t('app', 'show details'),
+    'hide' => Yii::t('app', 'hide details'),
+];
+
+foreach ($sessions as $day => $sessionsInDay) {
+    if (count($sessionsInDay) === 1) {
+        $list .= $this->render('history-row', [
+            'session' => $sessionsInDay[0],
+            'day' => null,
+            'users' => $users,
+        ]);
+    } else {
+        $daySessions = '';
+        $dayTime = 0;
+
+        foreach ($sessionsInDay as $session) {
+            $daySessions .= $this->render('history-row', [
+                'session' => $session,
+                'day' => $day,
+                'users' => $users,
+            ]);
+
+            if ($session->clock_out !== null) {
+                $dayTime += $session->clock_out - $session->clock_in;
+            }
+        }
+
+        $list .= Html::beginTag('li', ['class' => 'list-group-item']);
+
+        if ($dayTime) {
+            $list .= Html::tag(
+                'span',
+                Yii::$app->formatter->asDuration($dayTime),
+                ['class' => 'badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3']
+            );
+        }
+
+        $list .= Html::a(
+            FA::icon('angle-double-down') . ' ' . Html::tag('span', $buttonTexts['show'], ['class' => 'd-none d-md-inline']),
+            '#',
+            [
+                'class' => 'btn btn-outline-secondary btn-sm float-left mr-1 sessionDetailsButton',
+                'data-target' => '.day' . $day,
+            ]
+        );
+        $list .= Yii::$app->formatter->asDate($sessionsInDay[0]->clock_in);
+        $list .= ' ' . Html::tag(
+            'span',
+            Yii::t('app', '{n} sessions', ['n' => count($sessionsInDay)]),
+            ['class' => 'badge badge-pill badge-primary']
+        );
+        $list .= Html::endTag('li');
+        $list .= $daySessions;
+    }
+}
+
+$this->registerJs(<<<JS
+$(".sessionDetailsButton").click(function (e) {
+    e.preventDefault();
+    let details = $($(this).data("target"));
+    let button = $(this);
+    if ($(this).hasClass("detailsDisplayed")) {
+        details.animate({"opacity": 0}, 100).hide("fast", function () {
+            button.removeClass("detailsDisplayed");
+            button.find("span").text("{$buttonTexts['show']}");
+            button.find("i").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
+        });
+    } else {
+        details.show("fast", function () {
+            $(this).animate({"opacity": 1});
+            button.addClass("detailsDisplayed");
+            button.find("span").text("{$buttonTexts['hide']}");
+            button.find("i").removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
+        });
+    }
+});
+JS
+);
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'Sessions') ?></h1>
