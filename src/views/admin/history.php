@@ -29,10 +29,12 @@ $this->title = Yii::t('app', 'Sessions');
 
 $total = [];
 $list = '';
+$sessionCounter = 0;
 $sessions = [];
 
 foreach ($clock as $session) {
     $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = $session;
+    $sessionCounter++;
 
     if (!array_key_exists($session->user_id, $total)) {
         $total[$session->user_id] = 0;
@@ -92,7 +94,7 @@ foreach ($sessions as $day => $sessionsInDay) {
         $list .= Yii::$app->formatter->asDate($sessionsInDay[0]->clock_in);
         $list .= ' ' . Html::tag(
             'span',
-            Yii::t('app', '{n} sessions', ['n' => count($sessionsInDay)]),
+            Yii::t('app', '{n,plural,one{# session} other{# sessions}}', ['n' => count($sessionsInDay)]),
             ['class' => 'badge badge-pill badge-primary']
         );
         $list .= Html::endTag('li');
@@ -192,6 +194,12 @@ JS
                 <?= Html::encode($employee->name) ?>
             <?php endif; ?>
             <?= $months[$month] ?> <?= $year ?>
+            <span class="badge badge-pill badge-primary">
+                <?= Yii::t('app', '{n,plural,one{# session} other{# sessions}}', ['n' => $sessionCounter]) ?>
+            </span>
+            <span class="badge badge-pill badge-secondary">
+                <?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => count($sessions)]) ?>
+            </span>
         </div>
         <ul class="list-group mb-3">
             <li class="list-group-item">

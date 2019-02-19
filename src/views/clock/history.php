@@ -26,10 +26,12 @@ use yii\helpers\Url;
 $this->title = Yii::t('app', 'History');
 
 $total = 0;
+$sessionCounter = 0;
 $sessions = [];
 
 foreach ($clock as $session) {
     $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = $session;
+    $sessionCounter++;
 
     if ($session->clock_out !== null) {
         $total += $session->clock_out - $session->clock_in;
@@ -119,6 +121,12 @@ JS
                 <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
             </a>
             <?= $months[$month] ?> <?= $year ?>
+            <span class="badge badge-pill badge-primary">
+                <?= Yii::t('app', '{n,plural,one{# session} other{# sessions}}', ['n' => $sessionCounter]) ?>
+            </span>
+            <span class="badge badge-pill badge-secondary">
+                <?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => count($sessions)]) ?>
+            </span>
         </div>
         <ul class="list-group mb-3">
             <?php foreach ($sessions as $day => $sessionsInDay): ?>
@@ -151,7 +159,7 @@ JS
                         </a>
                         <?= Yii::$app->formatter->asDate($sessionsInDay[0]->clock_in) ?>
                         <span class="badge badge-pill badge-primary">
-                            <?= Yii::t('app', '{n} sessions', ['n' => count($sessionsInDay)]) ?>
+                            <?= Yii::t('app', '{n,plural,one{# session} other{# sessions}}', ['n' => count($sessionsInDay)]) ?>
                         </span>
                     </li>
                     <?= $daySessions ?>
