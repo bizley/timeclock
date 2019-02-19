@@ -25,6 +25,46 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('app', 'History');
 
+$total = 0;
+$sessionCounter = 0;
+$sessions = [];
+
+foreach ($clock as $session) {
+    $sessions[Yii::$app->formatter->asDatetime($session->clock_in, 'd')][] = $session;
+    $sessionCounter++;
+
+    if ($session->clock_out !== null) {
+        $total += $session->clock_out - $session->clock_in;
+    }
+}
+
+$buttonTexts = [
+    'show' => Yii::t('app', 'show details'),
+    'hide' => Yii::t('app', 'hide details'),
+];
+
+$this->registerJs(<<<JS
+$(".sessionDetailsButton").click(function (e) {
+    e.preventDefault();
+    let details = $($(this).data("target"));
+    let button = $(this);
+    if ($(this).hasClass("detailsDisplayed")) {
+        details.animate({"opacity": 0}, 100).hide("fast", function () {
+            button.removeClass("detailsDisplayed");
+            button.find("span").text("{$buttonTexts['show']}");
+            button.find("i").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
+        });
+    } else {
+        details.show("fast", function () {
+            $(this).animate({"opacity": 1});
+            button.addClass("detailsDisplayed");
+            button.find("span").text("{$buttonTexts['hide']}");
+            button.find("i").removeClass("fa-angle-double-down").addClass("fa-angle-double-up");
+        });
+    }
+});
+JS
+);
 ?>
 <div class="form-group">
     <h1><?= Yii::t('app', 'History') ?></h1>
@@ -81,36 +121,49 @@ $this->title = Yii::t('app', 'History');
                 <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
             </a>
             <?= $months[$month] ?> <?= $year ?>
+            <span class="badge badge-pill badge-primary">
+                <?= Yii::t('app', '{n,plural,one{# session} other{# sessions}}', ['n' => $sessionCounter]) ?>
+            </span>
+            <span class="badge badge-pill badge-secondary">
+                <?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => count($sessions)]) ?>
+            </span>
         </div>
         <ul class="list-group mb-3">
-            <?php $total = 0; foreach ($clock as $session): ?>
-                <li class="list-group-item">
-                    <?php if ($session->clock_out !== null): ?>
-                        <span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
-                            <?= Yii::$app->formatter->asDuration($session->clock_out - $session->clock_in) ?>
+            <?php foreach ($sessions as $day => $sessionsInDay): ?>
+                <?php if (count($sessionsInDay) === 1): ?>
+                    <?= $this->render('history-row', [
+                        'session' => $sessionsInDay[0],
+                        'day' => null,
+                    ]) ?>
+                <?php else: ?>
+                    <?php
+                    $daySessions = '';
+                    $dayTime = 0;
+                    foreach ($sessionsInDay as $session) {
+                        $daySessions .= $this->render('history-row', [
+                            'session' => $session,
+                            'day' => $day,
+                        ]);
+                        if ($session->clock_out !== null) {
+                            $dayTime += $session->clock_out - $session->clock_in;
+                        }
+                    } ?>
+                    <li class="list-group-item">
+                        <?php if ($dayTime): ?>
+                            <span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
+                                <?= Yii::$app->formatter->asDuration($dayTime) ?>
+                            </span>
+                        <?php endif; ?>
+                        <a href="#" class="btn btn-outline-secondary btn-sm float-left mr-1 sessionDetailsButton" data-target=".day<?= $day ?>">
+                            <?= FA::icon('angle-double-down') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'show details') ?></span>
+                        </a>
+                        <?= Yii::$app->formatter->asDate($sessionsInDay[0]->clock_in) ?>
+                        <span class="badge badge-pill badge-primary">
+                            <?= Yii::t('app', '{n,plural,one{# session} other{# sessions}}', ['n' => count($sessionsInDay)]) ?>
                         </span>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-warning btn-sm float-left mr-1">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="btn btn-outline-success btn-sm float-left mr-1">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
-                    <?php endif; ?>
-                    <a href="<?= Url::to(['clock/delete', 'id' => $session->id, 'stay' => true]) ?>"
-                       class="btn btn-outline-danger btn-sm"
-                        <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
-                        <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
-                    </a>
-                    <?= Yii::$app->formatter->asDatetime($session->clock_in) ?>
-                    <?= FA::icon('long-arrow-alt-right') ?>
-                    <?php if ($session->clock_out !== null): ?>
-                        <?= Yii::$app->formatter->asTime($session->clock_out) ?>
-                    <?php $total += $session->clock_out - $session->clock_in; else: ?>
-                        <?= Yii::t('app', 'not ended') ?>
-                    <?php endif; ?>
-                    <?= Note::widget(['model' => $session]) ?>
-                </li>
+                    </li>
+                    <?= $daySessions ?>
+                <?php endif; ?>
             <?php endforeach; ?>
         </ul>
         <ul class="list-group mb-3">

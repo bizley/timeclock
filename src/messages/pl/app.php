@@ -93,6 +93,7 @@ return [
     'Go Back' => 'Powrót',
     'Grant yourself API access' => 'Włącz API',
     'Hello, {user}' => 'Witaj, {user}',
+    'hide details' => 'ukryj szczegóły',
     'History' => 'Historia',
     'Holidays Index' => 'Indeks świąt',
     'How to use API?' => 'Jak korzystać z API?',
@@ -175,6 +176,7 @@ return [
     'Sessions' => 'Sesje',
     'set as admin' => 'ustaw jako admin',
     'set as employee' => 'ustaw jako pracownik',
+    'show details' => 'pokaż szczegóły',
     'Start Day' => 'Dzień rozpoczęcia',
     'Start session at current time' => 'Utwórz sesję o aktualnej godzinie',
     'Start session at given time' => 'Utwórz sesję o podanej godzinie',
@@ -238,5 +240,7 @@ return [
     'Your PIN is {pin}' => 'Twój PIN to {pin}',
     '{checksum} is SHA1 hash that takes as input UNIX timestamp described above concatenated with your API access key ({key}).' => '{checksum} to hash SHA1, który przyjmuje na wejściu UNIXowy znacznik czasu opisany powyżej połączony z Twoim kluczem API ({key}).',
     '{ID} is integer provided at this page and not changing. Your API identifier is {your ID}.' => '{ID} jest liczbą całkowitą przekazaną na tej stronie i niezmienną. Twój identyfikator API to {your ID}.',
+    '{n,plural,one{# day} other{# days}}' => '{n,plural,one{# dzień} other{# dni}}',
+    '{n,plural,one{# session} other{# sessions}}' => '{n,plural,one{# sesja} few{# sesje} many{# sesji} other{# sesji}}',
     '{timestamp} is integer with number of seconds since the beginning of Unix Epoch on January 1st, 1970 at UTC. You must provide current timestamp like for example now - {now}. API will reject all requests older or younger by 1 minute from current time.' => '{timestamp} jest liczbą całkowitą oznaczającą sekundy, które upłynęły od początku Epoki Uniksa 1 stycznia 1970 czasu UTC. Musisz podać aktualny znacznik czasu jak dla przykłądu w tej chwili - {now}. API odrzuci każde zapytanie starsze lub młodsze o 1 minutę od aktualnego czasu serwera.',
 ];
