@@ -5,7 +5,12 @@ use yii\rest\UrlRule;
 return [
     [
         'class' => UrlRule::class,
-        'controller' => ['api/session', 'api/off-time'],
+        'controller' => 'api/session',
+        'extraPatterns' => ['GET summary' => 'summary'],
+    ],
+    [
+        'class' => UrlRule::class,
+        'controller' => 'api/off-time',
     ],
     [
         'class' => UrlRule::class,
