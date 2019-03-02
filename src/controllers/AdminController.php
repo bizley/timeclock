@@ -219,7 +219,7 @@ class AdminController extends BaseController
         if ($user !== null) {
             $conditions[] = ['user_id' => $user->id];
         }
-        $clock = Clock::find()->where($conditions)->orderBy(['clock_in' => SORT_ASC])->all();
+        $clock = Clock::find()->where($conditions)->orderBy(['clock_in' => SORT_DESC])->all();
 
         $conditions = [
             'and',
@@ -229,7 +229,7 @@ class AdminController extends BaseController
         if ($user !== null) {
             $conditions[] = ['user_id' => $user->id];
         }
-        $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_ASC])->all();
+        $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_DESC])->all();
 
         return $this->render('history', [
             'months' => Clock::months(),

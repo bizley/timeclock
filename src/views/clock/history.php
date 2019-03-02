@@ -129,6 +129,14 @@ JS
             </span>
         </div>
         <ul class="list-group mb-3">
+            <li class="list-group-item">
+                <span class="badge badge-light float-sm-right d-block d-sm-inline mb-1 ml-0 ml-sm-3">
+                    <?= round($total / 3600, 2) ?> (<?= Yii::$app->formatter->asDuration($total) ?>)
+                </span>
+                <?= Yii::t('app', 'Total Hours') ?>
+            </li>
+        </ul>
+        <ul class="list-group mb-3">
             <?php foreach ($sessions as $day => $sessionsInDay): ?>
                 <?php if (count($sessionsInDay) === 1): ?>
                     <?= $this->render('history-row', [
@@ -165,14 +173,6 @@ JS
                     <?= $daySessions ?>
                 <?php endif; ?>
             <?php endforeach; ?>
-        </ul>
-        <ul class="list-group mb-3">
-            <li class="list-group-item">
-                <span class="badge badge-light float-sm-right d-block d-sm-inline mb-1 ml-0 ml-sm-3">
-                    <?= round($total / 3600, 2) ?> (<?= Yii::$app->formatter->asDuration($total) ?>)
-                </span>
-                <?= Yii::t('app', 'Total Hours') ?>
-            </li>
         </ul>
         <div class="form-group">
             <a href="<?= Url::to(['clock/off-add', 'year' => $year, 'month' => $month]) ?>" class="btn btn-warning btn-sm float-right">

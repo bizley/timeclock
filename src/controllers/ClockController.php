@@ -153,13 +153,13 @@ class ClockController extends BaseController
                 ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
                 ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
                 ['user_id' => Yii::$app->user->id],
-            ])->orderBy(['clock_in' => SORT_ASC])->all(),
+            ])->orderBy(['clock_in' => SORT_DESC])->all(),
             'off' => Off::find()->where([
                 'and',
                 ['<', 'start_at', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
                 ['>', 'end_at', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
                 ['user_id' => Yii::$app->user->id],
-            ])->orderBy(['start_at' => SORT_ASC])->all(),
+            ])->orderBy(['start_at' => SORT_DESC])->all(),
         ]);
     }
 
