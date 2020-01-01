@@ -6,5 +6,5 @@ return [
     'dsn' => 'mysql:host=localhost;port=3306;dbname=timeclock',
     'username' => 'root',
     'password' => '',
-    'charset' => 'utf8',
+    'charset' => 'utf8mb4',
 ];
