@@ -428,9 +428,9 @@ class AdminController extends BaseController
         }
 
         $clockQuery = Clock::find()
-            ->with(['user' => static function (ActiveQuery $query) {
+            ->joinWith(['user' => static function (ActiveQuery $query) {
                 $query->andWhere(['status' => User::STATUS_ACTIVE]);
-            }])
+            }], false)
             ->where($conditions);
 
         $users = User::find()
@@ -500,7 +500,7 @@ class AdminController extends BaseController
 
         $user = null;
         if ($id !== null) {
-            $user = User::findOne($id);
+            $user = User::find()->where(['id' => $id, 'status' => User::STATUS_ACTIVE])->one();
 
             if ($user === null) {
                 Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
@@ -525,7 +525,13 @@ class AdminController extends BaseController
         if ($user !== null) {
             $conditions[] = ['user_id' => $user->id];
         }
-        $clock = Clock::find()->where($conditions)->orderBy(['clock_in' => SORT_ASC])->all();
+        $clock = Clock::find()
+            ->joinWith(['user' => static function (ActiveQuery $query) {
+                $query->andWhere(['status' => User::STATUS_ACTIVE]);
+            }], false)
+            ->where($conditions)
+            ->orderBy(['clock_in' => SORT_ASC])
+            ->all();
 
         $conditions = [
             'and',
@@ -535,9 +541,15 @@ class AdminController extends BaseController
         if ($user !== null) {
             $conditions[] = ['user_id' => $user->id];
         }
-        $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_ASC])->all();
+        $off = Off::find()
+            ->joinWith(['user' => static function (ActiveQuery $query) {
+                $query->andWhere(['status' => User::STATUS_ACTIVE]);
+            }], false)
+            ->where($conditions)
+            ->orderBy(['start_at' => SORT_ASC])
+            ->all();
 
-        $users = User::find()->indexBy('id')->all();
+        $users = User::find()->where(['status' => User::STATUS_ACTIVE])->indexBy('id')->all();
 
         $entries = [];
         foreach ($clock as $session) {
@@ -674,21 +686,37 @@ class AdminController extends BaseController
                 'month' => Clock::months()[$month],
                 'year' => $year,
                 'employee' => (int)$employee,
-                'users' => User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all(),
-                'clock' => Clock::find()->where(
-                    [
-                        'and',
-                        ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 00:00:00')],
-                        ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 23:59:59')],
-                    ]
-                )->orderBy(['clock_in' => SORT_ASC])->all(),
-                'off' => Off::find()->where(
-                    [
-                        'and',
-                        ['<=', 'start_at', $date],
-                        ['>=', 'end_at', $date],
-                    ]
-                )->orderBy(['start_at' => SORT_ASC])->all(),
+                'users' => User::find()
+                    ->where(['status' => User::STATUS_ACTIVE])
+                    ->indexBy('id')
+                    ->orderBy(['name' => SORT_ASC])
+                    ->all(),
+                'clock' => Clock::find()
+                    ->joinWith(['user' => static function (ActiveQuery $query) {
+                        $query->andWhere(['status' => User::STATUS_ACTIVE]);
+                    }], false)
+                    ->where(
+                        [
+                            'and',
+                            ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 00:00:00')],
+                            ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 23:59:59')],
+                        ]
+                    )
+                    ->orderBy(['clock_in' => SORT_ASC])
+                    ->all(),
+                'off' => Off::find()
+                    ->joinWith(['user' => static function (ActiveQuery $query) {
+                        $query->andWhere(['status' => User::STATUS_ACTIVE]);
+                    }], false)
+                    ->where(
+                        [
+                            'and',
+                            ['<=', 'start_at', $date],
+                            ['>=', 'end_at', $date],
+                        ]
+                    )
+                    ->orderBy(['start_at' => SORT_ASC])
+                    ->all(),
             ]
         );
     }
@@ -859,7 +887,7 @@ class AdminController extends BaseController
 
         $user = null;
         if ($id !== null) {
-            $user = User::findOne($id);
+            $user = User::findOne(['id' => $id, 'status' => User::STATUS_ACTIVE]);
 
             if ($user === null) {
                 Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
@@ -880,19 +908,19 @@ class AdminController extends BaseController
 
         $conditions = [
             'and',
-            ['is not', 'clock_out', null],
-            ['is not', 'project_id', null],
+            ['is not', 'c.clock_out', null],
+            ['is not', 'c.project_id', null],
         ];
 
         if ($weekStart === null) {
             $conditions[] = [
                 '>=',
-                'clock_in',
+                'c.clock_in',
                 (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'),
             ];
             $conditions[] = [
                 '<',
-                'clock_in',
+                'c.clock_in',
                 (int)Yii::$app->formatter->asTimestamp(
                     $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
                 ),
@@ -900,14 +928,14 @@ class AdminController extends BaseController
         } else {
             $conditions[] = [
                 '>=',
-                'clock_in',
+                'c.clock_in',
                 (int)Yii::$app->formatter->asTimestamp(
                     $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($weekStart < 10 ? '0' : '') . $weekStart . ' 00:00:00'
                 ),
             ];
             $conditions[] = [
                 '<=',
-                'clock_in',
+                'c.clock_in',
                 (int)Yii::$app->formatter->asTimestamp(
                     $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($weekEnd < 10 ? '0' : '') . $weekEnd . ' 23:59:59'
                 ),
@@ -915,18 +943,21 @@ class AdminController extends BaseController
         }
 
         if ($user !== null) {
-            $conditions[] = ['user_id' => $user->id];
+            $conditions[] = ['c.user_id' => $user->id];
         }
 
+        $conditions[] = ['u.status' => User::STATUS_ACTIVE];
+
         $projectSessions = (new Query())
-            ->from(Clock::tableName())
+            ->from(Clock::tableName() . ' c')
             ->select(
                 [
-                    'project_id',
-                    'user_id',
-                    new Expression('SUM(clock_out - clock_in) time'),
+                    'c.project_id',
+                    'c.user_id',
+                    new Expression('SUM(c.clock_out - c.clock_in) time'),
                 ]
             )
+            ->leftJoin(User::tableName() . ' u', 'u.id = c.user_id')
             ->where($conditions)
             ->groupBy(['project_id', 'user_id'])
             ->orderBy(['time' => SORT_DESC])
@@ -945,7 +976,11 @@ class AdminController extends BaseController
                 'nextYear' => $nextYear,
                 'nextMonth' => $nextMonth,
                 'employee' => $user,
-                'users' => User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all(),
+                'users' => User::find()
+                    ->where(['status' => User::STATUS_ACTIVE])
+                    ->indexBy('id')
+                    ->orderBy(['name' => SORT_ASC])
+                    ->all(),
                 'projects' => $projects,
                 'time' => $projectSessions,
                 'week' => $week,
@@ -968,14 +1003,18 @@ class AdminController extends BaseController
 
         $user = null;
         if ($id !== null) {
-            $user = User::findOne($id);
+            $user = User::findOne(['id' => $id, 'status' => User::STATUS_ACTIVE]);
 
             if ($user === null) {
                 Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
             }
         }
 
-        $users = User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all();
+        $users = User::find()
+            ->where(['status' => User::STATUS_ACTIVE])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->all();
 
         $conditions = [
             'and',
@@ -987,7 +1026,13 @@ class AdminController extends BaseController
             $conditions[] = ['user_id' => $user->id];
         }
 
-        $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_DESC])->all();
+        $off = Off::find()
+            ->joinWith(['user' => static function (ActiveQuery $query) {
+                $query->andWhere(['status' => User::STATUS_ACTIVE]);
+            }], false)
+            ->where($conditions)
+            ->orderBy(['start_at' => SORT_DESC])
+            ->all();
 
         return $this->render(
             'off',

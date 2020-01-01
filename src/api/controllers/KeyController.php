@@ -58,7 +58,7 @@ class KeyController extends Controller
         }
 
         $id = substr($form->pin, 0, -3); // last 3 digits is actual PIN, rest is user ID
-        $user = User::findOne(['id' => $id]);
+        $user = User::findOne(['id' => $id, 'status' => User::STATUS_ACTIVE]);
 
         if ($user === null || $user->pin_hash === null || !$user->validatePin($form->pin)) {
             $form->addError('pin', Yii::t('app', 'Invalid PIN.'));

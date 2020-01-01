@@ -63,6 +63,8 @@ class PinForm extends Model
 
             if (!$user || !$user->validatePin($this->pin)) {
                 $this->addError($attribute, Yii::t('app', 'Invalid PIN.'));
+            } elseif ($user->status === User::STATUS_DELETED) {
+                $this->addError($attribute, Yii::t('app', 'Your account has been deactivated.'));
             }
         }
     }
