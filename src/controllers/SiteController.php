@@ -220,7 +220,7 @@ class SiteController extends BaseController
         }
 
         $user = User::findByPasswordResetToken($token);
-        if ($user === null) {
+        if ($user === null || $user->status === User::STATUS_DELETED) {
             Yii::$app->alert->danger(Yii::t('app', 'Invalid or expired reset token provided.'));
 
             return $this->redirect(['login']);

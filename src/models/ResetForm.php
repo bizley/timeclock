@@ -53,7 +53,7 @@ class ResetForm extends Model
 
         $user = User::findByEmail($this->email);
 
-        if ($user !== null) {
+        if ($user !== null && $user->status !== User::STATUS_DELETED) {
             $user->generatePasswordResetToken();
 
             if (!$user->save()) {

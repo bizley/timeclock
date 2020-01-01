@@ -28,15 +28,30 @@ $this->title = Yii::t('app', 'Employees');
                 <th scope="col"><?= Yii::t('app', 'Email') ?></th>
                 <th scope="col"><?= Yii::t('app', 'Phone Number') ?></th>
                 <th scope="col"><?= Yii::t('app', 'Role') ?></th>
+                <th scope="col"><?= Yii::t('app', 'Status') ?></th>
                 <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($users as $user): ?>
                 <tr>
-                    <td><?= Html::encode($user->name) ?></td>
-                    <td><a href="mailto:<?= $user->email ?>"><?= $user->email ?></a></td>
-                    <td><?= Html::encode($user->phone) ?></td>
+                    <td>
+                        <?= $user->status === User::STATUS_DELETED ? '<del>' : '' ?>
+                        <?= Html::encode($user->name) ?>
+                        <?= $user->status === User::STATUS_DELETED ? '</del>' : '' ?>
+                    </td>
+                    <td>
+                        <a href="mailto:<?= $user->email ?>">
+                            <?= $user->status === User::STATUS_DELETED ? '<del>' : '' ?>
+                            <?= $user->email ?>
+                            <?= $user->status === User::STATUS_DELETED ? '</del>' : '' ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?= $user->status === User::STATUS_DELETED ? '<del>' : '' ?>
+                        <?= Html::encode($user->phone) ?>
+                        <?= $user->status === User::STATUS_DELETED ? '</del>' : '' ?>
+                    </td>
                     <td>
                         <?php if ($user->role === User::ROLE_ADMIN): ?>
                             <span class="badge badge-primary"><?= Yii::t('app', 'ADMIN') ?></span>
@@ -54,12 +69,31 @@ $this->title = Yii::t('app', 'Employees');
                             </a>
                         <?php endif; ?>
                     </td>
+                    <td>
+                        <?php if ($user->status === User::STATUS_DELETED): ?>
+                            <span class="badge badge-secondary"><?= Yii::t('app', 'DEACTIVATED') ?></span>
+                            <a href="<?= Url::to(['admin/reactivate', 'id' => $user->id]) ?>"
+                               class="badge badge-success"
+                               <?= Confirm::ask(Yii::t('app', 'Are you sure you want to reactivate this user?')) ?>>
+                                <?= FA::icon('toggle-on') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'reactivate') ?></span>
+                            </a>
+                        <?php else: ?>
+                            <span class="badge badge-success"><?= Yii::t('app', 'ACTIVE') ?></span>
+                            <a href="<?= Url::to(['admin/deactivate', 'id' => $user->id]) ?>"
+                               class="badge badge-secondary"
+                               <?= Confirm::ask(Yii::t('app', 'Are you sure you want to deactivate this user?')) ?>>
+                                <?= FA::icon('toggle-off') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'deactivate') ?></span>
+                            </a>
+                        <?php endif; ?>
+                    </td>
                     <td class="text-right text-nowrap">
+                        <?php if ($user->status !== User::STATUS_DELETED): ?>
                         <a href="<?= Url::to(['admin/reset', 'id' => $user->id]) ?>"
                            class="btn btn-warning btn-sm"
                            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to send password reset link?')) ?>>
                             <?= FA::icon('key') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'reset password') ?></span>
                         </a>
+                        <?php endif; ?>
                         <a href="<?= Url::to(['admin/delete', 'id' => $user->id]) ?>"
                            class="btn btn-danger btn-sm"
                            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this user?')) ?>>

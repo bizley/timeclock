@@ -67,6 +67,8 @@ class LoginForm extends Model
 
             if (!$user || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, Yii::t('app', 'Invalid password or user name.'));
+            } elseif ($user->status === User::STATUS_DELETED) {
+                $this->addError($attribute, Yii::t('app', 'Your account has been deactivated.'));
             }
         }
     }

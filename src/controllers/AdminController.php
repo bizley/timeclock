@@ -62,6 +62,8 @@ class AdminController extends BaseController
                     'delete' => ['post'],
                     'promote' => ['post'],
                     'demote' => ['post'],
+                    'deactivate' => ['post'],
+                    'reactivate' => ['post'],
                     'project-create' => ['post'],
                     'project-delete' => ['post'],
                     'project-archive' => ['post'],
@@ -78,14 +80,17 @@ class AdminController extends BaseController
      */
     public function remember(): array
     {
-        return array_merge(parent::remember(), [
-            'index',
-            'projects-manager',
-            'projects',
-            'history',
-            'off',
-            'calendar',
-        ]);
+        return array_merge(
+            parent::remember(),
+            [
+                'index',
+                'projects-manager',
+                'projects',
+                'history',
+                'off',
+                'calendar',
+            ]
+        );
     }
 
     /**
@@ -113,11 +118,14 @@ class AdminController extends BaseController
      */
     public function actionIndex()
     {
-        $users = User::find()->orderBy(['name' => SORT_ASC])->all();
+        $users = User::find()->orderBy(['status' => SORT_ASC, 'name' => SORT_ASC])->all();
 
-        return $this->render('index', [
-            'users' => $users,
-        ]);
+        return $this->render(
+            'index',
+            [
+                'users' => $users,
+            ]
+        );
     }
 
     /**
@@ -131,6 +139,8 @@ class AdminController extends BaseController
 
         if ($user === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
+        } elseif ($user->status === User::STATUS_DELETED) {
+            Yii::$app->alert->danger(Yii::t('app', 'You can not reset password for deactivated user.'));
         } else {
             $user->generatePasswordResetToken();
 
@@ -138,19 +148,30 @@ class AdminController extends BaseController
                 Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             } else {
                 $mail = Yii::$app->mailer
-                    ->compose([
-                        'html' => 'reset-html',
-                        'text' => 'reset-text',
-                    ], [
-                        'user' => $user->name,
-                        'link' => Url::to(['site/new-password', 'token' => $user->password_reset_token], true)
-                    ])
+                    ->compose(
+                        [
+                            'html' => 'reset-html',
+                            'text' => 'reset-text',
+                        ],
+                        [
+                            'user' => $user->name,
+                            'link' => Url::to(['site/new-password', 'token' => $user->password_reset_token], true),
+                        ]
+                    )
                     ->setFrom(Yii::$app->params['email'])
                     ->setTo([$user->email => $user->name])
-                    ->setSubject(Yii::t('app', 'Password reset at {company} Timeclock system', ['company' => Yii::$app->params['company']]));
+                    ->setSubject(
+                        Yii::t(
+                            'app',
+                            'Password reset at {company} Timeclock system',
+                            ['company' => Yii::$app->params['company']]
+                        )
+                    );
 
                 if (!$mail->send()) {
-                    Yii::$app->alert->danger(Yii::t('app', 'There was an error while sending password reset link email.'));
+                    Yii::$app->alert->danger(
+                        Yii::t('app', 'There was an error while sending password reset link email.')
+                    );
                 } else {
                     Yii::$app->alert->success(Yii::t('app', 'Password reset link email has been sent.'));
                 }
@@ -367,8 +388,20 @@ class AdminController extends BaseController
         if ($weekStart === null) {
             $conditions = [
                 'and',
-                ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
-                ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
+                [
+                    '>=',
+                    'clock_in',
+                    (int)Yii::$app->formatter->asTimestamp(
+                        $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'
+                    ),
+                ],
+                [
+                    '<',
+                    'clock_in',
+                    (int)Yii::$app->formatter->asTimestamp(
+                        $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
+                    ),
+                ],
             ];
         } else {
             $conditions = [
@@ -378,14 +411,14 @@ class AdminController extends BaseController
                     'clock_in',
                     (int)Yii::$app->formatter->asTimestamp(
                         $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($weekStart < 10 ? '0' : '') . $weekStart . ' 00:00:00'
-                    )
+                    ),
                 ],
                 [
                     '<=',
                     'clock_in',
                     (int)Yii::$app->formatter->asTimestamp(
                         $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($weekEnd < 10 ? '0' : '') . $weekEnd . ' 23:59:59'
-                    )
+                    ),
                 ],
             ];
         }
@@ -407,24 +440,27 @@ class AdminController extends BaseController
             );
         }
 
-        return $this->render('history', [
-            'months' => Clock::months(),
-            'year' => $year,
-            'month' => $month,
-            'previous' => Clock::months()[$previousMonth],
-            'previousYear' => $previousYear,
-            'previousMonth' => $previousMonth,
-            'next' => Clock::months()[$nextMonth],
-            'nextYear' => $nextYear,
-            'nextMonth' => $nextMonth,
-            'clock' => $clock,
-            'employee' => $user,
-            'users' => $users,
-            'week' => $week,
-            'weeksInMonth' => $weeksInMonth,
-            'weekStart' => $weekStart,
-            'weekEnd' => $weekEnd,
-        ]);
+        return $this->render(
+            'history',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'clock' => $clock,
+                'employee' => $user,
+                'users' => $users,
+                'week' => $week,
+                'weeksInMonth' => $weeksInMonth,
+                'weekStart' => $weekStart,
+                'weekEnd' => $weekEnd,
+            ]
+        );
     }
 
     /**
@@ -439,8 +475,18 @@ class AdminController extends BaseController
     {
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
-        $firstDayInMonth = date('N', (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
-        $daysInMonth = (int)date('t', (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
+        $firstDayInMonth = date(
+            'N',
+            (int)Yii::$app->formatter->asTimestamp(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'
+            )
+        );
+        $daysInMonth = (int)date(
+            't',
+            (int)Yii::$app->formatter->asTimestamp(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'
+            )
+        );
 
         $user = null;
         if ($id !== null) {
@@ -453,8 +499,18 @@ class AdminController extends BaseController
 
         $conditions = [
             'and',
-            ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
-            ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
+            [
+                '>=',
+                'clock_in',
+                (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'),
+            ],
+            [
+                '<',
+                'clock_in',
+                (int)Yii::$app->formatter->asTimestamp(
+                    $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
+                ),
+            ],
         ];
         if ($user !== null) {
             $conditions[] = ['user_id' => $user->id];
@@ -486,7 +542,9 @@ class AdminController extends BaseController
         }
 
         for ($day = 1; $day <= $daysInMonth; $day++) {
-            $stamp = (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . ' 12:00:00');
+            $stamp = (int)Yii::$app->formatter->asTimestamp(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . ' 12:00:00'
+            );
             foreach ($off as $dayOff) {
                 if ($stamp >= (int)Yii::$app->formatter->asTimestamp($dayOff->start_at . ' 12:00:00')
                     && $stamp <= (int)Yii::$app->formatter->asTimestamp($dayOff->end_at . ' 12:00:00')) {
@@ -501,23 +559,26 @@ class AdminController extends BaseController
             }
         }
 
-        return $this->render('calendar', [
-            'months' => Clock::months(),
-            'year' => $year,
-            'month' => $month,
-            'previous' => Clock::months()[$previousMonth],
-            'previousYear' => $previousYear,
-            'previousMonth' => $previousMonth,
-            'next' => Clock::months()[$nextMonth],
-            'nextYear' => $nextYear,
-            'nextMonth' => $nextMonth,
-            'firstDayInMonth' => $firstDayInMonth,
-            'daysInMonth' => $daysInMonth,
-            'employee' => $user,
-            'users' => $users,
-            'holidays' => Holiday::getMonthHolidays($month, $year),
-            'entries' => $entries,
-        ]);
+        return $this->render(
+            'calendar',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'firstDayInMonth' => $firstDayInMonth,
+                'daysInMonth' => $daysInMonth,
+                'employee' => $user,
+                'users' => $users,
+                'holidays' => Holiday::getMonthHolidays($month, $year),
+                'entries' => $entries,
+            ]
+        );
     }
 
     /**
@@ -596,23 +657,30 @@ class AdminController extends BaseController
 
         $date = $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day;
 
-        return $this->renderAjax('day', [
-            'day' => $day,
-            'month' => Clock::months()[$month],
-            'year' => $year,
-            'employee' => (int)$employee,
-            'users' => User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all(),
-            'clock' => Clock::find()->where([
-                    'and',
-                    ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 00:00:00')],
-                    ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 23:59:59')],
-                ])->orderBy(['clock_in' => SORT_ASC])->all(),
-            'off' => Off::find()->where([
-                    'and',
-                    ['<=', 'start_at', $date],
-                    ['>=', 'end_at', $date],
-                ])->orderBy(['start_at' => SORT_ASC])->all(),
-        ]);
+        return $this->renderAjax(
+            'day',
+            [
+                'day' => $day,
+                'month' => Clock::months()[$month],
+                'year' => $year,
+                'employee' => (int)$employee,
+                'users' => User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all(),
+                'clock' => Clock::find()->where(
+                    [
+                        'and',
+                        ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 00:00:00')],
+                        ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($date . ' 23:59:59')],
+                    ]
+                )->orderBy(['clock_in' => SORT_ASC])->all(),
+                'off' => Off::find()->where(
+                    [
+                        'and',
+                        ['<=', 'start_at', $date],
+                        ['>=', 'end_at', $date],
+                    ]
+                )->orderBy(['start_at' => SORT_ASC])->all(),
+            ]
+        );
     }
 
     /**
@@ -620,10 +688,13 @@ class AdminController extends BaseController
      */
     public function actionProjectsManager()
     {
-        return $this->render('projects-manager', [
-            'projects' => Project::find()->orderBy(['status' => SORT_DESC, 'name' => SORT_ASC])->all(),
-            'users' => ArrayHelper::map(User::find()->orderBy(['name' => SORT_ASC])->all(), 'id', 'name'),
-        ]);
+        return $this->render(
+            'projects-manager',
+            [
+                'projects' => Project::find()->orderBy(['status' => SORT_DESC, 'name' => SORT_ASC])->all(),
+                'users' => ArrayHelper::map(User::find()->orderBy(['name' => SORT_ASC])->all(), 'id', 'name'),
+            ]
+        );
     }
 
     /**
@@ -800,22 +871,32 @@ class AdminController extends BaseController
         ];
 
         if ($weekStart === null) {
-            $conditions[] = ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')];
-            $conditions[] = ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')];
+            $conditions[] = [
+                '>=',
+                'clock_in',
+                (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'),
+            ];
+            $conditions[] = [
+                '<',
+                'clock_in',
+                (int)Yii::$app->formatter->asTimestamp(
+                    $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
+                ),
+            ];
         } else {
             $conditions[] = [
                 '>=',
                 'clock_in',
                 (int)Yii::$app->formatter->asTimestamp(
                     $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($weekStart < 10 ? '0' : '') . $weekStart . ' 00:00:00'
-                )
+                ),
             ];
             $conditions[] = [
                 '<=',
                 'clock_in',
                 (int)Yii::$app->formatter->asTimestamp(
                     $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($weekEnd < 10 ? '0' : '') . $weekEnd . ' 23:59:59'
-                )
+                ),
             ];
         }
 
@@ -825,35 +906,40 @@ class AdminController extends BaseController
 
         $projectSessions = (new Query())
             ->from(Clock::tableName())
-            ->select([
-                 'project_id',
-                 'user_id',
-                 new Expression('SUM(clock_out - clock_in) time')
-             ])
+            ->select(
+                [
+                    'project_id',
+                    'user_id',
+                    new Expression('SUM(clock_out - clock_in) time'),
+                ]
+            )
             ->where($conditions)
             ->groupBy(['project_id', 'user_id'])
             ->orderBy(['time' => SORT_DESC])
             ->all();
 
-        return $this->render('projects', [
-            'months' => Clock::months(),
-            'year' => $year,
-            'month' => $month,
-            'previous' => Clock::months()[$previousMonth],
-            'previousYear' => $previousYear,
-            'previousMonth' => $previousMonth,
-            'next' => Clock::months()[$nextMonth],
-            'nextYear' => $nextYear,
-            'nextMonth' => $nextMonth,
-            'employee' => $user,
-            'users' => User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all(),
-            'projects' => $projects,
-            'time' => $projectSessions,
-            'week' => $week,
-            'weeksInMonth' => $weeksInMonth,
-            'weekStart' => $weekStart,
-            'weekEnd' => $weekEnd,
-        ]);
+        return $this->render(
+            'projects',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'employee' => $user,
+                'users' => User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all(),
+                'projects' => $projects,
+                'time' => $projectSessions,
+                'week' => $week,
+                'weeksInMonth' => $weeksInMonth,
+                'weekStart' => $weekStart,
+                'weekEnd' => $weekEnd,
+            ]
+        );
     }
 
     /**
@@ -889,20 +975,23 @@ class AdminController extends BaseController
 
         $off = Off::find()->where($conditions)->orderBy(['start_at' => SORT_DESC])->all();
 
-        return $this->render('off', [
-            'months' => Clock::months(),
-            'year' => $year,
-            'month' => $month,
-            'previous' => Clock::months()[$previousMonth],
-            'previousYear' => $previousYear,
-            'previousMonth' => $previousMonth,
-            'next' => Clock::months()[$nextMonth],
-            'nextYear' => $nextYear,
-            'nextMonth' => $nextMonth,
-            'employee' => $user,
-            'users' => $users,
-            'off' => $off,
-        ]);
+        return $this->render(
+            'off',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'employee' => $user,
+                'users' => $users,
+                'off' => $off,
+            ]
+        );
     }
 
     /**
@@ -963,5 +1052,53 @@ class AdminController extends BaseController
         }
 
         return $this->goBack(null, true);
+    }
+
+    /**
+     * @param string|int $id
+     * @return Response
+     */
+    public function actionDeactivate($id): Response
+    {
+        $user = User::findOne($id);
+
+        if ($user === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
+        } elseif ((int)$user->id === (int)Yii::$app->user->id) {
+            Yii::$app->alert->danger(Yii::t('app', 'You can not deactivate your own account.'));
+        } else {
+            $user->status = User::STATUS_DELETED;
+            if (!$user->save(false, ['status', 'updated_at'])) {
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while deactivating user.'));
+            } else {
+                Yii::$app->alert->success(Yii::t('app', 'User has been deactivated.'));
+            }
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * @param string|int $id
+     * @return Response
+     */
+    public function actionReactivate($id): Response
+    {
+        $user = User::findOne($id);
+
+        if ($user === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
+        } elseif ((int)$user->id === (int)Yii::$app->user->id) {
+            Yii::$app->alert->danger(Yii::t('app', 'You can not reactivate your own account.'));
+        } else {
+            $user->status = User::STATUS_ACTIVE;
+            if (!$user->save(false, ['status', 'updated_at'])) {
+                Yii::$app->alert->danger(Yii::t('app', 'There was an error while reactivating user.'));
+            } else {
+                Yii::$app->alert->success(Yii::t('app', 'User has been reactivated.'));
+            }
+        }
+
+        return $this->redirect(['index']);
     }
 }
