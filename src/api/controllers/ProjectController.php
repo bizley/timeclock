@@ -58,12 +58,14 @@ class ProjectController extends ActiveController
             $modelClass = $action->modelClass;
 
             $model = $modelClass::find()
-                ->where([
-                    'and',
-                    new Expression('JSON_CONTAINS(`assignees`, :user)'),
-                    ['<>', 'status', Project::STATUS_DELETED],
-                    ['id' => $id],
-                ])
+                ->where(
+                    [
+                        'and',
+                        new Expression('JSON_CONTAINS(`assignees`, :user)'),
+                        ['<>', 'status', Project::STATUS_DELETED],
+                        ['id' => $id],
+                    ]
+                )
                 ->params([':user' => (string)Yii::$app->user->id])
                 ->limit(1)
                 ->one();
@@ -95,28 +97,32 @@ class ProjectController extends ActiveController
             $modelClass = $action->modelClass;
 
             $query = $modelClass::find()
-                ->where([
-                    'and',
-                    new Expression('JSON_CONTAINS(`assignees`, :user)'),
-                    ['<>', 'status', Project::STATUS_DELETED],
-                ])
+                ->where(
+                    [
+                        'and',
+                        new Expression('JSON_CONTAINS(`assignees`, :user)'),
+                        ['<>', 'status', Project::STATUS_DELETED],
+                    ]
+                )
                 ->params([':user' => (string)Yii::$app->user->id]);
             if (!empty($filter)) {
                 $query->andWhere($filter);
             }
 
-            return new ActiveDataProvider([
-                'query' => $query,
-                'pagination' => [
-                    'params' => $requestParams,
-                    'validatePage' => false,
-                ],
-                'sort' => [
-                    'enableMultiSort' => true,
-                    'params' => $requestParams,
-                    'defaultOrder' => ['name' => SORT_ASC],
-                ],
-            ]);
+            return new ActiveDataProvider(
+                [
+                    'query' => $query,
+                    'pagination' => [
+                        'params' => $requestParams,
+                        'validatePage' => false,
+                    ],
+                    'sort' => [
+                        'enableMultiSort' => true,
+                        'params' => $requestParams,
+                        'defaultOrder' => ['name' => SORT_ASC],
+                    ],
+                ]
+            );
         };
 
         return $actions;

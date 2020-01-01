@@ -59,10 +59,12 @@ class SessionController extends ActiveController
             /* @var $modelClass Clock */
             $modelClass = $action->modelClass;
 
-            $model = $modelClass::findOne([
-                'id' => $id,
-                'user_id' => Yii::$app->user->id,
-            ]);
+            $model = $modelClass::findOne(
+                [
+                    'id' => $id,
+                    'user_id' => Yii::$app->user->id,
+                ]
+            );
 
             if ($model === null) {
                 throw new NotFoundHttpException("Object not found: $id");
@@ -103,42 +105,44 @@ class SessionController extends ActiveController
                 $query->andWhere($filter);
             }
 
-            return new ActiveDataProvider([
-                'query' => $query,
-                'pagination' => [
-                    'params' => $requestParams,
-                    'validatePage' => false,
-                ],
-                'sort' => [
-                    'enableMultiSort' => true,
-                    'params' => $requestParams,
-                    'defaultOrder' => ['clockIn' => SORT_ASC],
-                    'attributes' => [
-                        'id',
-                        'note',
-                        'clockIn' => [
-                            'asc' => ['clock_in' => SORT_ASC],
-                            'desc' => ['clock_in' => SORT_DESC],
-                            'default' => SORT_ASC,
-                        ],
-                        'clockOut' => [
-                            'asc' => ['clock_out' => SORT_ASC],
-                            'desc' => ['clock_out' => SORT_DESC],
-                            'default' => SORT_ASC,
-                        ],
-                        'createdAt' => [
-                            'asc' => ['created_at' => SORT_ASC],
-                            'desc' => ['created_at' => SORT_DESC],
-                            'default' => SORT_ASC,
-                        ],
-                        'updatedAt' => [
-                            'asc' => ['updated_at' => SORT_ASC],
-                            'desc' => ['updated_at' => SORT_DESC],
-                            'default' => SORT_ASC,
+            return new ActiveDataProvider(
+                [
+                    'query' => $query,
+                    'pagination' => [
+                        'params' => $requestParams,
+                        'validatePage' => false,
+                    ],
+                    'sort' => [
+                        'enableMultiSort' => true,
+                        'params' => $requestParams,
+                        'defaultOrder' => ['clockIn' => SORT_ASC],
+                        'attributes' => [
+                            'id',
+                            'note',
+                            'clockIn' => [
+                                'asc' => ['clock_in' => SORT_ASC],
+                                'desc' => ['clock_in' => SORT_DESC],
+                                'default' => SORT_ASC,
+                            ],
+                            'clockOut' => [
+                                'asc' => ['clock_out' => SORT_ASC],
+                                'desc' => ['clock_out' => SORT_DESC],
+                                'default' => SORT_ASC,
+                            ],
+                            'createdAt' => [
+                                'asc' => ['created_at' => SORT_ASC],
+                                'desc' => ['created_at' => SORT_DESC],
+                                'default' => SORT_ASC,
+                            ],
+                            'updatedAt' => [
+                                'asc' => ['updated_at' => SORT_ASC],
+                                'desc' => ['updated_at' => SORT_DESC],
+                                'default' => SORT_ASC,
+                            ],
                         ],
                     ],
-                ],
-            ]);
+                ]
+            );
         };
 
         return $actions;
@@ -158,8 +162,8 @@ class SessionController extends ActiveController
             return $form;
         }
 
-        $from = (int) ($form->from ?? 0);
-        $to = (int) ($form->to ?? time());
+        $from = (int)($form->from ?? 0);
+        $to = (int)($form->to ?? time());
 
         if ($from > $to) {
             $temp = $from;
@@ -168,24 +172,28 @@ class SessionController extends ActiveController
         }
 
         $query = (new Query())->from(Clock::tableName())
-            ->select([
-                'SUM(clock_out - clock_in) summary',
-                'COUNT(id) sessions',
-            ])
-            ->where([
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['is not', 'clock_out', null],
-                ['>=', 'clock_in', $from],
-                ['<=', 'clock_out', $to],
-            ])->one();
+            ->select(
+                [
+                    'SUM(clock_out - clock_in) summary',
+                    'COUNT(id) sessions',
+                ]
+            )
+            ->where(
+                [
+                    'and',
+                    ['user_id' => Yii::$app->user->id],
+                    ['is not', 'clock_out', null],
+                    ['>=', 'clock_in', $from],
+                    ['<=', 'clock_out', $to],
+                ]
+            )->one();
 
         return [
-            'userId' => (int) Yii::$app->user->id,
+            'userId' => (int)Yii::$app->user->id,
             'from' => $from,
             'to' => $to,
-            'summary' => (int) ($query['summary'] ?? 0),
-            'sessions' => (int) ($query['sessions'] ?? 0),
+            'summary' => (int)($query['summary'] ?? 0),
+            'sessions' => (int)($query['sessions'] ?? 0),
         ];
     }
 }

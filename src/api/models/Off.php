@@ -124,7 +124,10 @@ class Off extends \app\models\Off
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('startAt', Yii::t('app', 'Can not start off-time because it overlaps with another off-time.'));
+                $this->addError(
+                    'startAt',
+                    Yii::t('app', 'Can not start off-time because it overlaps with another off-time.')
+                );
             }
         }
     }
@@ -150,7 +153,10 @@ class Off extends \app\models\Off
                 }
 
                 if (static::find()->where($conditions)->exists()) {
-                    $this->addError('endAt', Yii::t('app', 'Can not end off-time because it overlaps with another off-time.'));
+                    $this->addError(
+                        'endAt',
+                        Yii::t('app', 'Can not end off-time because it overlaps with another off-time.')
+                    );
                 }
             }
         }
@@ -174,7 +180,10 @@ class Off extends \app\models\Off
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('endAt', Yii::t('app', 'Can not modify off-time because it overlaps with another off-time.'));
+                $this->addError(
+                    'endAt',
+                    Yii::t('app', 'Can not modify off-time because it overlaps with another off-time.')
+                );
             }
         }
     }

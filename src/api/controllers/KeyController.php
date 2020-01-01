@@ -62,6 +62,7 @@ class KeyController extends Controller
 
         if ($user === null || $user->pin_hash === null || !$user->validatePin($form->pin)) {
             $form->addError('pin', Yii::t('app', 'Invalid PIN.'));
+
             return $form;
         }
 
@@ -69,7 +70,7 @@ class KeyController extends Controller
 
         return [
             'userId' => $user->id,
-            'apiKey' => $user->api_key
+            'apiKey' => $user->api_key,
         ];
     }
 }

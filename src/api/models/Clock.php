@@ -127,12 +127,12 @@ class Clock extends \app\models\Clock
         $this->user_id = Yii::$app->user->id;
 
         if ($this->clockIn === null) {
-            $this->clockIn = (int) Yii::$app->formatter->asTimestamp('now');
+            $this->clockIn = (int)Yii::$app->formatter->asTimestamp('now');
         }
 
-        $this->clockIn = (int) $this->clockIn;
+        $this->clockIn = (int)$this->clockIn;
         if ($this->clockOut !== null) {
-            $this->clockOut = (int) $this->clockOut;
+            $this->clockOut = (int)$this->clockOut;
         }
 
         return true;
@@ -177,7 +177,10 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockIn', Yii::t('app', 'Can not start session because it overlaps with another ended session.'));
+                $this->addError(
+                    'clockIn',
+                    Yii::t('app', 'Can not start session because it overlaps with another ended session.')
+                );
             }
         }
     }
@@ -197,7 +200,10 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockOut', Yii::t('app', 'Can not end session because it overlaps with another ended session.'));
+                $this->addError(
+                    'clockOut',
+                    Yii::t('app', 'Can not end session because it overlaps with another ended session.')
+                );
             }
         }
     }
@@ -232,7 +238,10 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockOut', Yii::t('app', 'Can not modify session because it overlaps with another ended session.'));
+                $this->addError(
+                    'clockOut',
+                    Yii::t('app', 'Can not modify session because it overlaps with another ended session.')
+                );
             }
         }
     }
