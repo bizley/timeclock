@@ -26,6 +26,7 @@ use function is_array;
  * @property int $project_id
  *
  * @property Project $project
+ * @property User $user
  */
 class Clock extends ActiveRecord implements NoteInterface
 {
@@ -95,6 +96,14 @@ class Clock extends ActiveRecord implements NoteInterface
             [['clock_out'], 'compare', 'compareAttribute' => 'clock_in', 'operator' => '>'],
             [['project_id'], 'verifyProject'],
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getUser(): ActiveQuery
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     public function verifyProject(): void

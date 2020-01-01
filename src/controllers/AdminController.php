@@ -15,6 +15,7 @@ use Throwable;
 use Yii;
 use yii\base\Exception as BaseException;
 use yii\base\InvalidConfigException;
+use yii\db\ActiveQuery;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\filters\AccessControl;
@@ -376,7 +377,7 @@ class AdminController extends BaseController
 
         $user = null;
         if ($id !== null) {
-            $user = User::findOne($id);
+            $user = User::find()->where(['id' => $id, 'status' => User::STATUS_ACTIVE])->one();
 
             if ($user === null) {
                 Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
@@ -425,13 +426,22 @@ class AdminController extends BaseController
         if ($user !== null) {
             $conditions[] = ['user_id' => $user->id];
         }
-        $clock = Clock::find()->where($conditions)->orderBy(['clock_in' => SORT_DESC])->all();
 
-        $users = User::find()->indexBy('id')->orderBy(['name' => SORT_ASC])->all();
+        $clockQuery = Clock::find()
+            ->with(['user' => static function (ActiveQuery $query) {
+                $query->andWhere(['status' => User::STATUS_ACTIVE]);
+            }])
+            ->where($conditions);
+
+        $users = User::find()
+            ->where(['status' => User::STATUS_ACTIVE])
+            ->indexBy('id')
+            ->orderBy(['name' => SORT_ASC])
+            ->all();
 
         if ((int)$export === 1) {
             return $this->downloadCsv(
-                Clock::find()->where($conditions)->orderBy(['user_id' => SORT_ASC, 'clock_in' => SORT_ASC])->all(),
+                $clockQuery->orderBy(['user_id' => SORT_ASC, 'clock_in' => SORT_ASC])->all(),
                 $users,
                 $year,
                 $month,
@@ -452,7 +462,7 @@ class AdminController extends BaseController
                 'next' => Clock::months()[$nextMonth],
                 'nextYear' => $nextYear,
                 'nextMonth' => $nextMonth,
-                'clock' => $clock,
+                'clock' => $clockQuery->orderBy(['clock_in' => SORT_DESC])->all(),
                 'employee' => $user,
                 'users' => $users,
                 'week' => $week,
@@ -692,7 +702,11 @@ class AdminController extends BaseController
             'projects-manager',
             [
                 'projects' => Project::find()->orderBy(['status' => SORT_DESC, 'name' => SORT_ASC])->all(),
-                'users' => ArrayHelper::map(User::find()->orderBy(['name' => SORT_ASC])->all(), 'id', 'name'),
+                'users' => ArrayHelper::map(
+                    User::find()->where(['status' => User::STATUS_ACTIVE])->orderBy(['name' => SORT_ASC])->all(),
+                    'id',
+                    'name'
+                ),
             ]
         );
     }
