@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\widgets;
 
 use app\widgets\modal\Day;
+use Exception;
 use tests\AppTestCase;
 use Yii;
 use yii\web\View;
@@ -17,7 +18,7 @@ class DayModalWidgetTest extends AppTestCase
 {
     /**
      * @runInSeparateProcess
-     * @throws \Exception
+     * @throws Exception
      */
     public function testDayModal(): void
     {
@@ -28,7 +29,7 @@ class DayModalWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
-     * @throws \Exception
+     * @throws Exception
      */
     public function testNoModal(): void
     {
@@ -37,7 +38,7 @@ class DayModalWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
-     * @throws \Exception
+     * @throws Exception
      */
     public function testDayAdd(): void
     {

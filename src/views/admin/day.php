@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Off;
 use app\widgets\fontawesome\FA;
 use app\widgets\note\Note;
 use yii\bootstrap4\Html;
@@ -13,6 +14,7 @@ use yii\bootstrap4\Html;
  * @var $month int
  * @var $year int
  * @var $employee int
+ * @var $offDay Off
  */
 
 $total = [];
@@ -35,6 +37,9 @@ foreach ($clock as $session) {
         $list .= Yii::$app->formatter->asTime($session->clock_out);
     } else {
         $list .= Yii::t('app', 'not ended');
+    }
+    if ($session->project_id) {
+        $list .= ' <span class="badge project-badge" style="background-color:' . $session->project->color . '">' . Html::encode($session->project->name) . '</span>';
     }
     $list .= Note::widget(['model' => $session]);
     $list .= '</li>';
@@ -63,13 +68,25 @@ foreach ($clock as $session) {
     <?= Yii::t('app', 'Off-Time') ?>
 </div>
 <ul class="list-group mb-3">
-    <?php foreach ($off as $day): ?>
-        <li class="list-group-item <?= $employee === $day->user_id ? 'active' : '' ?>">
-            <?= Html::encode($users[$day->user_id]->name) ?>
-            <?= Yii::$app->formatter->asDate($day->start_at) ?>
+    <?php foreach ($off as $offDay): ?>
+        <li class="list-group-item <?= $employee === $offDay->user_id ? 'active' : '' ?>">
+            <?php if ($offDay->type === Off::TYPE_VACATION): ?>
+                <?php if ($offDay->approved === 0): ?>
+                    <span class="badge badge-danger float-right"><?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'VACATION NOT APPROVED YET') ?></span>
+                <?php elseif ($offDay->approved === 1): ?>
+                    <span class="badge badge-success float-right"><?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'Vacation approved') ?></span>
+                <?php else: ?>
+                    <span class="badge badge-secondary float-right"><?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'Vacation denied') ?></span>
+                <?php endif; ?>
+                <?= FA::icon('plane') ?>
+            <?php else: ?>
+                <?= FA::icon('slash') ?>
+            <?php endif; ?>
+            <?= Html::encode($users[$offDay->user_id]->name) ?>
+            <?= $offDay->start_at ?>
             <?= FA::icon('long-arrow-alt-right') ?>
-            <?= Yii::$app->formatter->asDate($day->end_at) ?>
-            <?= Note::widget(['model' => $day]) ?>
+            <?= $offDay->end_at ?>
+            <?= Note::widget(['model' => $offDay]) ?>
         </li>
     <?php endforeach; ?>
 </ul>

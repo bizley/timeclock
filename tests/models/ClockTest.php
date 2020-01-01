@@ -8,6 +8,7 @@ use app\models\Clock;
 use app\models\User;
 use tests\DbTestCase;
 use Yii;
+use yii\db\Exception;
 
 /**
  * Class ClockTest
@@ -47,7 +48,7 @@ class ClockTest extends DbTestCase
 
     /**
      * @param array $row
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     protected function insert(array $row): void
     {
@@ -62,7 +63,7 @@ class ClockTest extends DbTestCase
         ]);
 
         $clock->clock_out = 10;
-        $this->assertTrue($clock->isAnotherSessionSaved());
+        $this->assertFalse($clock->isAnotherSessionSaved());
 
         $clock->clock_out = 100;
         $this->assertTrue($clock->isAnotherSessionSaved());
@@ -88,7 +89,7 @@ class ClockTest extends DbTestCase
 
     /**
      * @runInSeparateProcess
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStartWhenSessionAlreadyStarted(): void
     {
@@ -102,7 +103,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStartWhenSessionAlreadyStartedAndClosedToday(): void
     {
@@ -116,7 +117,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStartWhenSessionAlreadyStartedAndClosedYesterday(): void
     {
@@ -130,7 +131,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStartWhenSessionAlreadyStartedYesterday(): void
     {
@@ -144,7 +145,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStop(): void
     {
@@ -164,7 +165,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStopBeforeStart(): void
     {
@@ -185,7 +186,7 @@ class ClockTest extends DbTestCase
 
     /**
      * @runInSeparateProcess
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testStopWhenAnotherSession(): void
     {
@@ -211,7 +212,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testSessionActive(): void
     {
@@ -225,7 +226,7 @@ class ClockTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testSessionActiveYesterday(): void
     {

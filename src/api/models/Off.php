@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\api\models;
 
 use app\models\User;
+use Exception;
 use Yii;
 
 /**
@@ -29,9 +30,11 @@ class Off extends \app\models\Off
     public function rules(): array
     {
         return [
-            [['startAt', 'endAt', 'user_id'], 'required'],
+            [['type'], 'default', 'value' => self::TYPE_SHORT],
+            [['startAt', 'endAt', 'user_id', 'type'], 'required'],
             [['note'], 'string'],
-            [['endAt'], 'compare', 'compareAttribute' => 'startAt', 'operator' => '>'],
+            [['type'], 'in', 'range' => [self::TYPE_SHORT, self::TYPE_VACATION]],
+            [['endAt', 'startAt'], 'date', 'format' => 'yyyy-MM-dd'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['startAt'], 'checkStartAt'],
             [['endAt'], 'checkEndAt'],
@@ -58,6 +61,8 @@ class Off extends \app\models\Off
             'startAt',
             'endAt',
             'note',
+            'type',
+            'approved',
             'createdAt' => 'created_at',
             'updatedAt' => 'updated_at',
         ];
@@ -84,13 +89,6 @@ class Off extends \app\models\Off
             return false;
         }
 
-        if ($this->startAt !== null) {
-            $this->startAt = (int) $this->startAt;
-        }
-        if ($this->endAt !== null) {
-            $this->endAt = (int) $this->endAt;
-        }
-
         $this->user_id = Yii::$app->user->id;
 
         return true;
@@ -109,13 +107,11 @@ class Off extends \app\models\Off
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkStartAt(): void
     {
         if (!$this->hasErrors()) {
-            $this->startAt = (new \DateTime(date('Y-m-d 00:00:00', $this->startAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
-
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
@@ -134,39 +130,38 @@ class Off extends \app\models\Off
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkEndAt(): void
     {
         if (!$this->hasErrors()) {
-            $this->endAt = (new \DateTime(date('Y-m-d 23:59:59', $this->endAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
+            if (Yii::$app->formatter->asTimestamp($this->startAt) > Yii::$app->formatter->asTimestamp($this->endAt)) {
+                $this->addError('endAt', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
+            } else {
+                $conditions = [
+                    'and',
+                    ['user_id' => Yii::$app->user->id],
+                    ['<=', 'start_at', $this->endAt],
+                    ['>=', 'end_at', $this->endAt],
+                ];
 
-            $conditions = [
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['<=', 'start_at', $this->endAt],
-                ['>=', 'end_at', $this->endAt],
-            ];
+                if ($this->scenario === 'update') {
+                    $conditions[] = ['<>', 'id', $this->id];
+                }
 
-            if ($this->scenario === 'update') {
-                $conditions[] = ['<>', 'id', $this->id];
-            }
-
-            if (static::find()->where($conditions)->exists()) {
-                $this->addError('endAt', Yii::t('app', 'Can not end off-time because it overlaps with another off-time.'));
+                if (static::find()->where($conditions)->exists()) {
+                    $this->addError('endAt', Yii::t('app', 'Can not end off-time because it overlaps with another off-time.'));
+                }
             }
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkBetween(): void
     {
         if (!$this->hasErrors()) {
-            $this->startAt = (new \DateTime(date('Y-m-d 00:00:00', $this->startAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
-            $this->endAt = (new \DateTime(date('Y-m-d 23:59:59', $this->endAt), new \DateTimeZone(Yii::$app->timeZone)))->getTimestamp();
-
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],

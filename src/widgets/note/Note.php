@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\widgets\note;
 
 use app\models\NoteInterface;
+use app\widgets\fontawesome\FA;
 use Yii;
 use yii\bootstrap4\BootstrapPluginAsset;
 use yii\bootstrap4\Html;
@@ -31,7 +32,7 @@ class Note extends Widget
             BootstrapPluginAsset::register($this->view);
             $this->view->registerJs('$("[data-toggle=\"popover\"]").popover();');
 
-            return Html::tag('div', '', [
+            return Html::tag('div', FA::icon('sticky-note fa-spin'), [
                     'class' => 'note',
                     'title' => Yii::t('app', 'Note'),
                     'data-toggle' => 'popover',

@@ -45,15 +45,15 @@ class Alert extends Widget
             foreach ($flashes as $key => $messages) {
                 foreach ((array)$messages as $message) {
                     $output[] = Html::tag('div', $message
-                        . Html::button(Html::tag('span', '&times;', ['aria-hidden' => 'true']), [
-                            'class' => 'close',
-                            'data-dismiss' => 'alert',
-                            'aria-label' => \Yii::t('app', 'Close'),
-                        ]),
-                        [
-                            'class' => "alert alert-{$key} alert-dismissible fade in",
-                            'role' => 'alert',
-                        ]);
+                                               . Html::button(Html::tag('span', '&times;', ['aria-hidden' => 'true']), [
+                                                   'class' => 'close',
+                                                   'data-dismiss' => 'alert',
+                                                   'aria-label' => \Yii::t('app', 'Close'),
+                                               ]),
+                                          [
+                                              'class' => "alert alert-{$key} alert-dismissible fade show",
+                                              'role' => 'alert',
+                                          ]);
                 }
             }
 

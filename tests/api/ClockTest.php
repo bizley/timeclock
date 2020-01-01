@@ -120,6 +120,16 @@ class ClockTest extends ApiTestCase
         $this->assertSame('Can not start session because it overlaps with another ended session.', $clock->getFirstError('clockIn'));
     }
 
+    public function testClockInEdgeOverlapping(): void
+    {
+        $clock = new Clock();
+
+        $clock->clockIn = 100;
+        $clock->clockOut = 150;
+
+        $this->assertTrue($clock->validate());
+    }
+
     public function testClockOutOverlapping(): void
     {
         $clock = new Clock();
@@ -129,6 +139,16 @@ class ClockTest extends ApiTestCase
 
         $this->assertFalse($clock->validate());
         $this->assertSame('Can not end session because it overlaps with another ended session.', $clock->getFirstError('clockOut'));
+    }
+
+    public function testClockOutEdgeOverlapping(): void
+    {
+        $clock = new Clock();
+
+        $clock->clockIn = 1;
+        $clock->clockOut = 10;
+
+        $this->assertTrue($clock->validate());
     }
 
     public function testClockBetweenOverlapping(): void

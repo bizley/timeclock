@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace tests\widgets;
 
 use app\widgets\modal\Clock;
+use Exception;
 use tests\AppTestCase;
 use Yii;
 
@@ -16,7 +17,7 @@ class ClockModalWidgetTest extends AppTestCase
 {
     /**
      * @runInSeparateProcess
-     * @throws \Exception
+     * @throws Exception
      */
     public function testClockButton(): void
     {
@@ -30,13 +31,13 @@ class ClockModalWidgetTest extends AppTestCase
 
     /**
      * @runInSeparateProcess
-     * @throws \Exception
+     * @throws Exception
      */
     public function testClockModal(): void
     {
         $out = Clock::widget(['params' => [Clock::CLOCK_MODAL => true]]);
 
-        $this->assertContains(<<<HTML
+        $this->assertStringContainsString(<<<HTML
 <div id="clockModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="clockModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -44,7 +45,7 @@ class ClockModalWidgetTest extends AppTestCase
 HTML
             , $out);
 
-        $this->assertContains(<<<HTML
+        $this->assertStringContainsString(<<<HTML
 <div class="modal-header">
                     <h4 id="clockModalLabel" class="modal-title">Confirmation required</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -53,7 +54,12 @@ HTML
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        Are you sure you want to start session?                    </div>
+                        <strong>Are you sure you want to start session?</strong>
+                    </div>
+                    <div class="form-group">
+                        <label for="clock-project">Select project assigned to this session:</label>                        <select id="clock-project" class="custom-select" name="project_id">
+<option value="">-- no project --</option>
+</select>                    </div>
                     <textarea class="form-control" name="note" placeholder="Optional Session Note"></textarea>                </div>
                 <div class="modal-footer">
                     <button type="button" id="clockCancel" class="btn btn-outline-secondary" data-dismiss="modal">

@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\base\BaseController;
 use app\assets\AppAsset;
+use app\base\BaseController;
 use app\models\ProfileForm;
 use app\models\User;
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\Response;
+
+use function random_int;
 
 /**
  * Class ProfileController
@@ -52,16 +55,19 @@ class ProfileController extends BaseController
      */
     public function remember(): array
     {
-        return array_merge(parent::remember(), [
-            'index',
-            'api',
-            'pin',
-        ]);
+        return array_merge(
+            parent::remember(),
+            [
+                'index',
+                'api',
+                'pin',
+            ]
+        );
     }
 
     /**
      * @return string|Response
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function actionIndex()
     {
@@ -69,17 +75,22 @@ class ProfileController extends BaseController
 
         if ($model->load(Yii::$app->request->post()) && $model->update()) {
             Yii::$app->alert->success(Yii::t('app', 'Profile has been updated.'));
+
             return $this->refresh();
         }
 
-        return $this->render('index', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'index',
+            [
+                'model' => $model,
+                'projects' => ['' => ''] + Yii::$app->user->identity->assignedProjects,
+            ]
+        );
     }
 
     /**
      * @return Response
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function actionGrant(): Response
     {
@@ -116,7 +127,7 @@ class ProfileController extends BaseController
 
     /**
      * @return Response
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function actionChange(): Response
     {
@@ -154,6 +165,7 @@ class ProfileController extends BaseController
                 Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
             }
         }
+
         return $this->redirect(Url::previous('rememberedUrl'));
     }
 
@@ -175,23 +187,28 @@ class ProfileController extends BaseController
 
         if ($user === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
+
             return $this->redirect(['index']);
         }
 
         do {
             $pin = $user->id . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-            $pinHash = Yii::$app->security->generatePasswordHash($pin, 15);
+            $pinHash = Yii::$app->security->generatePasswordHash($pin);
         } while (User::find()->where(['pin_hash' => $pinHash])->exists());
 
         $user->pin_hash = $pinHash;
 
         if (!$user->save(true, ['pin_hash', 'updated_at'])) {
             Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
+
             return $this->redirect(['index']);
         }
 
-        return $this->render('pin', [
-            'pin' => $pin,
-        ]);
+        return $this->render(
+            'pin',
+            [
+                'pin' => $pin,
+            ]
+        );
     }
 }

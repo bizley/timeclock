@@ -1,5 +1,7 @@
 <?php
 
+use app\base\ClockHelper;
+use app\models\Off;
 use app\widgets\confirm\Confirm;
 use app\widgets\fontawesome\FA;
 use app\widgets\note\Note;
@@ -49,12 +51,14 @@ $(".sessionDetailsButton").click(function (e) {
     let details = $($(this).data("target"));
     let button = $(this);
     if ($(this).hasClass("detailsDisplayed")) {
+        button.parent().animate({"margin-top": 0}, "fast");
         details.animate({"opacity": 0}, 100).hide("fast", function () {
             button.removeClass("detailsDisplayed");
             button.find("span").text("{$buttonTexts['show']}");
             button.find("i").removeClass("fa-angle-double-up").addClass("fa-angle-double-down");
         });
     } else {
+        button.parent().animate({"margin-top": ".5rem"}, "fast");
         details.show("fast", function () {
             $(this).animate({"opacity": 1});
             button.addClass("detailsDisplayed");
@@ -107,11 +111,18 @@ JS
                 </div>
             </div>
         <?= Html::endForm(); ?>
-        <div class="form-group mb-5">
+        <div class="form-group mb-3">
             <?= Html::a(
             FA::icon('calendar-alt') . ' ' . Yii::t('app', 'Switch To Calendar'),
                 ['calendar', 'month' => $month, 'year' => $year],
                 ['class' => 'btn btn-info btn-block']
+            ) ?>
+        </div>
+        <div class="form-group mb-5">
+            <?= Html::a(
+                FA::icon('umbrella') . ' ' . Yii::t('app', 'Switch To Projects'),
+                ['projects', 'month' => $month, 'year' => $year],
+                ['class' => 'btn btn-light btn-block']
             ) ?>
         </div>
     </div>
@@ -131,7 +142,8 @@ JS
         <ul class="list-group mb-3">
             <li class="list-group-item">
                 <span class="badge badge-light float-sm-right d-block d-sm-inline mb-1 ml-0 ml-sm-3">
-                    <?= round($total / 3600, 2) ?> (<?= Yii::$app->formatter->asDuration($total) ?>)
+                    <?= round($total / 3600, 2) ?>
+                    (<?= ClockHelper::as8HrsDayDuration($total) ?>)
                 </span>
                 <?= Yii::t('app', 'Total Hours') ?>
             </li>
@@ -155,11 +167,14 @@ JS
                         if ($session->clock_out !== null) {
                             $dayTime += $session->clock_out - $session->clock_in;
                         }
+                    }
+                    if ($daySessions !== '') {
+                        $daySessions .= $this->render('history-separator', ['day' => $day]);
                     } ?>
                     <li class="list-group-item">
                         <?php if ($dayTime): ?>
                             <span class="badge badge-light float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
-                                <?= Yii::$app->formatter->asDuration($dayTime) ?>
+                                <?= ClockHelper::as8HrsDayDuration($dayTime) ?>
                             </span>
                         <?php endif; ?>
                         <a href="#" class="btn btn-outline-secondary btn-sm float-left mr-1 sessionDetailsButton" data-target=".day<?= $day ?>">
@@ -184,17 +199,38 @@ JS
             <ul class="list-group">
                 <?php foreach ($off as $day): ?>
                     <li class="list-group-item">
+                        <?php if ($day->type === Off::TYPE_VACATION): ?>
+                            <?php if ($day->approved === 0): ?>
+                                <span class="badge badge-danger float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
+                                    <?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'vacation awaits approval') ?>
+                                </span>
+                            <?php elseif ($day->approved === 1): ?>
+                                <span class="badge badge-success float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
+                                    <?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'vacation approved') ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="badge badge-secondary float-sm-right d-block d-sm-inline mb-2 ml-0 ml-sm-3">
+                                    <?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'vacation denied') ?>
+                                </span>
+                            <?php endif; ?>
+                            <?= FA::icon('plane') ?>
+                        <?php else: ?>
+                            <?= FA::icon('slash') ?>
+                        <?php endif; ?>
+                        <?= $day->start_at ?>
+                        <?= FA::icon('long-arrow-alt-right') ?>
+                        <?= $day->end_at ?>
+                        <?php if ($day->type === Off::TYPE_VACATION): ?>
+                            [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
+                        <?php endif; ?>
+                        <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="action badge badge-warning ml-1">
+                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                        </a>
                         <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
-                           class="btn btn-outline-danger btn-sm"
+                           class="action badge badge-danger ml-1 mr-1"
                             <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
                             <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
                         </a>
-                        <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="btn btn-outline-warning btn-sm float-left mr-1">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
-                        <?= Yii::$app->formatter->asDate($day->start_at) ?>
-                        <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= Yii::$app->formatter->asDate($day->end_at) ?>
                         <?= Note::widget(['model' => $day]) ?>
                     </li>
                 <?php endforeach; ?>

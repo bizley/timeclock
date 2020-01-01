@@ -22,9 +22,9 @@ html, body { background-color:var(--light-blue) }
 .calendar.holiday { background-color:var(--menu-red) }
 .calendar.today { background-color:#ccc !important }
 .calendar.today.holiday { background-color:#dd9494 !important }
-.calendar.off { background-color:#baeef2 }
+.calendar.off { background-color:#f9b10c }
 .calendar.off.holiday {
-  background-color:#d69191;
+  background-color:#f96d45;
   color:#333;
 }
 .note {

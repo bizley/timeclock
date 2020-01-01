@@ -10,6 +10,8 @@ use yii\base\DynamicModel;
 use yii\rest\Controller;
 use yii\rest\OptionsAction;
 
+use function substr;
+
 /**
  * Class KeyController
  * @package app\api\controllers

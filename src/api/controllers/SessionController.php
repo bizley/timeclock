@@ -7,14 +7,16 @@ namespace app\api\controllers;
 use app\api\models\Clock;
 use Yii;
 use yii\base\DynamicModel;
+use yii\data\ActiveDataFilter;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Action;
 use yii\rest\ActiveController;
-use yii\data\ActiveDataFilter;
 use yii\rest\IndexAction;
 use yii\web\NotFoundHttpException;
+
+use function time;
 
 /**
  * Class SessionController
@@ -53,7 +55,7 @@ class SessionController extends ActiveController
     {
         $actions = parent::actions();
 
-        $findModel = function ($id, Action $action) {
+        $findModel = static function ($id, Action $action) {
             /* @var $modelClass Clock */
             $modelClass = $action->modelClass;
 
@@ -81,13 +83,13 @@ class SessionController extends ActiveController
                 'createdAt' => 'created_at',
                 'updatedAt' => 'updated_at',
             ],
-            'searchModel' => function () {
+            'searchModel' => static function () {
                 return (new DynamicModel(['id', 'clockIn', 'clockOut', 'note', 'createdAt', 'updatedAt']))
                     ->addRule(['id', 'clockIn', 'clockOut', 'createdAt', 'updatedAt'], 'integer', ['min' => 1])
                     ->addRule(['note'], 'string');
             },
         ];
-        $actions['index']['prepareDataProvider'] = function (IndexAction $action, $filter) {
+        $actions['index']['prepareDataProvider'] = static function (IndexAction $action, $filter) {
             $requestParams = Yii::$app->getRequest()->getBodyParams();
             if (empty($requestParams)) {
                 $requestParams = Yii::$app->getRequest()->getQueryParams();

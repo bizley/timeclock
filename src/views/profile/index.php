@@ -8,6 +8,7 @@ use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model \app\models\ProfileForm */
+/* @var $projects array */
 
 $this->title = Yii::t('app', 'Profile');
 
@@ -67,6 +68,8 @@ JS
             </div>
         </div>
     </div>
+
+    <?= $form->field($model, 'projectId')->dropDownList($projects, ['class' => 'custom-select']) ?>
 
     <div class="row form-group">
         <div class="offset-lg-3 offset-md-4 col text-center text-md-left">

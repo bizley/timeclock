@@ -26,8 +26,9 @@ html, body { height:100% }
 }
 .password { cursor:pointer }
 .clock {
-  font-size:2em;
-  padding:1.5rem 0;
+  font-size:1.5em;
+  padding:1rem 0;
+  cursor: pointer;
 }
 .clock i {
   display:block;
@@ -75,9 +76,6 @@ html, body { height:100% }
 .selectDay { cursor:pointer }
 .note {
   float:right;
-  width:1em;
-  height:1em;
-  border-radius:1.6em;
   margin:4px 0 0 10px;
   cursor:help;
 }
@@ -90,6 +88,19 @@ html, body { height:100% }
 .months .btn { width:50% }
 .months .btn i { display:block }
 .accordion .card-body { color:#333 }
+.list-group-item.separator {
+  background-color:transparent;
+  border-color:transparent;
+  font-size:.1em;
+  padding:.1rem;
+}
+.project-badge {
+  text-shadow:rgba(0,0,0,.8) 1px 1px, rgba(0,0,0,.8) 1px -1px, rgba(0,0,0,.8) -1px 1px, rgba(0,0,0,.8) -1px -1px;
+  color:#fff !important;
+}
+.list-group-item .action { display:none }
+.list-group-item:hover .action, .list-group-item:focus .action { display:inline-block }
+.day-taken { background-color: rgba(255, 0, 0, 0.2) }
 @media (max-width:768px) {
   .calendar {
     float:none;

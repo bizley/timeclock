@@ -7,6 +7,8 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
+use function substr;
+
 /**
  * Class PinForm
  * @package app\models

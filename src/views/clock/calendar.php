@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Clock;
+use app\models\Off;
 use app\widgets\fontawesome\FA;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
@@ -22,7 +23,7 @@ use yii\helpers\Url;
  * @var $daysInMonth int
  * @var $holidays array
  * @var $off array
- * @var $dayOff \app\models\Off
+ * @var $dayOff Off
  */
 
 $this->title = Yii::t('app', 'Calendar');
@@ -38,12 +39,10 @@ foreach ($clock as $session) {
 
 $offDays = [];
 for ($day = 1; $day <= $daysInMonth; $day++) {
-    $stamp = (new \DateTime(
-        $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . ' 12:00:00',
-        new \DateTimeZone(Yii::$app->timeZone))
-    )->getTimestamp();
+    $stamp = (int)Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . ' 12:00:00');
     foreach ($off as $dayOff) {
-        if ($stamp > $dayOff->start_at && $stamp < $dayOff->end_at) {
+        if ($stamp >= (int)Yii::$app->formatter->asTimestamp($dayOff->start_at . ' 12:00:00')
+            && $stamp <= (int)Yii::$app->formatter->asTimestamp($dayOff->end_at . ' 12:00:00')) {
             $offDays[] = $day;
             break;
         }
@@ -109,11 +108,18 @@ JS
                 </div>
             </div>
         <?= Html::endForm(); ?>
-        <div class="form-group mb-5">
+        <div class="form-group mb-3">
             <?= Html::a(
                 FA::icon('history') . ' ' . Yii::t('app', 'Switch To History'),
                 ['history', 'month' => $month, 'year' => $year],
                 ['class' => 'btn btn-info btn-block']
+            ) ?>
+        </div>
+        <div class="form-group mb-5">
+            <?= Html::a(
+                FA::icon('umbrella') . ' ' . Yii::t('app', 'Switch To Projects'),
+                ['projects', 'month' => $month, 'year' => $year],
+                ['class' => 'btn btn-light btn-block']
             ) ?>
         </div>
     </div>
@@ -146,6 +152,7 @@ JS
                     ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
                     : '' ?>" data-year="<?= $year ?>" data-month="<?= $month ?>" data-day="<?= $day ?>">
                     <span class="float-right d-block d-md-none"><?= Clock::days()[$dayOfWeek] ?></span>
+                    <?= in_array($day, $offDays, true) ? Yii::t('app', 'off-time') : '' ?>
                     <?= $day ?>
                     <?php if (!array_key_exists($day, $clockDays)): ?>
                         <p>&nbsp;</p><p>&nbsp;</p>

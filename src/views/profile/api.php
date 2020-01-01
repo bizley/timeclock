@@ -108,6 +108,11 @@ $baseUrl = Url::base(true);
     "userId": 1,
     "clockIn": 1545481724,
     "clockOut": null,
+    "project": {
+        "id": 1,
+        "name": "Test",
+        "color": "#ff0000"
+    },
     "note": "Home office",
     "createdAt": 1545481724,
     "updatedAt": 1545481724
@@ -132,6 +137,11 @@ $baseUrl = Url::base(true);
         "clockIn": 1545481724,
         "clockOut": null,
         "note": "Home office",
+        "project": {
+            "id": 1,
+            "name": "Test",
+            "color": "#ff0000"
+        },
         "createdAt": 1545481724,
         "updatedAt": 1545481724
     }
@@ -187,7 +197,7 @@ $baseUrl = Url::base(true);
                 </kbd></p>
             </li>
             <li>
-                <p><?= Yii::t('app', 'Start session at given time') ?></p>
+                <p><?= Yii::t('app', 'Start session at given time and assign no project to it') ?></p>
                 <p><kbd class="p-2">
                     POST <?= $baseUrl ?>/api/sessions
                 </kbd></p>
@@ -204,10 +214,14 @@ $baseUrl = Url::base(true);
                         <td><code>note</code></td>
                         <td><span class="badge badge-warning">string</span> Home office</td>
                     </tr>
+                    <tr>
+                        <td><code>defaultProject</code></td>
+                        <td><span class="badge badge-info">int</span> 0 (<?= Yii::t('app', 'Default {value}', ['value' => 1]) ?>)</td>
+                    </tr>
                 </table>
             </li>
             <li>
-                <p><?= Yii::t('app', 'Add ended session at given time') ?></p>
+                <p><?= Yii::t('app', 'Add ended session at given time and assign project of ID 5') ?></p>
                 <p><kbd class="p-2">
                     POST <?= $baseUrl ?>/api/sessions
                 </kbd></p>
@@ -224,6 +238,10 @@ $baseUrl = Url::base(true);
                         <td><code>clockOut</code></td>
                         <td><span class="badge badge-info">int</span> 1545739655</td>
                     </tr>
+                    <tr>
+                        <td><code>projectId</code></td>
+                        <td><span class="badge badge-info">int</span> 5</td>
+                    </tr>
                 </table>
             </li>
         </ul>
@@ -235,6 +253,11 @@ $baseUrl = Url::base(true);
     "clockIn": 1545485055,
     "clockOut": null,
     "note": "Home office",
+    "project": {
+        "id": 1,
+        "name": "Test",
+        "color": "#ff0000"
+    },
     "createdAt": 1545485055,
     "updatedAt": 1545485055
 }</pre>
@@ -252,7 +275,10 @@ $baseUrl = Url::base(true);
         'parentId' => 'api-sessions',
         'header' => Yii::t('app', 'Update Session') . ' <span class="badge badge-info">PUT, PATCH</span>',
     ]); ?>
-        <p><?= Yii::t('app', 'Update work session of given {ID}.', ['ID' => Html::tag('code', Yii::t('app', 'ID'))]) ?></p>
+        <p><?= Yii::t('app', 'Update work session of given {ID}. In this scenario {defaultProject} is 0 by default.', [
+                'ID' => Html::tag('code', Yii::t('app', 'ID')),
+                'defaultProject' => Html::tag('code', 'defaultProject'),
+            ]) ?></p>
         <p><?= Yii::t('app', 'Request example:') ?></p>
         <p><kbd class="p-2">
             PUT <?= $baseUrl ?>/api/sessions/1
@@ -270,6 +296,10 @@ $baseUrl = Url::base(true);
                 <td><code>note</code></td>
                 <td><span class="badge badge-warning">string</span> Birthday</td>
             </tr>
+            <tr>
+                <td><code>projectId</code></td>
+                <td><span class="badge badge-info">int</span> 5</td>
+            </tr>
         </table>
         <span class="badge badge-success float-right"><?= Yii::t('app', 'Status:') ?> 200</span>
         <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
@@ -279,6 +309,11 @@ $baseUrl = Url::base(true);
     "clockIn": 1545485055,
     "clockOut": 1545739655,
     "note": "Birthday",
+    "project": {
+        "id": 1,
+        "name": "Test",
+        "color": "#ff0000"
+    },
     "createdAt": 1545485055,
     "updatedAt": 1545739655
 }</pre>
@@ -652,6 +687,16 @@ $baseUrl = Url::base(true);
     "name": "John",
     "email": "john@company.com",
     "phone": "7575 333 888",
+    "defaultProject": {
+        "id": 1,
+        "name": "Test"
+    },
+    "availableProjects": [
+        {
+            "id": 1,
+            "name": "Test"
+        }
+    ],
     "createdAt": 1545245502,
     "updatedAt": 1545247839
 }</pre>
@@ -679,6 +724,10 @@ $baseUrl = Url::base(true);
                 <td><code>phone</code></td>
                 <td><span class="badge badge-warning">string</span> 7432 999 777</td>
             </tr>
+            <tr>
+                <td><code>projectId</code></td>
+                <td><span class="badge badge-info">int</span> 1 <em>(<?= Yii::t('app', '0 to remove') ?>)</em></td>
+            </tr>
         </table>
         <span class="badge badge-success float-right"><?= Yii::t('app', 'Status:') ?> 200</span>
         <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
@@ -687,6 +736,16 @@ $baseUrl = Url::base(true);
     "name": "Bruce Wayne",
     "email": "john@company.com",
     "phone": "7432 999 777",
+    "defaultProject": {
+        "id": 1,
+        "name": "Test"
+    },
+    "availableProjects": [
+        {
+            "id": 1,
+            "name": "Test"
+        }
+    ],
     "createdAt": 1545245502,
     "updatedAt": 1545255438
 }</pre>
@@ -735,5 +794,85 @@ $baseUrl = Url::base(true);
     "userId": 1,
     "apiKey": "goBnoSjSSToUTXv744iV"
 }</pre>
+    <?php Accordion::end(); ?>
+</div>
+
+<hr>
+
+<div class="form-group">
+    <h3><?= FA::icon('chevron-circle-right') ?> <?= $baseUrl ?>/api/projects</h3>
+</div>
+
+<div class="accordion" id="api-projects">
+    <?php Accordion::begin([
+        'parentId' => 'api-projects',
+        'header' => Yii::t('app', 'View Project') . ' <span class="badge badge-success">GET, HEAD</span>',
+    ]); ?>
+    <p><?= Yii::t('app', 'Project details.') ?></p>
+    <p><?= Yii::t('app', 'Request example:') ?></p>
+    <p><kbd class="p-2">
+            GET <?= $baseUrl ?>/api/projects/1
+        </kbd></p>
+    <span class="badge badge-success float-right"><?= Yii::t('app', 'Status:') ?> 200</span>
+    <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
+    <pre>{
+    "id": 1,
+    "name": "Test",
+    "color": "#ff0000"
+}</pre>
+    <?php Accordion::end(); ?>
+
+    <?php Accordion::begin([
+        'parentId' => 'api-projects',
+        'header' => Yii::t('app', 'Projects Index') . ' <span class="badge badge-success">GET, HEAD</span>',
+    ]); ?>
+    <p><?= Yii::t('app', 'Index of projects assigned to user.') ?></p>
+    <p><?= Yii::t('app', 'Request example:') ?></p>
+    <p><kbd class="p-2">
+            GET <?= $baseUrl ?>/api/projects
+        </kbd></p>
+    <span class="badge badge-success float-right"><?= Yii::t('app', 'Status:') ?> 200</span>
+    <p><?= Yii::t('app', 'Response example (JSON):') ?></p>
+    <pre>[
+    {
+        "id": 1,
+        "name": "Test",
+        "color": "#ff04a7"
+    }
+]</pre>
+    <p><?= Yii::t('app', 'Follow response headers for pagination:') ?></p>
+    <ul>
+        <li><code>X-Pagination-Total-Count</code> <?= Yii::t('app', 'The total number of resources') ?></li>
+        <li><code>X-Pagination-Page-Count</code> <?= Yii::t('app', 'The number of pages') ?></li>
+        <li><code>X-Pagination-Current-Page</code> <?= Yii::t('app', 'The current page (1-based)') ?></li>
+        <li><code>X-Pagination-Per-Page</code> <?= Yii::t('app', 'The number of resources in each page') ?></li>
+        <li><code>Link</code> <?= Yii::t('app', 'A set of navigational links allowing client to traverse the resources page by page') ?></li>
+    </ul>
+    <p>
+        <?= Yii::t('app', 'To sort results send {sort} parameter with attribute name (or many attributes separated with comma). By default attributes are sorted in ascending order - to sort in descending order put minus before the attribute\'s name. Available attributes are: {attributes}.', [
+            'sort' => Html::tag('code', 'sort'),
+            'attributes' => '<code>' . implode('</code>, <code>', ['id', 'name', 'color']) . '</code>',
+        ]) ?>
+    </p>
+    <p>
+        <?= Yii::t('app', 'To filter results send {filter} parameter with filter conditions as part of query or as JSON string. For example to get all results with ID greater than 5 and lesser or equal to 15 send:', [
+            'filter' => Html::tag('code', 'filter'),
+        ]) ?>
+    </p>
+    <p><kbd class="p-2">
+            GET <?= $baseUrl ?>/api/projects?filter[id][gt]=5&filter[id][lte]=15
+        </kbd></p>
+    <p><?= Yii::t('app', 'Or in JSON:') ?></p>
+    <pre>{
+    'filter': {
+        'id': {
+            'gt': 5,
+            'lte': 15
+        }
+    }
+}</pre>
+    <p><?= Yii::t('app', 'Filter available operators are {operators}.', [
+            'operators' => '<code>' . implode('</code>, <code>', ['and', 'or', 'not', 'lt', 'gt', 'lte', 'gte', 'eq', 'neq', 'in', 'nin', 'like']) . '</code>',
+        ]) ?></p>
     <?php Accordion::end(); ?>
 </div>
