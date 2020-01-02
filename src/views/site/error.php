@@ -18,10 +18,12 @@ $this->title = $name;
         </div>
         <p>The above error occurred while the Web server was processing your request.</p>
         <p>Please contact us if you think this is a server error. Thank you.</p>
-        <?= Html::a(
-            FA::icon('user') . ' ' . Yii::t('app', 'Login'),
-            ['site/login'],
-            ['class' => 'btn btn-primary']
-        ) ?>
+        <?php if (Yii::$app->user && Yii::$app->user->isGuest): ?>
+            <?= Html::a(
+                FA::icon('user') . ' ' . Yii::t('app', 'Login'),
+                ['site/login'],
+                ['class' => 'btn btn-primary']
+            ) ?>
+        <?php endif; ?>
     </div>
 </div>

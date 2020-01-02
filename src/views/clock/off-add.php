@@ -1,13 +1,17 @@
 <?php
 
-use app\models\Clock;
+use app\models\OffForm;
+use app\widgets\date\DatePicker;
 use app\widgets\fontawesome\FA;
 use yii\bootstrap4\ActiveForm;
 use yii\bootstrap4\Html;
 use yii\helpers\Url;
 
-/* @var $this yii\web\View */
-/* @var $model \app\models\OffForm */
+/**
+ * @var $this yii\web\View
+ * @var $model OffForm
+ * @var $marked array
+ */
 
 $this->title = Yii::t('app', 'Adding Off-Time');
 
@@ -26,35 +30,39 @@ $this->title = Yii::t('app', 'Adding Off-Time');
         <div class="form-group">
             <?= Yii::t('app', 'New Off-Time') ?>
         </div>
-        <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+        <?php $form = ActiveForm::begin(); ?>
 
-            <div class="row form-group">
-                <div class="col offset-sm-2">
-                    <p class="mb-0"><?= Yii::t('app', 'Start Day') ?></p>
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'startDate')->widget(DatePicker::class, [
+                        'date' => $model->getOff()->start_at,
+                        'timePicker' => false,
+                        'showOtherMonths' => false,
+                        'marked' => $marked,
+                    ]) ?>
+                </div>
+                <div class="col-sm-6">
+                    <?= $form->field($model, 'endDate')->widget(DatePicker::class, [
+                        'date' => $model->getOff()->end_at,
+                        'timePicker' => false,
+                        'showOtherMonths' => false,
+                        'marked' => $marked,
+                    ]) ?>
                 </div>
             </div>
 
-            <?= $form->field($model, 'startYear') ?>
-            <?= $form->field($model, 'startMonth')->dropDownList(Clock::months(), ['class' => 'form-control custom-select']) ?>
-            <?= $form->field($model, 'startDay')->dropDownList(
-                array_combine(range(1, 31), range(1, 31)),
-                ['class' => 'form-control custom-select']
-            ) ?>
-
-            <div class="row form-group">
-                <div class="col offset-sm-2">
-                    <p class="mb-0 mt-3"><?= Yii::t('app', 'End Day') ?></p>
-                </div>
-            </div>
-
-            <?= $form->field($model, 'endYear') ?>
-            <?= $form->field($model, 'endMonth')->dropDownList(Clock::months(), ['class' => 'form-control custom-select']) ?>
-            <?= $form->field($model, 'endDay')->dropDownList(
-                array_combine(range(1, 31), range(1, 31)),
-                ['class' => 'form-control custom-select']
-            ) ?>
-
-            <div class="form-group">&nbsp;</div>
+            <?= $form
+                ->field(
+                    $model,
+                    'type',
+                    ['checkTemplate' => "<div class=\"custom-control custom-checkbox\">\n{input}\n{label}\n{error}\n{hint}\n</div>"]
+                )
+                ->checkbox(['class' => 'custom-control-input'])
+                ->label(
+                    Yii::t('app', 'Vacation'),
+                    ['class' => 'custom-control-label']
+                )
+                ->hint(Yii::t('app', 'If you mark it as vacation administrator will get new notification and will have to approve it to make it official.')) ?>
 
             <?= $form->field($model, 'note')->textarea() ?>
 

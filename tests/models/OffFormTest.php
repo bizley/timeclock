@@ -7,6 +7,7 @@ namespace tests\models;
 use app\models\Off;
 use app\models\OffForm;
 use app\models\User;
+use Exception;
 use tests\DbTestCase;
 use Yii;
 
@@ -35,8 +36,8 @@ class OffFormTest extends DbTestCase
             [
                 'id' => 1,
                 'user_id' => 1,
-                'start_at' => 1543968000, // 2018-12-05 00:00:00
-                'end_at' => 1544140740, // 2018-12-06 23:59:00
+                'start_at' => '2018-12-05',
+                'end_at' => '2018-12-06',
             ],
         ],
     ];
@@ -48,137 +49,30 @@ class OffFormTest extends DbTestCase
     }
 
     /**
-     * @return array
-     */
-    public function prepareDateProvider(): array
-    {
-        return [
-            ['2018-10-10 10:10:00', 2018, 10, 10, 10, 10],
-            ['2018-01-01 01:01:00', 2018, 1, 1, 1, 1],
-        ];
-    }
-
-    /**
-     * @dataProvider prepareDateProvider
-     * @param string $expected
-     * @param int $year
-     * @param int $month
-     * @param int $day
-     * @param int $hour
-     * @param int $minute
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function testPrepareDate(string $expected, int $year, int $month, int $day, int $hour, int $minute): void
-    {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1,
-            'end_at' => 10,
-        ]));
-
-        $this->assertSame($expected, $offForm->prepareDate($year, $month, $day, $hour, $minute));
-    }
-
-    /**
-     * @return array
-     */
-    public function prepareTimestampProvider(): array
-    {
-        return [
-            ['UTC', [1563202800, 1547564400]],
-            ['Europe/Warsaw', [1563195600, 1547560800]],
-            ['America/Chicago', [1563220800, 1547586000]],
-        ];
-    }
-
-    /**
-     * @dataProvider prepareTimestampProvider
-     * @param string $timezone
-     * @param array $expected
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testPrepareTimestamp(string $timezone, array $expected): void
-    {
-        Yii::$app->timeZone = $timezone;
-
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1,
-            'end_at' => 10,
-        ]));
-
-        $this->assertSame($expected[0], $offForm->prepareTimestamp(2019, 7, 15, 15, 0));
-        $this->assertSame($expected[1], $offForm->prepareTimestamp(2019, 1, 15, 15, 0));
-
-        Yii::$app->timeZone = 'UTC';
-    }
-
-    /**
-     * @return array
-     */
-    public function maxDayProvider(): array
-    {
-        return [
-            ['Selected month has got only 28 days.', 2018, 2],
-            ['Selected month has got only 29 days.', 2016, 2],
-            ['Selected month has got only 30 days.', 2018, 4],
-            ['Selected month has got only 31 days.', 2018, 1],
-        ];
-    }
-
-    /**
-     * @dataProvider maxDayProvider
-     * @param string $expected
-     * @param int $year
-     * @param int $month
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testMaxDay(string $expected, int $year, int $month): void
-    {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1,
-            'end_at' => 10,
-        ]));
-
-        $offForm->startDay = 32;
-        $offForm->startYear = $year;
-        $offForm->startMonth = $month;
-
-        $offForm->maxDay('startDay');
-
-        $this->assertSame($expected, $offForm->getFirstError('startDay'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testVerifyStartOverlap(): void
     {
         $offForm = new OffForm(new Off([
             'user_id' => 1,
-            'start_at' => 1544054400,
-            'end_at' => 1544054401,
+            'start_at' => '2018-12-06',
+            'end_at' => '2018-12-10',
         ]));
 
         $offForm->verifyStart();
 
-        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('startDay'));
+        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('startDate'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testVerifyStartNoOverlap(): void
     {
         $offForm = new OffForm(new Off([
             'user_id' => 1,
-            'start_at' => 1240000500,
-            'end_at' => 1240000501,
+            'start_at' => '2018-12-01',
+            'end_at' => '2018-12-03',
         ]));
 
         $offForm->verifyStart();
@@ -187,20 +81,17 @@ class OffFormTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testVerifyEnd(): void
+    public function testVerifyEndOk(): void
     {
         $offForm = new OffForm(new Off([
             'user_id' => 1,
-            'start_at' => 1543622400,
-            'end_at' => 1543622401,
+            'start_at' => '2018-12-20',
+            'end_at' => '2018-12-21',
         ]));
 
-        $offForm->endYear = '2018';
-        $offForm->endMonth = '12';
-        $offForm->endDay = '3';
+        $offForm->endDate = '2018-12-23';
 
         $offForm->verifyEnd();
 
@@ -208,53 +99,33 @@ class OffFormTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testVerifyEndSwapped(): void
     {
         $offForm = new OffForm(new Off([
             'user_id' => 1,
-            'start_at' => 1543622400,
-            'end_at' => 1543611000,
+            'start_at' => '2018-12-20',
+            'end_at' => '2018-12-18',
         ]));
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Off-time ending day can not be earlier than starting day.', $offForm->getFirstError('endDay'));
+        $this->assertSame('Off-time ending day can not be earlier than starting day.', $offForm->getFirstError('endDate'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws Exception
      */
     public function testVerifyEndOverlap(): void
     {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1543622400,
-            'end_at' => 1544140700,
-        ]));
+        $offForm = new OffForm(new Off());
+
+        $offForm->startDate = '2018-12-04';
+        $offForm->endDate = '2018-12-05';
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDay'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testVerifyBetweenOverlap(): void
-    {
-        $offForm = new OffForm(new Off([
-            'user_id' => 1,
-            'start_at' => 1543967000,
-            'end_at' => 1544141740,
-        ]));
-
-        $offForm->verifyBetween();
-
-        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDay'));
+        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDate'));
     }
 }

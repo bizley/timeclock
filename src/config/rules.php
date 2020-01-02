@@ -20,6 +20,11 @@ return [
     ],
     [
         'class' => UrlRule::class,
+        'controller' => 'api/project',
+        'only' => ['index', 'view', 'options'],
+    ],
+    [
+        'class' => UrlRule::class,
         'controller' => 'api/key',
         'only' => ['index', 'options'],
         'pluralize' => false,

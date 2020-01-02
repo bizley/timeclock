@@ -6,6 +6,9 @@ use app\widgets\fontawesome\FA;
 use app\widgets\modal\Clock;
 use yii\bootstrap4\Html;
 
+/* @var $projects array */
+/* @var $defaultProject null|string|int */
+
 ?>
 <div id="<?= Clock::CLOCK_MODAL ?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="<?= Clock::CLOCK_MODAL ?>Label">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -19,7 +22,22 @@ use yii\bootstrap4\Html;
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <?= Yii::t('app', 'Are you sure you want to start session?') ?>
+                        <strong><?= Yii::t('app', 'Are you sure you want to start session?') ?></strong>
+                    </div>
+                    <div class="form-group">
+                        <?= Html::label(
+                            Yii::t('app', 'Select project assigned to this session:'),
+                            'clock-project'
+                        ) ?>
+                        <?= Html::dropDownList(
+                            'project_id',
+                            $defaultProject,
+                            $projects,
+                            [
+                                'class' => 'custom-select',
+                                'id' => 'clock-project',
+                            ]
+                        ) ?>
                     </div>
                     <?= Html::textarea(
                         'note',

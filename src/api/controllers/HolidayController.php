@@ -53,12 +53,12 @@ class HolidayController extends ActiveController
 
         $actions['index']['dataFilter'] = [
             'class' => ActiveDataFilter::class,
-            'searchModel' => function () {
+            'searchModel' => static function () {
                 return (new DynamicModel(['year', 'month', 'day']))
                     ->addRule(['year', 'month', 'day'], 'integer', ['min' => 1]);
             },
         ];
-        $actions['index']['prepareDataProvider'] = function (IndexAction $action, $filter) {
+        $actions['index']['prepareDataProvider'] = static function (IndexAction $action, $filter) {
             $requestParams = Yii::$app->getRequest()->getBodyParams();
             if (empty($requestParams)) {
                 $requestParams = Yii::$app->getRequest()->getQueryParams();

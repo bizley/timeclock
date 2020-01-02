@@ -27,9 +27,12 @@ html, body {
   color:var(--light-gray);
 }
 .calendar.today.holiday { background-color:#dd9494 !important }
-.calendar.off { background-color:#222 }
+.calendar.off {
+  background-color:#222;
+  color:var(--light-gray);
+}
 .calendar.off.holiday {
-  background-color:#d69191;
+  background-color:#ab4171;
   color:var(--light-gray);
 }
 .modal-title, .modal-body, .panel-body, .popover { color:var(--light-gray) }
@@ -41,3 +44,7 @@ html, body {
   background-color:var(--light-gray);
   color:var(--semi-white);
 }
+.table { color:#f0f0f0 }
+.table tr:hover td { color:#fff }
+.accordion .card-body .table { color:#333 }
+.accordion .card-body .table tr:hover td { color:#000 }

@@ -23,6 +23,16 @@ class Clock extends Widget
      */
     public $params = [];
 
+    /**
+     * @var array
+     */
+    public $projects = [];
+
+    /**
+     * @var int
+     */
+    public $defaultProject;
+
     public static function button(): string
     {
         $modal = new static();
@@ -48,7 +58,11 @@ class Clock extends Widget
     public function run(): ?string
     {
         if (array_key_exists(self::CLOCK_MODAL, $this->params)) {
-            return $this->render('clock');
+
+            return $this->render('clock', [
+                'projects' => ['' => Yii::t('app', '-- no project --')] + $this->projects,
+                'defaultProject' => $this->defaultProject,
+            ]);
         }
 
         return null;

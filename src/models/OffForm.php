@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace app\models;
 
+use Exception;
 use Yii;
 use yii\base\Model;
 
@@ -14,61 +15,51 @@ use yii\base\Model;
 class OffForm extends Model
 {
     /**
-     * @var int
+     * @var string
      */
-    public $startYear;
+    public $startDate;
 
     /**
-     * @var int
+     * @var string
      */
-    public $startMonth;
-
-    /**
-     * @var int
-     */
-    public $startDay;
-
-    /**
-     * @var int
-     */
-    public $endYear;
-
-    /**
-     * @var int
-     */
-    public $endMonth;
-
-    /**
-     * @var int
-     */
-    public $endDay;
+    public $endDate;
 
     /**
      * @var string
      */
     public $note;
 
-    private $off;
+    /**
+     * @var int
+     */
+    public $type;
+
+    private $_off;
 
     /**
      * OffForm constructor.
      * @param Off $off
      * @param array $config
-     * @throws \yii\base\InvalidConfigException
      */
     public function __construct(Off $off, array $config = [])
     {
-        $this->off = $off;
+        $this->_off = $off;
 
-        $this->startYear = Yii::$app->formatter->asDate($off->start_at, 'y');
-        $this->startMonth = Yii::$app->formatter->asDate($off->start_at, 'M');
-        $this->startDay = Yii::$app->formatter->asDate($off->start_at, 'd');
-        $this->endYear = Yii::$app->formatter->asTime($off->end_at, 'y');
-        $this->endMonth = Yii::$app->formatter->asTime($off->end_at, 'M');
-        $this->endDay = Yii::$app->formatter->asDate($off->end_at, 'd');
+        $this->startDate = $off->start_at;
+        $this->endDate = $off->end_at;
+
         $this->note = !empty($off->note) ? $off->note : null;
+        $this->type = $off->type;
 
         parent::__construct($config);
+    }
+
+    /**
+     * @return Off
+     */
+    public function getOff(): Off
+    {
+        return $this->_off;
     }
 
     /**
@@ -77,150 +68,57 @@ class OffForm extends Model
     public function rules(): array
     {
         return [
-            [['startYear', 'startMonth', 'startDay', 'endYear', 'endMonth', 'endDay'], 'required'],
-            [['startYear', 'endYear'], 'number', 'min' => 2018],
-            [['startMonth', 'endMonth'], 'number', 'min' => 1, 'max' => 12],
-            [['startDay', 'endDay'], 'number', 'min' => 1, 'max' => 31],
-            [['startDay', 'endDay'], 'maxDay'],
-            [['startDay'], 'verifyStart'],
-            [['endDay'], 'verifyEnd'],
-            [['endDay'], 'verifyBetween'],
+            [['startDate', 'endDate', 'type'], 'required'],
+            [['type'], 'in', 'range' => [Off::TYPE_SHORT, Off::TYPE_VACATION]],
+            [['endDate', 'startDate'], 'date', 'format' => 'yyyy-MM-dd'],
+            [['startDate'], 'verifyStart'],
+            [['endDate'], 'verifyEnd'],
             [['note'], 'string'],
         ];
     }
 
     /**
-     * @param int|string $year
-     * @param int|string $month
-     * @param int|string $day
-     * @param int|string $hour
-     * @param int|string $minute
-     * @return string
-     */
-    public function prepareDate($year, $month, $day, $hour, $minute): string
-    {
-        return $year
-            . '-'
-            . ($month < 10 ? '0' : '')
-            . $month
-            . '-'
-            . ($day < 10 ? '0' : '')
-            . $day
-            . ' '
-            . ($hour < 10 ? '0' : '')
-            . $hour
-            . ':'
-            . ($minute < 10 ? '0' : '')
-            . $minute
-            . ':00';
-    }
-
-    /**
-     * @param int|string $year
-     * @param int|string $month
-     * @param int|string $day
-     * @param int|string $hour
-     * @param int|string $minute
-     * @return int
-     * @throws \Exception
-     */
-    public function prepareTimestamp($year, $month, $day, $hour, $minute): int
-    {
-        return (new \DateTime(
-            $this->prepareDate($year, $month, $day, $hour, $minute),
-            new \DateTimeZone(Yii::$app->timeZone)
-        ))->getTimestamp();
-    }
-
-    /**
-     * @param string $attribute
-     * @throws \Exception
-     */
-    public function maxDay(string $attribute): void
-    {
-        if ($attribute === 'startDay') {
-            $year = $this->startYear;
-            $month = $this->startMonth;
-        } else {
-            $year = $this->endYear;
-            $month = $this->endMonth;
-        }
-
-        $maxDaysInMonth = date(
-            't',
-            $this->prepareTimestamp($year, $month, 1, 1, 0)
-        );
-
-        if ($this->$attribute > $maxDaysInMonth) {
-            $this->addError($attribute, Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
-        }
-    }
-
-    /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function verifyStart(): void
     {
-        if (!$this->hasErrors()) {
-            $conditions = [
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['<=', 'start_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
-                ['>=', 'end_at', $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)],
-            ];
+        $conditions = [
+            'and',
+            ['user_id' => Yii::$app->user->id],
+            ['<=', 'start_at', $this->startDate],
+            ['>=', 'end_at', $this->startDate],
+        ];
 
-            if ($this->off->id !== null) {
-                $conditions[] = ['<>', 'id', $this->off->id];
-            }
+        if ($this->_off->id !== null) {
+            $conditions[] = ['<>', 'id', $this->_off->id];
+        }
 
-            if (Off::find()->where($conditions)->exists()) {
-                $this->addError('startDay', Yii::t('app', 'Selected day overlaps another off-time.'));
-            }
+        if (Off::find()->where($conditions)->exists()) {
+            $this->addError('startDate', Yii::t('app', 'Selected day overlaps another off-time.'));
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function verifyEnd(): void
     {
-        if ($this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0)
-            >= $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59)) {
-            $this->addError('endDay', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
-        } elseif (!$this->hasErrors()) {
+        if (Yii::$app->formatter->asTimestamp($this->startDate) > Yii::$app->formatter->asTimestamp($this->endDate)) {
+            $this->addError('endDate', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
+        } else {
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
-                ['>=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
+                ['<=', 'start_at', $this->endDate],
+                ['>=', 'end_at', $this->startDate],
             ];
 
-            if ($this->off->id !== null) {
-                $conditions[] = ['<>', 'id', $this->off->id];
+            if ($this->_off->id !== null) {
+                $conditions[] = ['<>', 'id', $this->_off->id];
             }
 
             if (Off::find()->where($conditions)->exists()) {
-                $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
-            }
-        }
-    }
-
-    public function verifyBetween(): void
-    {
-        if (!$this->hasErrors()) {
-            $conditions = [
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['>=', 'start_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->startYear, $this->startMonth, $this->startDay, 0, 0))],
-                ['<=', 'end_at', (int) Yii::$app->formatter->asTimestamp($this->prepareDate($this->endYear, $this->endMonth, $this->endDay, 23, 59))],
-            ];
-
-            if ($this->off->id !== null) {
-                $conditions[] = ['<>', 'id', $this->off->id];
-            }
-
-            if (Off::find()->where($conditions)->exists()) {
-                $this->addError('endDay', Yii::t('app', 'Selected day overlaps another off-time.'));
+                $this->addError('endDate', Yii::t('app', 'Selected day overlaps another off-time.'));
             }
         }
     }
@@ -231,19 +129,16 @@ class OffForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'startYear' => Yii::t('app', 'Year'),
-            'startMonth' => Yii::t('app', 'Month'),
-            'startDay' => Yii::t('app', 'Day'),
-            'endYear' => Yii::t('app', 'Year'),
-            'endMonth' => Yii::t('app', 'Month'),
-            'endDay' => Yii::t('app', 'Day'),
+            'startDate' => Yii::t('app', 'Start Day'),
+            'endDate' => Yii::t('app', 'End Day'),
             'note' => Yii::t('app', 'Note'),
+            'type' => Yii::t('app', 'Vacation'),
         ];
     }
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function save(): bool
     {
@@ -251,14 +146,38 @@ class OffForm extends Model
             return false;
         }
 
-        if ($this->off->user_id === null) {
-            $this->off->user_id = Yii::$app->user->id;
+        if ($this->_off->user_id === null) {
+            $this->_off->user_id = Yii::$app->user->id;
         }
 
-        $this->off->start_at = $this->prepareTimestamp($this->startYear, $this->startMonth, $this->startDay, 0, 0);
-        $this->off->end_at = $this->prepareTimestamp($this->endYear, $this->endMonth, $this->endDay, 23, 59);
-        $this->off->note = $this->note !== '' ? $this->note : null;
+        $originalType = (int)$this->_off->type;
+        $originalStart = $this->_off->start_at;
+        $originalEnd = $this->_off->end_at;
 
-        return $this->off->save();
+        $this->_off->start_at = $this->startDate;
+        $this->_off->end_at = $this->endDate;
+        $this->_off->type = (int)$this->type;
+        $this->_off->note = $this->note !== '' ? $this->note : null;
+
+        $sendInfo = false;
+
+        if ((int)$this->type === Off::TYPE_VACATION
+            && (
+                $originalType !== Off::TYPE_VACATION
+                || ($originalStart !== $this->startDate || $originalEnd !== $this->endDate)
+            )) {
+            $this->_off->approved = 0;
+            $sendInfo = true;
+        }
+
+        if (!$this->_off->save()) {
+            return false;
+        }
+
+        if ($sendInfo) {
+            Off::sendInfoToAdmin($this->_off);
+        }
+
+        return true;
     }
 }

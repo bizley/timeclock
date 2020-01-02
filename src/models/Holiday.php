@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 namespace app\models;
 
+use Throwable;
+use Yii;
 use yii\db\ActiveRecord;
+
+use function count;
+use function explode;
+use function file_get_contents;
+use function preg_match_all;
 
 /**
  * Holiday model
@@ -81,22 +88,24 @@ class Holiday extends ActiveRecord
 
             foreach ($holidays as $holiday) {
                 $date = explode('-', $holiday);
-                if (count($date) === 3 && !static::find()->where([
-                        'year' => (int) $date[0],
-                        'month' => (int) $date[1],
-                        'day' => (int) $date[2],
-                    ])->exists()) {
+                if (count($date) === 3 && !static::find()->where(
+                        [
+                            'year' => (int)$date[0],
+                            'month' => (int)$date[1],
+                            'day' => (int)$date[2],
+                        ]
+                    )->exists()) {
                     $day = new static();
 
-                    $day->year = (int) $date[0];
-                    $day->month = (int) $date[1];
-                    $day->day = (int) $date[2];
+                    $day->year = (int)$date[0];
+                    $day->month = (int)$date[1];
+                    $day->day = (int)$date[2];
 
                     $day->save();
                 }
             }
-        } catch (\Throwable $exception) {
-            \Yii::error($exception);
+        } catch (Throwable $exception) {
+            Yii::error($exception);
         }
     }
 
@@ -109,10 +118,12 @@ class Holiday extends ActiveRecord
     {
         $days = [];
 
-        $holidays = static::find()->where([
-            'month' => $month,
-            'year' => $year,
-        ])->all();
+        $holidays = static::find()->where(
+            [
+                'month' => $month,
+                'year' => $year,
+            ]
+        )->all();
 
         foreach ($holidays as $holiday) {
             $days[] = $holiday->day;

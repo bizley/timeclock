@@ -10,10 +10,22 @@ use app\models\ClockForm;
 use app\models\Holiday;
 use app\models\Off;
 use app\models\OffForm;
+use app\models\Project;
+use DateTime;
+use DateTimeZone;
+use Exception;
+use Throwable;
 use Yii;
+use yii\db\Expression;
+use yii\db\Query;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+
+use function array_merge;
+use function date;
+use function is_numeric;
 
 /**
  * Class ClockController
@@ -53,14 +65,18 @@ class ClockController extends BaseController
      */
     public function remember(): array
     {
-        return array_merge(parent::remember(), [
-            'history',
-            'calendar',
-            'edit',
-            'add',
-            'off-add',
-            'off-edit',
-        ]);
+        return array_merge(
+            parent::remember(),
+            [
+                'history',
+                'calendar',
+                'projects',
+                'edit',
+                'add',
+                'off-add',
+                'off-edit',
+            ]
+        );
     }
 
     /**
@@ -107,8 +123,8 @@ class ClockController extends BaseController
             $year = date('Y');
         }
 
-        $month = (int) $month;
-        $year = (int) $year;
+        $month = (int)$month;
+        $year = (int)$year;
 
         $previousYear = $year;
         $previousMonth = $month - 1;
@@ -138,29 +154,48 @@ class ClockController extends BaseController
     {
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
-        return $this->render('history', [
-            'months' => Clock::months(),
-            'year' => $year,
-            'month' => $month,
-            'previous' => Clock::months()[$previousMonth],
-            'previousYear' => $previousYear,
-            'previousMonth' => $previousMonth,
-            'next' => Clock::months()[$nextMonth],
-            'nextYear' => $nextYear,
-            'nextMonth' => $nextMonth,
-            'clock' => Clock::find()->where([
-                'and',
-                ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
-                ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
-                ['user_id' => Yii::$app->user->id],
-            ])->orderBy(['clock_in' => SORT_DESC])->all(),
-            'off' => Off::find()->where([
-                'and',
-                ['<', 'start_at', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
-                ['>', 'end_at', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
-                ['user_id' => Yii::$app->user->id],
-            ])->orderBy(['start_at' => SORT_DESC])->all(),
-        ]);
+        return $this->render(
+            'history',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'clock' => Clock::find()->where(
+                    [
+                        'and',
+                        [
+                            '>=',
+                            'clock_in',
+                            (int)Yii::$app->formatter->asTimestamp(
+                                $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'
+                            ),
+                        ],
+                        [
+                            '<',
+                            'clock_in',
+                            (int)Yii::$app->formatter->asTimestamp(
+                                $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
+                            ),
+                        ],
+                        ['user_id' => Yii::$app->user->id],
+                    ]
+                )->orderBy(['clock_in' => SORT_DESC])->all(),
+                'off' => Off::find()->where(
+                    [
+                        'and',
+                        ['<', 'start_at', $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01'],
+                        ['>=', 'end_at', $year . '-' . ($month < 10 ? '0' : '') . $month . '-01'],
+                        ['user_id' => Yii::$app->user->id],
+                    ]
+                )->orderBy(['start_at' => SORT_DESC])->all(),
+            ]
+        );
     }
 
     /**
@@ -172,90 +207,129 @@ class ClockController extends BaseController
     {
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
-        $firstDayInMonth = date('N', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
-        $daysInMonth = (int) date('t', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'));
+        $firstDayInMonth = date(
+            'N',
+            (int)Yii::$app->formatter->asTimestamp(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'
+            )
+        );
+        $daysInMonth = (int)date(
+            't',
+            (int)Yii::$app->formatter->asTimestamp(
+                $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 12:00:00'
+            )
+        );
 
-        return $this->render('calendar', [
-            'months' => Clock::months(),
-            'year' => $year,
-            'month' => $month,
-            'previous' => Clock::months()[$previousMonth],
-            'previousYear' => $previousYear,
-            'previousMonth' => $previousMonth,
-            'next' => Clock::months()[$nextMonth],
-            'nextYear' => $nextYear,
-            'nextMonth' => $nextMonth,
-            'firstDayInMonth' => $firstDayInMonth,
-            'daysInMonth' => $daysInMonth,
-            'clock' => Clock::find()->where([
-                'and',
-                ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
-                ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
-                ['user_id' => Yii::$app->user->id],
-            ])->orderBy(['clock_in' => SORT_ASC])->all(),
-            'holidays' => Holiday::getMonthHolidays($month, $year),
-            'off' => Off::find()->where([
-                'and',
-                ['<', 'start_at', (int) Yii::$app->formatter->asTimestamp($nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00')],
-                ['>', 'end_at', (int) Yii::$app->formatter->asTimestamp($year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00')],
-                ['user_id' => Yii::$app->user->id],
-            ])->orderBy(['start_at' => SORT_ASC])->all(),
-        ]);
+        return $this->render(
+            'calendar',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'firstDayInMonth' => $firstDayInMonth,
+                'daysInMonth' => $daysInMonth,
+                'clock' => Clock::find()->where(
+                    [
+                        'and',
+                        [
+                            '>=',
+                            'clock_in',
+                            (int)Yii::$app->formatter->asTimestamp(
+                                $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'
+                            ),
+                        ],
+                        [
+                            '<',
+                            'clock_in',
+                            (int)Yii::$app->formatter->asTimestamp(
+                                $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
+                            ),
+                        ],
+                        ['user_id' => Yii::$app->user->id],
+                    ]
+                )->orderBy(['clock_in' => SORT_ASC])->all(),
+                'holidays' => Holiday::getMonthHolidays($month, $year),
+                'off' => Off::find()->where(
+                    [
+                        'and',
+                        ['<', 'start_at', $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01'],
+                        ['>=', 'end_at', $year . '-' . ($month < 10 ? '0' : '') . $month . '-01'],
+                        ['user_id' => Yii::$app->user->id],
+                    ]
+                )->orderBy(['start_at' => SORT_ASC])->all(),
+            ]
+        );
     }
 
     /**
      * @param string|int $id
      * @param bool $stay
      * @return Response
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id, bool $stay = false): Response
     {
-        $clock = Clock::find()->where([
-            'id' => (int) $id,
-            'user_id' => Yii::$app->user->id,
-        ])->one();
+        $clock = Clock::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => Yii::$app->user->id,
+            ]
+        )->one();
 
         if ($clock === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
+        } elseif (!$clock->delete()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting session.'));
         } else {
-            if (!$clock->delete()) {
-                Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting session.'));
-            } else {
-                Yii::$app->alert->success(Yii::t('app', 'Session has been deleted.'));
-            }
+            Yii::$app->alert->success(Yii::t('app', 'Session has been deleted.'));
         }
+
         return $this->goBack(null, $stay);
     }
 
     /**
      * @param string|int $id
      * @return string|Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function actionEdit($id)
     {
-        $session = Clock::find()->where([
-            'id' => (int) $id,
-            'user_id' => Yii::$app->user->id,
-        ])->one();
+        $session = Clock::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => Yii::$app->user->id,
+            ]
+        )->one();
 
         if ($session === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
+
             return $this->goBack();
         }
 
         $model = new ClockForm($session);
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
+
             return $this->goBack();
         }
 
-        return $this->render('edit', [
-            'session' => $session,
-            'model' => $model,
-        ]);
+        return $this->render(
+            'edit',
+            [
+                'session' => $session,
+                'model' => $model,
+                'projects' => ['' => Yii::t('app', '-- no project --')] + Yii::$app->user->identity->assignedProjects,
+            ]
+        );
     }
 
     /**
@@ -263,7 +337,7 @@ class ClockController extends BaseController
      * @param string|int|null $year
      * @param string|int|null $day
      * @return string|Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function actionAdd($month = null, $year = null, $day = null)
     {
@@ -277,20 +351,33 @@ class ClockController extends BaseController
             $day = date('j');
         }
 
-        $model = new ClockForm(new Clock([
-            'clock_in' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(' H:i:s'),
-                new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp()
-        ]));
+        $model = new ClockForm(
+            new Clock(
+                [
+                    'project_id' => Yii::$app->user->identity->project_id,
+                    'clock_in' => (new DateTime(
+                        $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(
+                            ' H:i:s'
+                        ),
+                        new DateTimeZone(Yii::$app->timeZone)
+                    )
+                    )->getTimestamp(),
+                ]
+            )
+        );
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
+
             return $this->goBack();
         }
 
-        return $this->render('add', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'add',
+            [
+                'model' => $model,
+                'projects' => ['' => Yii::t('app', '-- no project --')] + Yii::$app->user->identity->assignedProjects,
+            ]
+        );
     }
 
     /**
@@ -298,7 +385,7 @@ class ClockController extends BaseController
      * @param string|int|null $year
      * @param string|int|null $day
      * @return string|Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function actionOffAdd($month = null, $year = null, $day = null)
     {
@@ -312,78 +399,159 @@ class ClockController extends BaseController
             $day = date('j');
         }
 
-        $model = new OffForm(new Off([
-            'start_at' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(' 00:00:00'),
-                new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp(),
-            'end_at' => (new \DateTime(
-                $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(' 23:59:59'),
-                new \DateTimeZone(Yii::$app->timeZone))
-            )->getTimestamp(),
-        ]));
+        $model = new OffForm(
+            new Off(
+                [
+                    'start_at' => $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day,
+                    'end_at' => $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day,
+                ]
+            )
+        );
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
+
             return $this->goBack();
         }
 
-        return $this->render('off-add', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'off-add',
+            [
+                'model' => $model,
+                'marked' => Off::getFutureOffDays(),
+            ]
+        );
     }
 
     /**
      * @param string|int $id
      * @return string|Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function actionOffEdit($id)
     {
-        $off = Off::find()->where([
-            'id' => (int) $id,
-            'user_id' => Yii::$app->user->id,
-        ])->one();
+        $off = Off::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => Yii::$app->user->id,
+            ]
+        )->one();
 
         if ($off === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
+
             return $this->goBack();
         }
 
         $model = new OffForm($off);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
+
             return $this->goBack();
         }
 
-        return $this->render('off-edit', [
-            'off' => $off,
-            'model' => $model,
-        ]);
+        return $this->render(
+            'off-edit',
+            [
+                'off' => $off,
+                'model' => $model,
+                'marked' => Off::getFutureOffDays($off->id),
+            ]
+        );
     }
 
     /**
      * @param string|int $id
      * @return Response
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
     public function actionOffDelete($id): Response
     {
-        $off = Off::find()->where([
-            'id' => (int) $id,
-            'user_id' => Yii::$app->user->id,
-        ])->one();
+        $off = Off::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => Yii::$app->user->id,
+            ]
+        )->one();
 
         if ($off === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
+        } elseif (!$off->delete()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting off-time.'));
         } else {
-            if (!$off->delete()) {
-                Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting off-time.'));
-            } else {
-                Yii::$app->alert->success(Yii::t('app', 'Off-time has been deleted.'));
-            }
+            Yii::$app->alert->success(Yii::t('app', 'Off-time has been deleted.'));
         }
 
         return $this->goBack();
+    }
+
+    /**
+     * @param string|int|null $month
+     * @param string|int|null $year
+     * @return string
+     */
+    public function actionProjects($month = null, $year = null): string
+    {
+        [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
+
+        $projects = [];
+        $systemProjects = Project::find()->all();
+        foreach ($systemProjects as $p) {
+            $projects[$p->id] = [
+                'name' => $p->name,
+                'color' => $p->color,
+            ];
+        }
+
+        $projectSessions = (new Query())
+            ->from(Clock::tableName())
+            ->select(
+                [
+                    'project_id',
+                    new Expression('SUM(clock_out - clock_in) time'),
+                ]
+            )
+            ->where(
+                [
+                    'and',
+                    [
+                        '>=',
+                        'clock_in',
+                        (int)Yii::$app->formatter->asTimestamp(
+                            $year . '-' . ($month < 10 ? '0' : '') . $month . '-01 00:00:00'
+                        ),
+                    ],
+                    [
+                        '<',
+                        'clock_in',
+                        (int)Yii::$app->formatter->asTimestamp(
+                            $nextYear . '-' . ($nextMonth < 10 ? '0' : '') . $nextMonth . '-01 00:00:00'
+                        ),
+                    ],
+                    ['user_id' => Yii::$app->user->id],
+                    ['is not', 'clock_out', null],
+                    ['is not', 'project_id', null],
+                ]
+            )
+            ->groupBy(['project_id'])
+            ->orderBy(['time' => SORT_DESC])
+            ->all();
+
+        return $this->render(
+            'projects',
+            [
+                'months' => Clock::months(),
+                'year' => $year,
+                'month' => $month,
+                'previous' => Clock::months()[$previousMonth],
+                'previousYear' => $previousYear,
+                'previousMonth' => $previousMonth,
+                'next' => Clock::months()[$nextMonth],
+                'nextYear' => $nextYear,
+                'nextMonth' => $nextMonth,
+                'projects' => $projects,
+                'time' => $projectSessions,
+            ]
+        );
     }
 }

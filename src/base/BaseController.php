@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace app\base;
 
+use Yii;
 use yii\base\Action;
 use yii\helpers\Url;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Response;
+
+use function in_array;
 
 /**
  * Class BaseController
@@ -27,7 +31,7 @@ class BaseController extends Controller
     /**
      * @param Action $action
      * @return bool
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function beforeAction($action): bool
     {
@@ -61,6 +65,6 @@ class BaseController extends Controller
             return parent::goBack($defaultUrl);
         }
 
-        return $this->redirect(\Yii::$app->getSession()->get('rememberedUrl', $defaultUrl));
+        return $this->redirect(Yii::$app->getSession()->get('rememberedUrl', $defaultUrl));
     }
 }

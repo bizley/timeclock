@@ -38,43 +38,57 @@ $this->title = Yii::t('app', 'Overall Calendar');
             <?= Yii::t('app', 'Month') ?>:
         </div>
         <?= Html::beginForm(['admin/calendar'], 'get'); ?>
-            <?= Html::hiddenInput('id', $employee !== null ? $employee->id : null) ?>
-            <div class="form-group">
-                <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <?= Html::textInput('year', $year, ['class' => 'form-control']) ?>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <?= Html::submitButton(FA::icon('play'), ['class' => 'btn btn-warning btn-block']) ?>
-                    </div>
+        <?= Html::hiddenInput('id', $employee !== null ? $employee->id : null) ?>
+        <div class="form-group">
+            <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <?= Html::textInput('year', $year, ['class' => 'form-control']) ?>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group btn-group btn-block months" role="group">
-                        <?= Html::a(
-                            FA::icon('step-backward') . $previous,
-                            ['calendar', 'month' => $previousMonth, 'year' => $previousYear, 'id' => $employee !== null ? $employee->id : null],
-                            ['class' => 'btn btn-primary']
-                        ) ?><?= Html::a(
-                            FA::icon('step-forward') . $next,
-                            ['calendar', 'month' => $nextMonth, 'year' => $nextYear, 'id' => $employee !== null ? $employee->id : null],
-                            ['class' => 'btn btn-primary']
-                        ) ?>
-                    </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <?= Html::submitButton(FA::icon('play'), ['class' => 'btn btn-warning btn-block']) ?>
                 </div>
             </div>
-        <?= Html::endForm(); ?>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group btn-group btn-block months" role="group">
+                    <?= Html::a(
+                        FA::icon('step-backward') . $previous,
+                        ['calendar', 'month' => $previousMonth, 'year' => $previousYear, 'id' => $employee !== null ? $employee->id : null],
+                        ['class' => 'btn btn-primary']
+                    ) ?><?= Html::a(
+                        FA::icon('step-forward') . $next,
+                        ['calendar', 'month' => $nextMonth, 'year' => $nextYear, 'id' => $employee !== null ? $employee->id : null],
+                        ['class' => 'btn btn-primary']
+                    ) ?>
+                </div>
+            </div>
+        </div>
+        <?= Html::endForm() ?>
+        <div class="form-group">
+            <?= Html::a(
+                FA::icon('plane') . ' ' . Yii::t('app', 'Switch To Off-Time'),
+                ['off', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null],
+                ['class' => 'btn btn-success btn-block']
+            ) ?>
+        </div>
         <div class="form-group">
             <?= Html::a(
                 FA::icon('list-alt') . ' ' . Yii::t('app', 'Switch To Sessions'),
                 ['history', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null],
-                ['class' => 'btn btn-info btn-block']
+                ['class' => 'btn btn-warning btn-block']
+            ) ?>
+        </div>
+        <div class="form-group">
+            <?= Html::a(
+                FA::icon('umbrella') . ' ' . Yii::t('app', 'Switch To Projects'),
+                ['projects', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null],
+                ['class' => 'btn btn-light btn-block']
             ) ?>
         </div>
         <div class="form-group">
@@ -111,8 +125,8 @@ $this->title = Yii::t('app', 'Overall Calendar');
                     <?= in_array($day, $holidays, true) ? 'holiday' : '' ?>
                     <?= date('Y-m-d') === $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day ? 'today' : '' ?>"
                      style="<?= $day === 1 && $firstDayInMonth !== 1
-                    ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
-                    : '' ?>">
+                         ? 'margin-left:calc(' . (($firstDayInMonth - 1) * 0.5 + 0.25) . 'rem + ' . (($firstDayInMonth - 1) * 13) . '%'
+                         : '' ?>">
                     <span class="float-right d-block d-md-none"><?= Clock::days()[$dayOfWeek] ?></span>
                     <?= $day ?>
                     <?php if (array_key_exists($day, $entries)): ?>
@@ -123,12 +137,12 @@ $this->title = Yii::t('app', 'Overall Calendar');
                         </p>
                     <?php endif; ?>
                 </div>
-            <?php
-            $dayOfWeek++;
-            if ($dayOfWeek === 8): $dayOfWeek = 1; ?>
-                <div class="clearfix"></div>
-            <?php
-            endif;
+                <?php
+                $dayOfWeek++;
+                if ($dayOfWeek === 8): $dayOfWeek = 1; ?>
+                    <div class="clearfix"></div>
+                <?php
+                endif;
             endfor;
             ?>
         </div>

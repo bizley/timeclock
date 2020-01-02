@@ -5,10 +5,23 @@ declare(strict_types=1);
 namespace app\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
+
+use function date;
+use function mb_strtoupper;
+use function preg_match;
+use function preg_split;
+use function sha1;
+use function strrpos;
+use function substr;
+use function time;
 
 /**
  * User model
@@ -23,6 +36,7 @@ use yii\web\IdentityInterface;
  * @property string $auth_key
  * @property string $theme
  * @property string $api_key
+ * @property int $project_id
  * @property int $role
  * @property int $status
  * @property int $created_at
@@ -30,6 +44,8 @@ use yii\web\IdentityInterface;
  * @property string $password write-only password
  *
  * @property string $initials
+ * @property array $assignedProjects
+ * @property Project $defaultProject
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -152,10 +168,12 @@ class User extends ActiveRecord implements IdentityInterface
             return null;
         }
 
-        return static::findOne([
-            'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
-        ]);
+        return static::findOne(
+            [
+                'password_reset_token' => $token,
+                'status' => self::STATUS_ACTIVE,
+            ]
+        );
     }
 
     /**
@@ -169,7 +187,7 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = 3 * 24 * 60 * 60;
 
         return $timestamp + $expire >= time();
@@ -222,7 +240,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Generates password hash from password and sets it to the model
      * @param string $password
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function setPassword(string $password): void
     {
@@ -231,7 +249,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates "remember me" authentication key
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function generateAuthKey(): void
     {
@@ -240,7 +258,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * Generates new password reset token
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function generatePasswordResetToken(): void
     {
@@ -279,15 +297,36 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function isClockActive(): bool
     {
-        return Clock::find()->where([
-            'and',
-            ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
-            ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 23:59:59'))],
+        return Clock::find()->where(
             [
-                'clock_out' => null,
-                'user_id' => $this->id,
-            ],
-        ])->exists();
+                'and',
+                ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
+                ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp(date('Y-m-d 23:59:59'))],
+                [
+                    'clock_out' => null,
+                    'user_id' => $this->id,
+                ],
+            ]
+        )->exists();
+    }
+
+    /**
+     * @return Clock|null
+     */
+    public function latestSession(): ?Clock
+    {
+        $clock = Clock::find()->where(
+            [
+                'and',
+                ['>=', 'clock_in', Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
+                [
+                    'clock_out' => null,
+                    'user_id' => $this->id,
+                ],
+            ]
+        )->orderBy(['clock_in' => SORT_DESC])->one();
+
+        return $clock;
     }
 
     /**
@@ -295,20 +334,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function sessionStartedAt(): ?int
     {
-        $clock = Clock::find()->where([
-            'and',
-            ['>=', 'clock_in', Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
-            [
-                'clock_out' => null,
-                'user_id' => $this->id,
-            ],
-        ])->orderBy(['clock_in' => SORT_DESC])->one();
+        $latestSession = $this->latestSession();
 
-        if ($clock === null) {
+        if ($latestSession === null) {
             return null;
         }
 
-        return $clock->clock_in;
+        return $latestSession->clock_in;
     }
 
     /**
@@ -316,12 +348,14 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function todaysSessions(): array
     {
-        return Clock::find()->where([
-            'and',
-            ['>=', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
-            ['<=', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 23:59:59'))],
-            ['user_id' => $this->id],
-        ])->orderBy(['clock_in' => SORT_ASC])->all();
+        return Clock::find()->where(
+            [
+                'and',
+                ['>=', 'clock_in', (int)Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
+                ['<=', 'clock_in', (int)Yii::$app->formatter->asTimestamp(date('Y-m-d 23:59:59'))],
+                ['user_id' => $this->id],
+            ]
+        )->orderBy(['clock_in' => SORT_DESC])->all();
     }
 
     /**
@@ -329,13 +363,45 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getOldOpenedSession(): ?Clock
     {
-        return Clock::find()->where([
-            'and',
-            ['<', 'clock_in', (int) Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
+        return Clock::find()->where(
             [
-                'clock_out' => null,
-                'user_id' => $this->id,
-            ],
-        ])->orderBy(['clock_in' => SORT_ASC])->one();
+                'and',
+                ['<', 'clock_in', (int)Yii::$app->formatter->asTimestamp(date('Y-m-d 00:00:00'))],
+                [
+                    'clock_out' => null,
+                    'user_id' => $this->id,
+                ],
+            ]
+        )->orderBy(['clock_in' => SORT_ASC])->one();
+    }
+
+    /**
+     * @return array
+     */
+    public function getAssignedProjects(): array
+    {
+        return ArrayHelper::map(
+            Project::find()
+                ->where(
+                    [
+                        'and',
+                        new Expression('JSON_CONTAINS(`assignees`, :user)'),
+                        ['<>', 'status', Project::STATUS_DELETED],
+                    ]
+                )
+                ->params([':user' => (string)Yii::$app->user->id])
+                ->orderBy(['name' => SORT_ASC])
+                ->all(),
+            'id',
+            'name'
+        );
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getDefaultProject(): ActiveQuery
+    {
+        return $this->hasOne(Project::class, ['id' => 'project_id']);
     }
 }

@@ -7,7 +7,11 @@ namespace app\api\models;
 use app\models\User;
 use DateTime;
 use DateTimeZone;
+use Exception;
 use Yii;
+
+use function in_array;
+use function is_array;
 
 /**
  * Class Clock
@@ -26,13 +30,27 @@ class Clock extends \app\models\Clock
     public $clockOut;
 
     /**
+     * @var int
+     */
+    public $defaultProject;
+
+    /**
+     * @var int
+     */
+    public $projectId;
+
+    /**
      * {@inheritdoc}
      */
     public function rules(): array
     {
         return [
+            [['defaultProject'], 'default', 'value' => 1, 'except' => 'update'],
+            [['defaultProject'], 'default', 'value' => 0, 'on' => 'update'],
             [['clockIn', 'user_id'], 'required'], // clockIn can be null before validate
-            [['clockIn', 'clockOut'], 'integer'],
+            [['clockIn', 'clockOut', 'defaultProject', 'projectId'], 'integer'],
+            [['projectId'], 'integer', 'min' => 0],
+            [['defaultProject'], 'in', 'range' => [0, 1]],
             [['clockOut'], 'compare', 'compareAttribute' => 'clockIn', 'operator' => '>'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id'],
             [['clockIn'], 'checkClockIn'],
@@ -40,7 +58,21 @@ class Clock extends \app\models\Clock
             [['clockOut'], 'checkOverMidnight'],
             [['clockOut'], 'checkClockBetween'],
             [['note'], 'string'],
+            [['projectId'], 'verifyProject'],
         ];
+    }
+
+    public function verifyProject(): void
+    {
+        if (!empty($this->projectId) && $this->projectId > 0) {
+            $project = Project::findOne((int)$this->projectId);
+
+            if ($project === null) {
+                $this->addError('projectId', Yii::t('app', 'Can not find project of given ID.'));
+            } elseif (!is_array($project->assignees) || !in_array(Yii::$app->user->id, $project->assignees, false)) {
+                $this->addError('projectId', Yii::t('app', 'You are not assigned to selected project.'));
+            }
+        }
     }
 
     public function afterFind(): void
@@ -62,6 +94,10 @@ class Clock extends \app\models\Clock
             'clockIn',
             'clockOut',
             'note',
+            'project' => static function ($model) {
+                /* @var $model Clock */
+                return $model->project;
+            },
             'createdAt' => 'created_at',
             'updatedAt' => 'updated_at',
         ];
@@ -91,12 +127,12 @@ class Clock extends \app\models\Clock
         $this->user_id = Yii::$app->user->id;
 
         if ($this->clockIn === null) {
-            $this->clockIn = (int) Yii::$app->formatter->asTimestamp('now');
+            $this->clockIn = (int)Yii::$app->formatter->asTimestamp('now');
         }
 
-        $this->clockIn = (int) $this->clockIn;
+        $this->clockIn = (int)$this->clockIn;
         if ($this->clockOut !== null) {
-            $this->clockOut = (int) $this->clockOut;
+            $this->clockOut = (int)$this->clockOut;
         }
 
         return true;
@@ -111,6 +147,18 @@ class Clock extends \app\models\Clock
             $this->note = null;
         }
 
+        if ((int)$this->defaultProject === 1 && $this->projectId === null) {
+            $this->project_id = Yii::$app->user->identity->project_id;
+        }
+
+        if ($this->projectId !== null) {
+            if ((int)$this->projectId === 0) {
+                $this->project_id = null;
+            } else {
+                $this->project_id = (int)$this->projectId;
+            }
+        }
+
         parent::afterValidate();
     }
 
@@ -120,8 +168,8 @@ class Clock extends \app\models\Clock
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'clock_in', $this->clockIn],
-                ['>=', 'clock_out', $this->clockIn],
+                ['<', 'clock_in', $this->clockIn],
+                ['>', 'clock_out', $this->clockIn],
             ];
 
             if ($this->scenario === 'update') {
@@ -129,7 +177,10 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockIn', Yii::t('app', 'Can not start session because it overlaps with another ended session.'));
+                $this->addError(
+                    'clockIn',
+                    Yii::t('app', 'Can not start session because it overlaps with another ended session.')
+                );
             }
         }
     }
@@ -140,8 +191,8 @@ class Clock extends \app\models\Clock
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'clock_in', $this->clockOut],
-                ['>=', 'clock_out', $this->clockOut],
+                ['<', 'clock_in', $this->clockOut],
+                ['>', 'clock_out', $this->clockOut],
             ];
 
             if ($this->scenario === 'update') {
@@ -149,13 +200,16 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockOut', Yii::t('app', 'Can not end session because it overlaps with another ended session.'));
+                $this->addError(
+                    'clockOut',
+                    Yii::t('app', 'Can not end session because it overlaps with another ended session.')
+                );
             }
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function checkOverMidnight(): void
     {
@@ -175,8 +229,8 @@ class Clock extends \app\models\Clock
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['>=', 'clock_in', $this->clockIn],
-                ['<=', 'clock_out', $this->clockOut],
+                ['>', 'clock_in', $this->clockIn],
+                ['<', 'clock_out', $this->clockOut],
             ];
 
             if ($this->scenario === 'update') {
@@ -184,7 +238,10 @@ class Clock extends \app\models\Clock
             }
 
             if (static::find()->where($conditions)->exists()) {
-                $this->addError('clockOut', Yii::t('app', 'Can not modify session because it overlaps with another ended session.'));
+                $this->addError(
+                    'clockOut',
+                    Yii::t('app', 'Can not modify session because it overlaps with another ended session.')
+                );
             }
         }
     }

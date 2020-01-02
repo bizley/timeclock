@@ -59,7 +59,19 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 - admin section
 - REST API
 - Bootstrap 4 layout
-  
+
+## New in 2.3.0
+
+- vacations requests
+- projects
+- sessions time CSV download for admins
+- deactivating accounts for admins
+
+## Upgrading from 2.2.1 to 2.3.0
+
+1. Update all the project files to match the repository.
+2. Apply migrations by running in console `php yii migrate`.
+
 ## General help
 
 Read [TimeClock Wiki](https://github.com/bizley/timeclock/wiki) first.

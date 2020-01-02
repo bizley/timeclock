@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace app\assets;
 
 use Yii;
+use yii\bootstrap4\BootstrapAsset;
 use yii\web\AssetBundle;
 use yii\web\YiiAsset;
-use yii\bootstrap4\BootstrapAsset;
+
+use function in_array;
 
 /**
  * Class AppAsset

@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace app\base;
 
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\web\Session;
 
 /**
  * Class Alert
- * @package keystone\common\base
+ * @package app\base
  */
 class Alert extends Component
 {
@@ -21,7 +22,7 @@ class Alert extends Component
 
     /**
      * Ensures handler is Session object.
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function init(): void
     {

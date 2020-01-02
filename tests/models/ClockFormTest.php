@@ -7,8 +7,10 @@ namespace tests\models;
 use app\models\Clock;
 use app\models\ClockForm;
 use app\models\User;
+use Exception;
 use tests\DbTestCase;
 use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * Class ClockFormTest
@@ -60,100 +62,71 @@ class ClockFormTest extends DbTestCase
     }
 
     /**
-     * @return array
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function roundToFiveProvider(): array
+    public function testPrepareDateTime(): void
     {
-        return [
-            [0, 0],
-            [0, 1],
-            [0, 2],
-            [5, 3],
-            [5, 4],
-            [5, 5],
-            [5, 6],
-            [5, 7],
-            [10, 8],
-        ];
-    }
+        $clockForm = new ClockForm(new Clock());
 
-    /**
-     * @dataProvider roundToFiveProvider
-     * @param int $expected
-     * @param int $provided
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function testRoundToFive(int $expected, int $provided): void
-    {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1,
-        ]));
+        $date = $clockForm->prepareDateTime('2019-04-11 09:35');
 
-        $this->assertSame($expected, $clockForm->roundToFive($provided));
+        $this->assertSame(Yii::$app->timeZone, $date->getTimezone()->getName());
     }
 
     /**
      * @return array
      */
-    public function prepareDateProvider(): array
+    public function prepareDateTimesProvider(): array
     {
         return [
-            ['2018-10-10 10:10:00', 2018, 10, 10, 10, 10],
-            ['2018-01-01 01:01:00', 2018, 1, 1, 1, 1],
+            ['UTC', '2019-07-15 15:00', 1563202800, 1563213600],
+            ['UTC', '2019-01-15 15:00', 1547564400, 1547575200],
+            ['Europe/Warsaw', '2019-07-15 15:00', 1563195600, 1563206400],
+            ['Europe/Warsaw', '2019-01-15 15:00', 1547560800, 1547571600],
+            ['America/Chicago', '2019-07-15 15:00', 1563220800, 1563231600],
+            ['America/Chicago', '2019-01-15 15:00', 1547586000, 1547596800],
         ];
     }
 
     /**
-     * @dataProvider prepareDateProvider
-     * @param string $expected
-     * @param int $year
-     * @param int $month
-     * @param int $day
-     * @param int $hour
-     * @param int $minute
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function testPrepareDate(string $expected, int $year, int $month, int $day, int $hour, int $minute): void
-    {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1,
-        ]));
-
-        $this->assertSame($expected, $clockForm->prepareDate($year, $month, $day, $hour, $minute));
-    }
-
-    /**
-     * @return array
-     */
-    public function prepareTimestampProvider(): array
-    {
-        return [
-            ['UTC', [1563202800, 1547564400]],
-            ['Europe/Warsaw', [1563195600, 1547560800]],
-            ['America/Chicago', [1563220800, 1547586000]],
-        ];
-    }
-
-    /**
-     * @dataProvider prepareTimestampProvider
+     * @dataProvider prepareDateTimesProvider
      * @param string $timezone
-     * @param array $expected
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @param string $start
+     * @param int $expected
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testPrepareTimestamp(string $timezone, array $expected): void
+    public function testPrepareStartTimestamp(string $timezone, string $start, int $expected): void
     {
         Yii::$app->timeZone = $timezone;
 
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1,
-        ]));
+        $clockForm = new ClockForm(new Clock());
+        $clockForm->startDate = $start;
 
-        $this->assertSame($expected[0], $clockForm->prepareTimestamp(2019, 7, 15, 15, 0));
-        $this->assertSame($expected[1], $clockForm->prepareTimestamp(2019, 1, 15, 15, 0));
+        $this->assertSame($expected, $clockForm->prepareStart());
+
+        Yii::$app->timeZone = 'UTC';
+    }
+
+    /**
+     * @dataProvider prepareDateTimesProvider
+     * @param string $timezone
+     * @param string $start
+     * @param int $expectedStart
+     * @param int $expectedEnd
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testPrepareEndTimestamp(string $timezone, string $start, int $expectedStart, int $expectedEnd): void
+    {
+        Yii::$app->timeZone = $timezone;
+
+        $clockForm = new ClockForm(new Clock());
+        $clockForm->startDate = $start;
+        $clockForm->endTime = '18:00';
+
+        $this->assertSame($expectedEnd, $clockForm->prepareEnd());
 
         Yii::$app->timeZone = 'UTC';
     }
@@ -161,186 +134,150 @@ class ClockFormTest extends DbTestCase
     /**
      * @return array
      */
-    public function maxDayProvider(): array
+    public function prepareBadTimesProvider(): array
     {
         return [
-            ['Selected month has got only 28 days.', 2018, 2],
-            ['Selected month has got only 29 days.', 2016, 2],
-            ['Selected month has got only 30 days.', 2018, 4],
-            ['Selected month has got only 31 days.', 2018, 1],
+            [''],
+            ['aaa'],
+            ['11:aa'],
+            ['30:00'],
+            ['11:60'],
+            ['24:00'],
         ];
     }
 
     /**
-     * @dataProvider maxDayProvider
-     * @param string $expected
-     * @param int $year
-     * @param int $month
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @dataProvider prepareBadTimesProvider
+     * @param string $time
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testMaxDay(string $expected, int $year, int $month): void
+    public function testVerifyTimeBad(string $time): void
     {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1,
-        ]));
+        $clockForm = new ClockForm(new Clock());
+        $clockForm->endTime = $time;
 
-        $clockForm->day = 32;
-        $clockForm->year = $year;
-        $clockForm->month = $month;
+        $clockForm->verifyTime();
 
-        $clockForm->maxDay();
-
-        $this->assertSame($expected, $clockForm->getFirstError('day'));
+        $this->assertSame('Please provide proper time in HH:MM format.', $clockForm->getFirstError('endTime'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @return array
+     */
+    public function prepareGoodTimesProvider(): array
+    {
+        return [
+            ['00:00'],
+            ['20:10'],
+            ['23:59'],
+        ];
+    }
+
+    /**
+     * @dataProvider prepareGoodTimesProvider
+     * @param string $time
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public function testVerifyTimeOk(string $time): void
+    {
+        $clockForm = new ClockForm(new Clock());
+        $clockForm->endTime = $time;
+
+        $clockForm->verifyTime();
+        $this->assertEmpty($clockForm->getFirstError('endTime'));
+    }
+
+    /**
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testVerifyStartOverlap(): void
     {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1540000500,
-        ]));
+        $clockForm = new ClockForm(new Clock());
 
+        $clockForm->startDate = '2019-01-02 13:10';
         $clockForm->verifyStart();
+        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startDate'));
+        $clockForm->clearErrors('startDate');
 
-        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startHour'));
+        $clockForm->startDate = '2019-01-02 13:00';
+        $clockForm->verifyStart();
+        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startDate'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testVerifyStartNoOverlap(): void
     {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1240000500,
-        ]));
+        $clockForm = new ClockForm(new Clock());
 
+        $clockForm->startDate = '2019-01-02 12:00';
         $clockForm->verifyStart();
+        $this->assertEmpty($clockForm->getFirstError('startDate'));
 
-        $this->assertFalse($clockForm->hasErrors());
+        $clockForm->startDate = '2019-01-02 14:50';
+        $clockForm->verifyStart();
+        $this->assertEmpty($clockForm->getFirstError('startDate'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
-    public function testVerifyEnd(): void
+    public function testVerifyEndNoOverlap(): void
     {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1540000500,
-        ]));
+        $clockForm = new ClockForm(new Clock());
+        $clockForm->startDate = '2019-01-02 14:50';
 
-        $clockForm->endHour = '3';
-        $clockForm->endMinute = '0';
-
+        $clockForm->endTime = '15:00';
         $clockForm->verifyEnd();
+        $this->assertEmpty($clockForm->getFirstError('endTime'));
 
-        $this->assertFalse($clockForm->hasErrors());
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testVerifyBetweenOverlap(): void
-    {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1546433000,
-            'clock_out' => 1546441300,
-        ]));
-
-        $clockForm->verifyBetween();
-
-        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testVerifyEndMinutesMissing(): void
-    {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1,
-        ]));
-
-        $clockForm->endHour = '15';
-        $clockForm->endMinute = '';
-
+        $clockForm->endTime = '15:10';
         $clockForm->verifyEnd();
+        $this->assertEmpty($clockForm->getFirstError('endTime'));
 
-        $this->assertSame(0, $clockForm->endMinute);
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testVerifyEndHourMissing(): void
-    {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1,
-        ]));
-
-        $clockForm->endHour = '';
-        $clockForm->endMinute = '15';
-
+        $clockForm->startDate = '2019-01-02 14:45';
+        $clockForm->endTime = '15:00';
         $clockForm->verifyEnd();
-
-        $this->assertSame('Provide session ending hour.', $clockForm->getFirstError('endHour'));
+        $this->assertEmpty($clockForm->getFirstError('endTime'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
-     */
-    public function testVerifyEndSwapped(): void
-    {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1540000500,
-        ]));
-
-        $clockForm->endHour = '1';
-        $clockForm->endMinute = '0';
-
-        $clockForm->verifyEnd();
-
-        $this->assertSame('Session ending hour must be later than starting hour.', $clockForm->getFirstError('endHour'));
-    }
-
-    /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testVerifyEndOverlap(): void
     {
-        $clockForm = new ClockForm(new Clock([
-            'user_id' => 1,
-            'clock_in' => 1540000500,
-        ]));
+        $clockForm = new ClockForm(new Clock());
+        $clockForm->startDate = '2019-01-02 14:50';
 
-        $clockForm->endHour = '1';
-        $clockForm->endMinute = '57';
-
+        $clockForm->endTime = '14:49';
         $clockForm->verifyEnd();
+        $this->assertSame('Session ending hour must be later than starting hour.', $clockForm->getFirstError('endTime'));
+        $clockForm->clearErrors('endTime');
 
-        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
+        $clockForm->endTime = '15:20';
+        $clockForm->verifyEnd();
+        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
+        $clockForm->clearErrors('endTime');
+
+        $clockForm->endTime = '16:40';
+        $clockForm->verifyEnd();
+        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
+        $clockForm->clearErrors('endTime');
+
+        $clockForm->endTime = '16:50';
+        $clockForm->verifyEnd();
+        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function testRequired(): void
     {
@@ -348,21 +285,20 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->validate();
 
-        $this->assertSame('Year must be a number.', $clockForm->getFirstError('year'));
-        $this->assertSame('Month must be a number.', $clockForm->getFirstError('month'));
-        $this->assertSame('Day must be a number.', $clockForm->getFirstError('day'));
+        $this->assertSame('Start cannot be blank.', $clockForm->getFirstError('startDate'));
+        $this->assertEmpty($clockForm->getFirstError('endTime'));
+        $this->assertEmpty($clockForm->getFirstError('note'));
+        $this->assertEmpty($clockForm->getFirstError('projectId'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testUpdateClock(): void
     {
         $clockForm = new ClockForm(Clock::findOne(1));
-
-        $clockForm->endHour = 9;
-        $clockForm->endMinute = 30;
+        $clockForm->endTime = '09:30';
 
         $this->assertTrue($clockForm->save());
 
@@ -372,9 +308,9 @@ class ClockFormTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      * @throws \yii\db\Exception
-     * @throws \Exception
+     * @throws Exception
      */
     public function testUpdateClockFail(): void
     {
@@ -385,17 +321,16 @@ class ClockFormTest extends DbTestCase
         ])->execute();
 
         $clockForm = new ClockForm(Clock::findOne(1));
-
-        $clockForm->endHour = 9;
+        $clockForm->endTime = '09:00';
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('endHour'));
+        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSaveClockNoUser(): void
     {
@@ -412,8 +347,8 @@ class ClockFormTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testSaveValidationFail(): void
     {
@@ -422,8 +357,8 @@ class ClockFormTest extends DbTestCase
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
-     * @throws \Exception
+     * @throws InvalidConfigException
+     * @throws Exception
      */
     public function testUpdateWithTimezoneClock(): void
     {
@@ -431,8 +366,7 @@ class ClockFormTest extends DbTestCase
 
         $clockForm = new ClockForm(Clock::findOne(2));
 
-        $clockForm->endHour = 15;
-        $clockForm->endMinute = 50;
+        $clockForm->endTime = '15:50';
 
         $this->assertTrue($clockForm->save());
 

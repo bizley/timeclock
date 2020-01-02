@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace app\models;
 
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
+
+use function in_array;
+use function is_array;
 
 /**
  * Class ClockForm
@@ -14,82 +21,59 @@ use yii\base\Model;
 class ClockForm extends Model
 {
     /**
-     * @var int
-     */
-    public $year;
-
-    /**
-     * @var int
-     */
-    public $month;
-
-    /**
-     * @var int
-     */
-    public $day;
-
-    /**
-     * @var int
-     */
-    public $startHour;
-
-    /**
-     * @var int
-     */
-    public $endHour;
-
-    /**
-     * @var int
-     */
-    public $startMinute;
-
-    /**
-     * @var int
-     */
-    public $endMinute;
-
-    /**
      * @var string
      */
     public $note;
 
-    private $session;
+    /**
+     * @var int
+     */
+    public $projectId;
+
+    /**
+     * @var string
+     */
+    public $startDate;
+
+    /**
+     * @var string
+     */
+    public $endTime;
+
+    private $_clock;
+    private $_originalStartDate;
 
     /**
      * ClockForm constructor.
      * @param Clock $session
      * @param array $config
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function __construct(Clock $session, array $config = [])
     {
-        $this->session = $session;
+        $this->_clock = $session;
 
-        $this->year = Yii::$app->formatter->asDate($session->clock_in, 'y');
-        $this->month = Yii::$app->formatter->asDate($session->clock_in, 'M');
-        $this->day = Yii::$app->formatter->asDate($session->clock_in, 'd');
-        $this->startHour = Yii::$app->formatter->asTime($session->clock_in, 'H');
-        $this->startMinute = $this->roundToFive((int) Yii::$app->formatter->asTime($session->clock_in, 'm'));
-        $this->endHour = $session->clock_out ? Yii::$app->formatter->asTime($session->clock_out, 'H') : null;
-        $this->endMinute = $session->clock_out ? $this->roundToFive((int) Yii::$app->formatter->asTime($session->clock_out, 'm')) : null;
         $this->note = !empty($session->note) ? $session->note : null;
+        $this->projectId = !empty($session->project_id) ? $session->project_id : null;
+
+        if ($session->clock_in) {
+            $this->startDate = Yii::$app->formatter->asDatetime($session->clock_in, 'yyyy-MM-dd HH:mm');
+            $this->_originalStartDate = Yii::$app->formatter->asDatetime($session->clock_in, 'yyyy-MM-dd HH:mm');
+        }
+
+        $this->endTime = $session->clock_out
+            ? Yii::$app->formatter->asDatetime($session->clock_out, 'HH:mm')
+            : null;
 
         parent::__construct($config);
     }
 
     /**
-     * @param int $value
-     * @return int
+     * @return Clock
      */
-    public function roundToFive(int $value): int
+    public function getSession(): Clock
     {
-        $mod = $value % 5;
-
-        if ($mod <= 2) {
-            return $value - $mod;
-        }
-
-        return $value + 5 - $mod;
+        return $this->_clock;
     }
 
     /**
@@ -98,160 +82,126 @@ class ClockForm extends Model
     public function rules(): array
     {
         return [
-            [['year', 'month', 'day', 'startHour', 'startMinute'], 'required'],
-            [['year'], 'number', 'min' => 2018],
-            [['month'], 'number', 'min' => 1, 'max' => 12],
-            [['day'], 'number', 'min' => 1, 'max' => 31],
-            [['day'], 'maxDay'],
-            [['startHour', 'endHour'], 'number', 'min' => 0, 'max' => 23],
-            [['startMinute', 'endMinute'], 'number', 'min' => 0, 'max' => 59],
-            [['startHour', 'startMinute'], 'verifyStart'],
-            [['endHour', 'endMinute'], 'verifyEnd'],
-            [['endHour', 'endMinute'], 'verifyBetween'],
+            [['startDate'], 'required'],
+            [['startDate'], 'verifyStart'],
+            [['endTime'], 'verifyTime'],
+            [['endTime'], 'verifyEnd'],
             [['note'], 'string'],
+            [['projectId'], 'verifyProject'],
         ];
     }
 
-    /**
-     * @param int|string $year
-     * @param int|string $month
-     * @param int|string $day
-     * @param int|string $hour
-     * @param int|string $minute
-     * @return string
-     */
-    public function prepareDate($year, $month, $day, $hour, $minute): string
+    public function verifyTime(): void
     {
-        return $year
-            . '-'
-            . ($month < 10 ? '0' : '')
-            . $month
-            . '-'
-            . ($day < 10 ? '0' : '')
-            . $day
-            . ' '
-            . ($hour < 10 ? '0' : '')
-            . $hour
-            . ':'
-            . ($minute < 10 ? '0' : '')
-            . $minute
-            . ':00';
+        if ($this->endTime !== null && (!preg_match(
+                    '/^([0-2]\d):[0-5]\d$/',
+                    $this->endTime,
+                    $matches
+                ) || $matches[1] > 23)) {
+            $this->addError('endTime', Yii::t('app', 'Please provide proper time in HH:MM format.'));
+        }
     }
 
-    /**
-     * @param int|string $year
-     * @param int|string $month
-     * @param int|string $day
-     * @param int|string $hour
-     * @param int|string $minute
-     * @return int
-     * @throws \Exception
-     */
-    public function prepareTimestamp($year, $month, $day, $hour, $minute): int
+    public function verifyProject(): void
     {
-        return (new \DateTime(
-            $this->prepareDate($year, $month, $day, $hour, $minute),
-            new \DateTimeZone(Yii::$app->timeZone)
-        ))->getTimestamp();
-    }
+        if (!empty($this->projectId)) {
+            $project = Project::findOne((int)$this->projectId);
 
-    /**
-     * @throws \Exception
-     */
-    public function maxDay(): void
-    {
-        if (!$this->hasErrors()) {
-            $maxDaysInMonth = date(
-                't',
-                $this->prepareTimestamp($this->year, $this->month, 1, 10, 10)
-            );
-
-            if ($this->day > $maxDaysInMonth) {
-                $this->addError('day', Yii::t('app', 'Selected month has got only {max} days.', ['max' => $maxDaysInMonth]));
+            if ($project === null) {
+                $this->addError('projectId', Yii::t('app', 'Can not find project of given ID.'));
+            } elseif (!is_array($project->assignees) || !in_array(Yii::$app->user->id, $project->assignees, false)) {
+                $this->addError('projectId', Yii::t('app', 'You are not assigned to selected project.'));
             }
         }
     }
 
     /**
-     * @throws \Exception
+     * @param string $date
+     * @return DateTime
+     * @throws Exception
+     */
+    public function prepareDateTime($date): DateTime
+    {
+        return new DateTime($date, new DateTimeZone(Yii::$app->timeZone));
+    }
+
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public function prepareStart(): int
+    {
+        if ($this->startDate === $this->_originalStartDate) {
+            return $this->_clock->clock_in;
+        }
+
+        return $this->prepareDateTime($this->startDate)->getTimestamp();
+    }
+
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public function prepareEnd(): int
+    {
+        $start = $this->prepareDateTime($this->startDate);
+
+        return $this->prepareDateTime($start->format('Y-m-d') . ' ' . $this->endTime)->getTimestamp();
+    }
+
+    /**
+     * @throws Exception
      */
     public function verifyStart(): void
     {
         if (!$this->hasErrors()) {
+            $start = $this->prepareStart();
+
             $conditions = [
                 'and',
                 ['user_id' => Yii::$app->user->id],
-                ['<=', 'clock_in', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)],
-                ['>=', 'clock_out', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)],
+                ['<=', 'clock_in', $start],
+                ['>', 'clock_out', $start],
             ];
 
-            if ($this->session->id !== null) {
-                $conditions[] = ['<>', 'id', $this->session->id];
+            if ($this->_clock->id !== null) {
+                $conditions[] = ['<>', 'id', $this->_clock->id];
             }
 
             if (Clock::find()->where($conditions)->exists()) {
-                $this->addError('startHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
+                $this->addError('startDate', Yii::t('app', 'Selected hour overlaps another ended session.'));
             }
+
+            $this->_clock->clock_in = $start;
         }
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function verifyEnd(): void
     {
         if (!$this->hasErrors()) {
-            if ($this->endHour !== '' && $this->endHour !== null && ($this->endMinute === '' || $this->endMinute === null)) {
-                $this->endMinute = 0;
-            }
-            if ($this->endMinute !== '' && $this->endMinute !== null && ($this->endHour === '' || $this->endHour === null)) {
-                $this->addError('endHour', Yii::t('app', 'Provide session ending hour.'));
-            }
-        }
+            $start = $this->prepareStart();
+            $end = $this->prepareEnd();
 
-        if ($this->endMinute !== '' && $this->endHour !== '' && $this->endMinute !== null && $this->endHour !== null) {
-            if (!$this->hasErrors()
-                && $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)
-                >= $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)) {
-                $this->addError('endHour', Yii::t('app', 'Session ending hour must be later than starting hour.'));
-            }
+            if ($start >= $end) {
+                $this->addError('endTime', Yii::t('app', 'Session ending hour must be later than starting hour.'));
+            } else {
+                $conditions = [
+                    'and',
+                    ['user_id' => Yii::$app->user->id],
+                    ['<', 'clock_in', $end],
+                    ['>', 'clock_out', $start],
+                ];
 
-            $conditions = [
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['<=', 'clock_in', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)],
-                ['>=', 'clock_out', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)],
-            ];
+                if ($this->_clock->id !== null) {
+                    $conditions[] = ['<>', 'id', $this->_clock->id];
+                }
 
-            if ($this->session->id !== null) {
-                $conditions[] = ['<>', 'id', $this->session->id];
-            }
-
-            if (!$this->hasErrors() && Clock::find()->where($conditions)->exists()) {
-                $this->addError('endHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
-            }
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function verifyBetween(): void
-    {
-        if ($this->endMinute !== '' && $this->endHour !== '' && $this->endMinute !== null && $this->endHour !== null && !$this->hasErrors()) {
-            $conditions = [
-                'and',
-                ['user_id' => Yii::$app->user->id],
-                ['>=', 'clock_in', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute)],
-                ['<=', 'clock_out', $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute)],
-            ];
-
-            if ($this->session->id !== null) {
-                $conditions[] = ['<>', 'id', $this->session->id];
-            }
-
-            if (Clock::find()->where($conditions)->exists()) {
-                $this->addError('endHour', Yii::t('app', 'Selected hour overlaps another ended session.'));
+                if (Clock::find()->where($conditions)->exists()) {
+                    $this->addError('endTime', Yii::t('app', 'Selected session time overlaps another ended session.'));
+                }
             }
         }
     }
@@ -262,18 +212,16 @@ class ClockForm extends Model
     public function attributeLabels(): array
     {
         return [
-            'year' => Yii::t('app', 'Year'),
-            'month' => Yii::t('app', 'Month'),
-            'day' => Yii::t('app', 'Day'),
-            'startHour' => Yii::t('app', 'Start'),
-            'endHour' => Yii::t('app', 'End'),
             'note' => Yii::t('app', 'Note'),
+            'projectId' => Yii::t('app', 'Project'),
+            'startDate' => Yii::t('app', 'Start'),
+            'endTime' => Yii::t('app', 'End'),
         ];
     }
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function save(): bool
     {
@@ -281,18 +229,19 @@ class ClockForm extends Model
             return false;
         }
 
-        if ($this->session->user_id === null) {
-            $this->session->user_id = Yii::$app->user->id;
+        if ($this->_clock->user_id === null) {
+            $this->_clock->user_id = Yii::$app->user->id;
         }
 
-        $this->session->clock_in = $this->prepareTimestamp($this->year, $this->month, $this->day, $this->startHour, $this->startMinute);
+        $this->_clock->clock_in = $this->prepareStart();
 
-        if ($this->endHour !== '' && $this->endHour !== null) {
-            $this->session->clock_out = $this->prepareTimestamp($this->year, $this->month, $this->day, $this->endHour, $this->endMinute);
+        if (!empty($this->endTime)) {
+            $this->_clock->clock_out = $this->prepareEnd();
         }
 
-        $this->session->note = $this->note !== '' ? $this->note : null;
+        $this->_clock->note = !empty($this->note) ? $this->note : null;
+        $this->_clock->project_id = !empty($this->projectId) ? $this->projectId : null;
 
-        return $this->session->save();
+        return $this->_clock->save();
     }
 }

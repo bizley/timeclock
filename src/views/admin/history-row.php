@@ -24,5 +24,8 @@ use yii\bootstrap4\Html;
     <?php else: ?>
         <?= Yii::t('app', 'not ended') ?>
     <?php endif; ?>
+    <?php if ($session->project_id): ?>
+        <span class="badge project-badge ml-1" style="background-color:<?= $session->project->color ?>"><?= Html::encode($session->project->name) ?></span>
+    <?php endif; ?>
     <?= Note::widget(['model' => $session]) ?>
 </li>

@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace app\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
+
+use function count_chars;
+use function log;
+use function mb_strlen;
 
 /**
  * Class RegisterForm
@@ -55,17 +60,20 @@ class RegisterForm extends Model
             [['email'], 'unique', 'targetClass' => User::class],
             [['password'], 'string', 'min' => self::MIN_PASSWORD, 'max' => self::MAX_PASSWORD],
             [['password'], 'compare', 'compareAttribute' => 'emailAccount', 'operator' => '!='],
-            [['password'], function ($attribute) {
-                $entropy = 0;
-                $size = mb_strlen($this->$attribute, Yii::$app->charset ?: 'UTF-8');
-                foreach (count_chars($this->$attribute, 1) as $frequency) {
-                    $p = $frequency / $size;
-                    $entropy -= $p * log($p) / log(2);
-                }
-                if ($entropy < self::MIN_ENTROPY) {
-                    $this->addError($attribute, Yii::t('app', 'You must provide more complex password.'));
-                }
-            }],
+            [
+                ['password'],
+                function ($attribute) {
+                    $entropy = 0;
+                    $size = mb_strlen($this->$attribute, Yii::$app->charset ?: 'UTF-8');
+                    foreach (count_chars($this->$attribute, 1) as $frequency) {
+                        $p = $frequency / $size;
+                        $entropy -= $p * log($p) / log(2);
+                    }
+                    if ($entropy < self::MIN_ENTROPY) {
+                        $this->addError($attribute, Yii::t('app', 'You must provide more complex password.'));
+                    }
+                },
+            ],
         ];
     }
 
@@ -97,7 +105,7 @@ class RegisterForm extends Model
 
     /**
      * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function register(): bool
     {
@@ -115,6 +123,7 @@ class RegisterForm extends Model
 
         if (!$user->save()) {
             Yii::$app->alert->danger(Yii::t('app', 'There was an error while saving user.'));
+
             return false;
         }
 

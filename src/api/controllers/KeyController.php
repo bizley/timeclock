@@ -10,6 +10,8 @@ use yii\base\DynamicModel;
 use yii\rest\Controller;
 use yii\rest\OptionsAction;
 
+use function substr;
+
 /**
  * Class KeyController
  * @package app\api\controllers
@@ -56,10 +58,11 @@ class KeyController extends Controller
         }
 
         $id = substr($form->pin, 0, -3); // last 3 digits is actual PIN, rest is user ID
-        $user = User::findOne(['id' => $id]);
+        $user = User::findOne(['id' => $id, 'status' => User::STATUS_ACTIVE]);
 
         if ($user === null || $user->pin_hash === null || !$user->validatePin($form->pin)) {
             $form->addError('pin', Yii::t('app', 'Invalid PIN.'));
+
             return $form;
         }
 
@@ -67,7 +70,7 @@ class KeyController extends Controller
 
         return [
             'userId' => $user->id,
-            'apiKey' => $user->api_key
+            'apiKey' => $user->api_key,
         ];
     }
 }
