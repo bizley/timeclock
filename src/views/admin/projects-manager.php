@@ -58,9 +58,15 @@ $this->params[ProjectModal::PROJECT_MODAL] = true;
                         </td>
                         <td><span class="badge" style="width:5rem; background-color:<?= $project->color ?>">&nbsp;</span></td>
                         <td>
-                            <?php foreach ((array) $project->assignees as $assignee): ?>
-                            <?= Html::encode($users[$assignee] ?? $assignee) ?>,
-                            <?php endforeach; ?>
+                            <?php
+                            $assignees = [];
+                            foreach ((array) $project->assignees as $assignee) {
+                                if (array_key_exists($assignee, $users)) {
+                                    $assignees[] = Html::encode($users[$assignee]);
+                                }
+                            }
+                            echo implode(', ', $assignees);
+                            ?>
                         </td>
                         <td>
                             <?php switch($project->status) {

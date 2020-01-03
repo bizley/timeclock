@@ -25,8 +25,10 @@ $this->title = Yii::t('app', 'Employees');
             <thead>
             <tr>
                 <th scope="col"><?= Yii::t('app', 'First And Last Name') ?></th>
-                <th scope="col"><?= Yii::t('app', 'Email') ?></th>
-                <th scope="col"><?= Yii::t('app', 'Phone Number') ?></th>
+                <th scope="col">
+                    <?= Yii::t('app', 'Email') ?> /<br>
+                    <?= Yii::t('app', 'Phone Number') ?>
+                </th>
                 <th scope="col"><?= Yii::t('app', 'Role') ?></th>
                 <th scope="col"><?= Yii::t('app', 'Status') ?></th>
                 <th scope="col"></th>
@@ -41,15 +43,9 @@ $this->title = Yii::t('app', 'Employees');
                         <?= $user->status === User::STATUS_DELETED ? '</del>' : '' ?>
                     </td>
                     <td>
-                        <a href="mailto:<?= $user->email ?>">
-                            <?= $user->status === User::STATUS_DELETED ? '<del>' : '' ?>
-                            <?= $user->email ?>
-                            <?= $user->status === User::STATUS_DELETED ? '</del>' : '' ?>
-                        </a>
-                    </td>
-                    <td>
                         <?= $user->status === User::STATUS_DELETED ? '<del>' : '' ?>
-                        <?= Html::encode($user->phone) ?>
+                            <a href="mailto:<?= $user->email ?>"><?= $user->email ?></a><br>
+                            <?= Html::encode($user->phone) ?>
                         <?= $user->status === User::STATUS_DELETED ? '</del>' : '' ?>
                     </td>
                     <td>
