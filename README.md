@@ -2,7 +2,6 @@
 
 ![Latest Stable Version](https://img.shields.io/packagist/v/bizley/timeclock.svg)
 [![Total Downloads](https://img.shields.io/packagist/dt/bizley/timeclock.svg)](https://packagist.org/packages/bizley/timeclock)
-![License](https://img.shields.io/packagist/l/bizley/timeclock.svg)
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 
 Simple work time clocking service built on [Yii 2 framework](https://www.yiiframework.com).
