@@ -41,12 +41,12 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies with PHP 8
-          if: matrix.php == '8.0'
-          run: composer update --ignore-platform-reqs --prefer-dist --no-interaction --no-progress --optimize-autoloader
+        if: matrix.php == '8.0'
+        run: composer update --ignore-platform-reqs --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
       - name: Install dependencies with PHP 7
-          if: matrix.php != '8.0'
-          run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader
+        if: matrix.php != '8.0'
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
       - name: Run PHPUnit
         run: vendor/bin/phpunit
