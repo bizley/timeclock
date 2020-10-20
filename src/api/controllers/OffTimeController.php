@@ -118,7 +118,7 @@ class OffTimeController extends ActiveController
                     'sort' => [
                         'enableMultiSort' => true,
                         'params' => $requestParams,
-                        'defaultOrder' => ['start_at' => SORT_ASC],
+                        'defaultOrder' => ['startAt' => SORT_ASC],
                         'attributes' => [
                             'id',
                             'note',

@@ -376,7 +376,7 @@ class AdminController extends BaseController
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
         $user = null;
-        if ($id !== null) {
+        if (!empty($id)) {
             $user = User::find()->where(['id' => $id, 'status' => User::STATUS_ACTIVE])->one();
 
             if ($user === null) {
@@ -499,7 +499,7 @@ class AdminController extends BaseController
         );
 
         $user = null;
-        if ($id !== null) {
+        if (!empty($id)) {
             $user = User::find()->where(['id' => $id, 'status' => User::STATUS_ACTIVE])->one();
 
             if ($user === null) {
@@ -886,7 +886,7 @@ class AdminController extends BaseController
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
         $user = null;
-        if ($id !== null) {
+        if (!empty($id)) {
             $user = User::findOne(['id' => $id, 'status' => User::STATUS_ACTIVE]);
 
             if ($user === null) {
@@ -1002,7 +1002,7 @@ class AdminController extends BaseController
         [$month, $year, $previousMonth, $previousYear, $nextMonth, $nextYear] = $this->getMonthsAndYears($month, $year);
 
         $user = null;
-        if ($id !== null) {
+        if (!empty($id)) {
             $user = User::findOne(['id' => $id, 'status' => User::STATUS_ACTIVE]);
 
             if ($user === null) {

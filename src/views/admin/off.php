@@ -41,7 +41,7 @@ $list = '';
         <div class="form-group">
             <?= Yii::t('app', 'Month') ?>:
         </div>
-        <?= Html::beginForm(['admin/history'], 'get') ?>
+        <?= Html::beginForm(['admin/off'], 'get') ?>
             <?= Html::hiddenInput('id', $employee !== null ? $employee->id : null) ?>
             <div class="form-group">
                 <?= Html::dropDownList('month', $month, $months, ['class' => 'form-control custom-select']) ?>
