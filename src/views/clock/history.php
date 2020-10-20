@@ -217,9 +217,9 @@ JS
                         <?php else: ?>
                             <?= FA::icon('slash') ?>
                         <?php endif; ?>
-                        <?= $day->start_at ?>
+                        <?= Yii::$app->formatter->asDate($day->start_at) ?>
                         <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= $day->end_at ?>
+                        <?= Yii::$app->formatter->asDate($day->end_at) ?>
                         <?php if ($day->type === Off::TYPE_VACATION): ?>
                             [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                         <?php endif; ?>

@@ -19,8 +19,9 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
 4. Modify the `/src/config/web.php` file to change:
 
     - `timeZone` (default `UTC`),
-    - `language` (default `en-US`; `pl` translations are provided in `/src/messages/pl` folder),
+    - `language` (default `en-US`; `pl` and `de` translations are provided in `/src/messages/` folder),
     - `components > mailer` configuration to actually send emails (needed for password reset),
+    - `components > formatter` configuration of date and time formats,
     - `params > company` (default `Company Name`; displayed in footer and other layout places),
     - `params > email` (default `email@company.com`; used as the email sender address for emails),
     - `params > allowedDomains` (default `['@company.com']`; array with email domains allowed for registration).

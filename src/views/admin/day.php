@@ -48,7 +48,7 @@ foreach ($clock as $session) {
 ?>
 <div class="form-group">
     <h4 class="text-center">
-        <?= $month ?> <?= $day ?>, <?= $year ?>
+        <?= Yii::$app->formatter->asDate($year . '-' . $month . '-' . $day, 'long'); ?>
     </h4>
 </div>
 <ul class="list-group mb-3">
@@ -83,9 +83,9 @@ foreach ($clock as $session) {
                 <?= FA::icon('slash') ?>
             <?php endif; ?>
             <?= Html::encode($users[$offDay->user_id]->name) ?>
-            <?= $offDay->start_at ?>
+            <?= Yii::$app->formatter->asDate($offDay->start_at) ?>
             <?= FA::icon('long-arrow-alt-right') ?>
-            <?= $offDay->end_at ?>
+            <?= Yii::$app->formatter->asDate($offDay->end_at) ?>
             <?= Note::widget(['model' => $offDay]) ?>
         </li>
     <?php endforeach; ?>

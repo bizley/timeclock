@@ -97,7 +97,7 @@ foreach ($todays as $session) {
 $now = time();
 
 ?>
-<h1><?= date('Y-m-d') ?></h1>
+<h1><?= Yii::$app->formatter->asDate(date('Y-m-d')) ?></h1>
 
 <div class="row">
     <div class="col-lg-4">
@@ -231,9 +231,9 @@ $now = time();
                                 <?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'vacation approved') ?>
                             </span>
                         <?php endif; ?>
-                        <?= $nextVacation->start_at ?>
+                        <?= Yii::$app->formatter->asDate($nextVacation->start_at) ?>
                         <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= $nextVacation->end_at ?>
+                        <?= Yii::$app->formatter->asDate($nextVacation->end_at) ?>
                         [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $nextVacation->getWorkDaysOfOffPeriod()]) ?>]
                         <a href="<?= Url::to(['clock/off-edit', 'id' => $nextVacation->id]) ?>" class="action badge badge-warning ml-1">
                             <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>

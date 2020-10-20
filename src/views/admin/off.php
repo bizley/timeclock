@@ -124,24 +124,24 @@ $list = '';
         <ul class="list-group mb-3">
             <?php foreach ($off as $day): ?>
                 <?php if ($day->type === Off::TYPE_VACATION && $day->approved === 0): ?>
-                    <li class="list-group-item">
-                        <?= FA::icon('plane') ?>
-                        <?= Note::widget(['model' => $day]) ?>
-                        <?= Html::encode($users[$day->user_id]->name) ?>
-                        <?= $day->start_at ?>
-                        <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= $day->end_at ?>
-                        [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
-                        <span class="badge badge-danger"><?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'VACATION NOT APPROVED YET') ?></span>
-                        <a href="<?= Url::to(['off-deny', 'id' => $day->id]) ?>" class="badge badge-danger float-right ml-1 mt-1"
-                            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to deny this vacation?')) ?>>
-                            <?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'deny') ?>
-                        </a>
-                        <a href="<?= Url::to(['off-approve', 'id' => $day->id]) ?>" class="badge badge-success float-right mt-1"
-                            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to approve this vacation?')) ?>>
-                            <?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'approve') ?>
-                        </a>
-                    </li>
+                        <li class="list-group-item">
+                            <?= FA::icon('plane') ?>
+                            <?= Note::widget(['model' => $day]) ?>
+                            <?= Html::encode($users[$day->user_id]->name) ?>
+                            <?= Yii::$app->formatter->asDate($day->start_at) ?>
+                            <?= FA::icon('long-arrow-alt-right') ?>
+                            <?= Yii::$app->formatter->asDate($day->end_at) ?>
+                            [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
+                            <span class="badge badge-danger"><?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'VACATION NOT APPROVED YET') ?></span>
+                            <a href="<?= Url::to(['off-deny', 'id' => $day->id]) ?>" class="badge badge-danger float-right ml-1 mt-1"
+                                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to deny this vacation?')) ?>>
+                                <?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'deny') ?>
+                            </a>
+                            <a href="<?= Url::to(['off-approve', 'id' => $day->id]) ?>" class="badge badge-success float-right mt-1"
+                                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to approve this vacation?')) ?>>
+                                <?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'approve') ?>
+                            </a>
+                        </li>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ul>
@@ -157,9 +157,9 @@ $list = '';
                         <?= FA::icon('plane') ?>
                         <?= Note::widget(['model' => $day]) ?>
                         <?= Html::encode($users[$day->user_id]->name) ?>
-                        <?= $day->start_at ?>
+                        <?= Yii::$app->formatter->asDate($day->start_at) ?>
                         <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= $day->end_at ?>
+                        <?= Yii::$app->formatter->asDate($day->end_at) ?>
                         [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                         <span class="badge badge-success"><?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'Vacation approved') ?></span>
                         <a href="<?= Url::to(['off-deny', 'id' => $day->id]) ?>" class="badge badge-danger float-right ml-1 mt-1"
@@ -182,9 +182,9 @@ $list = '';
                         <?= FA::icon('plane') ?>
                         <?= Note::widget(['model' => $day]) ?>
                         <?= Html::encode($users[$day->user_id]->name) ?>
-                        <?= $day->start_at ?>
+                        <?= Yii::$app->formatter->asDate($day->start_at) ?>
                         <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= $day->end_at ?>
+                        <?= Yii::$app->formatter->asDate($day->end_at) ?>
                         [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                         <span class="badge badge-secondary"><?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'Vacation denied') ?></span>
                         <a href="<?= Url::to(['off-approve', 'id' => $day->id]) ?>" class="badge badge-success float-right mt-1"
@@ -203,14 +203,14 @@ $list = '';
         <ul class="list-group mb-3">
             <?php foreach ($off as $day): ?>
                 <?php if ($day->type !== Off::TYPE_VACATION): ?>
-                    <li class="list-group-item">
-                        <?= FA::icon('slash') ?>
-                        <?= Note::widget(['model' => $day]) ?>
-                        <?= Html::encode($users[$day->user_id]->name) ?>
-                        <?= $day->start_at ?>
-                        <?= FA::icon('long-arrow-alt-right') ?>
-                        <?= $day->end_at ?>
-                    </li>
+                        <li class="list-group-item">
+                            <?= FA::icon('slash') ?>
+                            <?= Note::widget(['model' => $day]) ?>
+                            <?= Html::encode($users[$day->user_id]->name) ?>
+                            <?= Yii::$app->formatter->asDate($day->start_at) ?>
+                            <?= FA::icon('long-arrow-alt-right') ?>
+                            <?= Yii::$app->formatter->asDate($day->end_at) ?>
+                        </li>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ul>
