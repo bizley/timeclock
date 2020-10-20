@@ -683,7 +683,7 @@ class AdminController extends BaseController
             'day',
             [
                 'day' => $day,
-                'month' => Clock::months()[$month],
+                'month' => $month,
                 'year' => $year,
                 'employee' => (int)$employee,
                 'users' => User::find()

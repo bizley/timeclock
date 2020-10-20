@@ -76,6 +76,11 @@ $config = [
             'showScriptName' => false,
             'rules' => require __DIR__ . '/rules.php',
         ],
+        'formatter' => [
+            'dateFormat' => 'yyyy-MM-dd',
+            'datetimeFormat' => 'yyyy-MM-dd, HH:mm',
+            'timeFormat' => 'HH:mm',
+        ],
     ],
     'params' => [
         'company' => 'Company Name',
