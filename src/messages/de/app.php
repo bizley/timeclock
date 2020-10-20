@@ -180,7 +180,7 @@ return [
     'Password has been changed.' => 'Passwort wurde geändert.',
     'Password reset at {company} Timeclock system' => 'Passwort am {company} Stempeluhrsystem zurücksetzen',
     'Password reset link email has been sent.' => 'E-Mail zum Zurücksetzen des Passworts wurde versandt.',
-    'Password reset link has been sent to given email address assuming this address has been registered.' => 'E-Mail zum Zurücksetzen des Passworts wurde an die registriierte Adresse versandt.',
+    'Password reset link has been sent to given email address assuming this address has been registered.' => 'E-Mail zum Zurücksetzen des Passworts wurde an die registrierte Adresse versandt.',
     'Password Reset' => 'Passwort zurücksetzen',
     'Password' => 'Passwort',
     'Phone Number' => 'Telefonnummer',
