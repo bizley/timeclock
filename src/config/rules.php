@@ -44,6 +44,12 @@ return [
             '' => 'options',
         ],
     ],
+    [
+        'class' => UrlRule::class,
+        'controller' => 'api/terminal',
+        'only' => ['working', 'summary', 'in', 'out', 'users', 'update'],
+        'pluralize' => false,
+    ],
     'site/new-password/<token:\w+>' => 'site/new-password',
     'clock/<action:[\w\-]+>/<day:\d+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
     'clock/<action:[\w\-]+>/<month:\d+>/<year:\d+>' => 'clock/<action>',
