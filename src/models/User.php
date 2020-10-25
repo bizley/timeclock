@@ -42,6 +42,8 @@ use function time;
  * @property int $created_at
  * @property int $updated_at
  * @property string $password write-only password
+ * @property string $tag
+ * @property string $image
  *
  * @property string $initials
  * @property array $assignedProjects

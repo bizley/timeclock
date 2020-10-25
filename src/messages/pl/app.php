@@ -347,4 +347,12 @@ return [
     '{n,plural,one{# day} other{# days}}' => '{n,plural,one{# dzień} other{# dni}}',
     '{n,plural,one{# session} other{# sessions}}' => '{n,plural,one{# sesja} few{# sesje} many{# sesji} other{# sesji}}',
     '{timestamp} is integer with number of seconds since the beginning of Unix Epoch on January 1st, 1970 at UTC. You must provide current timestamp like for example now - {now}. API will reject all requests older or younger by 1 minute from current time.' => '{timestamp} jest liczbą całkowitą oznaczającą sekundy, które upłynęły od początku Epoki Uniksa 1 stycznia 1970 czasu UTC. Musisz podać aktualny znacznik czasu jak dla przykłądu w tej chwili - {now}. API odrzuci każde zapytanie starsze lub młodsze o 1 minutę od aktualnego czasu serwera.',
+    'add to terminal' => 'add to terminal',
+    'Terminal data has been saved.' => 'Terminal data has been saved.',
+    'Error while saving terminal data.' => 'Error while saving terminal data.',
+    'RFID Tag Identifier' => 'RFID Tag Identifier',
+    'If you want to upload an image, select one:' => 'If you want to upload an image, select one:',
+    'Do you want to delete the current picture?' => 'Do you want to delete the current picture?',
+    'Adding Terminal Data' => 'Adding Terminal Data',
+    'Upload / Keep' => 'Upload / Keep',
 ];

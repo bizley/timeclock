@@ -13,6 +13,7 @@ use DateTime;
 use Yii;
 use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
+use yii\console\Response;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\rest\ActiveController;
@@ -65,13 +66,16 @@ class TerminalController extends ActiveController
         return $actions;
     }
 
+    /**
+     * Clock in given user
+     * @return array|bool|string|DynamicModel
+     * @throws InvalidConfigException
+     */
     public function actionIn()
     {
         $params = (new DynamicModel(['user_id']))->addRule(['user_id'], 'required')
             ->addRule(['user_id'], 'exist', ['targetClass' => User::class, 'targetAttribute' => 'id']);
-
         $params->load(Yii::$app->getRequest()->getBodyParams(), '');
-
         if (!$params->validate()) {
             return $params;
         }
@@ -94,13 +98,16 @@ class TerminalController extends ActiveController
         return $clock->save(false);
     }
 
+    /**
+     * Clock out given user
+     * @return array|bool|string|DynamicModel
+     * @throws InvalidConfigException
+     */
     public function actionOut()
     {
         $params = (new DynamicModel(['user_id']))->addRule(['user_id'], 'required')
             ->addRule(['user_id'], 'exist', ['targetClass' => User::class, 'targetAttribute' => 'id']);
-
         $params->load(Yii::$app->getRequest()->getBodyParams(), '');
-
         if (!$params->validate()) {
             return $params;
         }
@@ -108,15 +115,11 @@ class TerminalController extends ActiveController
         if (!Clock::find()->where(['clock_out' => null, 'user_id' => $params['user_id']])->exists()) {
             return 'could not find session';
         }
-
         $clock = Clock::find()->where(['clock_out' => null, 'user_id' => $params['user_id']])->one();
-
         $clock->clock_out = Clock::roundToFullMinute((int)Yii::$app->formatter->asTimestamp('now'));
-
         if (!$clock->validate()) {
             return $clock->errors;
         }
-
         if ($clock->isAnotherSessionSaved()) {
             return 'can not end current session because it overlaps with another ended session';
         }
@@ -144,9 +147,7 @@ class TerminalController extends ActiveController
     {
         $params = (new DynamicModel(['user_id']))->addRule(['user_id'], 'required')
             ->addRule(['user_id'], 'exist', ['targetClass' => User::class, 'targetAttribute' => 'id']);
-
         $params->load(Yii::$app->getRequest()->getBodyParams(), '');
-
         if (!$params->validate()) {
             return $params;
         }
@@ -212,12 +213,15 @@ class TerminalController extends ActiveController
     /**
      * Returns user data
      * id, name, tag id, picture
-     * TODO: Add tag id and picture
      * @return array|ActiveRecord[]
      */
     public function actionUsers()
     {
-        return User::find()->where(['status' => User::STATUS_ACTIVE])->select(['id', 'name'])->all();
+        return User::find()->where([
+            'and',
+            ['status' => User::STATUS_ACTIVE],
+            ['is not', 'tag', null],
+        ])->select(['id', 'name', 'tag', 'image'])->all();
     }
 
     /**
@@ -228,5 +232,29 @@ class TerminalController extends ActiveController
     {
         return User::find()->where(['status' => User::STATUS_ACTIVE])->orderBy(['updated_at' => SORT_DESC])
             ->select(['updated_at'])->one();
+    }
+
+    /**
+     * Returns image for given user
+     * @return string|DynamicModel|Response
+     * @throws InvalidConfigException
+     */
+    public function actionImage()
+    {
+        $params = (new DynamicModel(['user_id']))->addRule(['user_id'], 'required')
+            ->addRule(['user_id'], 'exist', ['targetClass' => User::class, 'targetAttribute' => 'id']);
+        $params->load(Yii::$app->getRequest()->getBodyParams(), '');
+        if (!$params->validate()) {
+            return $params;
+        }
+
+        $user = User::findOne(['id' => $params['user_id']]);
+        if (empty($user)) {
+            return 'could not find user';
+        } elseif (!$user->image) {
+            return 'user has no image';
+        }
+
+        return Yii::$app->response->sendFile(Yii::$app->params['uploadPath'] . $user->image);
     }
 }

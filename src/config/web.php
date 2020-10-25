@@ -86,6 +86,7 @@ $config = [
         'company' => 'Company Name',
         'email' => 'email@company.com',
         'allowedDomains' => ['@company.com'],
+        'uploadPath' => dirname(__DIR__) . '/../uploads/',
     ],
 ];
 

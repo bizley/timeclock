@@ -9,6 +9,7 @@ use app\models\Clock;
 use app\models\Holiday;
 use app\models\Off;
 use app\models\Project;
+use app\models\TerminalForm;
 use app\models\User;
 use Exception;
 use Throwable;
@@ -25,6 +26,7 @@ use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\RangeNotSatisfiableHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 use function array_merge;
 use function date;
@@ -90,6 +92,7 @@ class AdminController extends BaseController
                 'history',
                 'off',
                 'calendar',
+                'terminal-edit',
             ]
         );
     }
@@ -1159,5 +1162,34 @@ class AdminController extends BaseController
         }
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public function actionTerminalEdit($id)
+    {
+        $user = User::findOne($id);
+        if ($user === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find user of given ID.'));
+            return $this->goBack();
+        }
+
+        $model = new TerminalForm($user);
+
+        if ($model->load(Yii::$app->request->post())) {
+            if (!$model->delete) {
+                $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            }
+            if ($model->save()) {
+                Yii::$app->alert->success(Yii::t('app', 'Terminal data has been saved.'));
+                return $this->goBack();
+            } else {
+                Yii::$app->alert->success(Yii::t('app', 'Error while saving terminal data.'));
+            }
+        }
+
+        return $this->render('terminal-edit', ['model' => $model]);
     }
 }

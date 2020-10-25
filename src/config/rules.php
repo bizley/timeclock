@@ -47,7 +47,7 @@ return [
     [
         'class' => UrlRule::class,
         'controller' => 'api/terminal',
-        'only' => ['working', 'summary', 'in', 'out', 'users', 'update'],
+        'only' => ['working', 'summary', 'in', 'out', 'users', 'update', 'image'],
         'pluralize' => false,
     ],
     'site/new-password/<token:\w+>' => 'site/new-password',

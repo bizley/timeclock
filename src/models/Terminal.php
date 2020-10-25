@@ -47,6 +47,18 @@ class Terminal extends ActiveRecord
     }
 
     /**
+     * Check if at least one terminal account is registered
+     * @return bool
+     */
+    public static function isActive()
+    {
+        if (empty(static::find()->one())) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * @param mixed $token
      * @param null $type
      * @return self

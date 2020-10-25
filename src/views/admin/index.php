@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Terminal;
 use app\models\User;
 use app\widgets\confirm\Confirm;
 use app\widgets\fontawesome\FA;
@@ -83,6 +84,11 @@ $this->title = Yii::t('app', 'Employees');
                         <?php endif; ?>
                     </td>
                     <td class="text-right text-nowrap">
+                        <?php if (Terminal::isActive()): ?>
+                            <a href="<?= Url::to(['admin/terminal-edit', 'id' => $user->id]) ?>" class="btn btn-success btn-sm">
+                                <?= FA::icon('desktop') ?> <span class="d-none d-lg-inline"><?= Yii::t('app', 'add to terminal') ?></span>
+                            </a>
+                        <?php endif; ?>
                         <?php if ($user->status !== User::STATUS_DELETED): ?>
                         <a href="<?= Url::to(['admin/reset', 'id' => $user->id]) ?>"
                            class="btn btn-warning btn-sm"
