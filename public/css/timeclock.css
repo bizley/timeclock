@@ -116,3 +116,21 @@ html, body { height:100% }
   .calendar.day { display:none }
   .calendar p { display:inline }
 }
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1300px !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1400px !important;
+  }
+}
+
+@media (min-width: 1700px) {
+  .container {
+    max-width: 1600px !important;
+  }
+}
