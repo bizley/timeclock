@@ -86,6 +86,11 @@ $config = [
         'company' => 'Company Name',
         'email' => 'email@company.com',
         'allowedDomains' => ['@company.com'],
+        'employeeSessionEdit' => true,
+        'employeeSessionDelete' => true,
+        'employeeOffTimeEdit' => true,
+        'employeeOffTimeDelete' => true,
+        'employeeOffTimeApprovedDelete' => true,
     ],
 ];
 
