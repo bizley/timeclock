@@ -112,8 +112,9 @@ class ClockController extends BaseController
                     }
                     break;
             }
-            return true;
         }
+
+        return true;
     }
 
     /**
