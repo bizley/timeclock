@@ -1321,7 +1321,7 @@ class AdminController extends BaseController
         if ($session === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
 
-            return $this->goBack();
+            return $this->goBack(null, true);
         }
 
         $model = new AdminClockForm($session);
@@ -1329,7 +1329,7 @@ class AdminController extends BaseController
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
 
-            return $this->goBack();
+            return $this->goBack(null, true);
         }
 
         return $this->render(
@@ -1360,14 +1360,14 @@ class AdminController extends BaseController
         if ($off === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
 
-            return $this->goBack();
+            return $this->goBack(null, true);
         }
 
         $model = new AdminOffForm($off);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
 
-            return $this->goBack();
+            return $this->goBack(null, true);
         }
 
         return $this->render(
@@ -1404,7 +1404,7 @@ class AdminController extends BaseController
             Yii::$app->alert->success(Yii::t('app', 'Off-time has been deleted.'));
         }
 
-        return $this->goBack();
+        return $this->goBack(null, true);
     }
 
     /**
@@ -1415,7 +1415,7 @@ class AdminController extends BaseController
      * @throws StaleObjectException
      * @throws Throwable
      */
-    public function actionSessionDelete($id, $user_id, bool $stay = false): Response
+    public function actionSessionDelete($id, $user_id, bool $stay = true): Response
     {
         $clock = Clock::find()->where(
             [
