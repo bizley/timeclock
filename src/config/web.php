@@ -91,6 +91,12 @@ $config = [
         'employeeOffTimeEdit' => true,
         'employeeOffTimeDelete' => true,
         'employeeOffTimeApprovedDelete' => true,
+        'adminSessionAdd' => false,
+        'adminSessionEdit' => false,
+        'adminSessionDelete' => false,
+        'adminOffTimeAdd' => false,
+        'adminOffTimeEdit' => false,
+        'adminOffTimeDelete' => false,
     ],
 ];
 
