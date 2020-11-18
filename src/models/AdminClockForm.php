@@ -53,6 +53,76 @@ class AdminClockForm extends ClockForm
         ];
     }
 
+    public function verifyProject(): void
+    {
+        if (!empty($this->projectId)) {
+            $project = Project::findOne((int)$this->projectId);
+
+            if ($project === null) {
+                $this->addError('projectId', Yii::t('app', 'Can not find project of given ID.'));
+            } elseif (!is_array($project->assignees) || !in_array($this->userId, $project->assignees, false)) {
+                $this->addError('projectId', Yii::t('app', 'You are not assigned to selected project.'));
+            }
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function verifyStart(): void
+    {
+        if (!$this->hasErrors()) {
+            $start = $this->prepareStart();
+
+            $conditions = [
+                'and',
+                ['user_id' => $this->userId],
+                ['<=', 'clock_in', $start],
+                ['>', 'clock_out', $start],
+            ];
+
+            if ($this->_clock->id !== null) {
+                $conditions[] = ['<>', 'id', $this->_clock->id];
+            }
+
+            if (Clock::find()->where($conditions)->exists()) {
+                $this->addError('startDate', Yii::t('app', 'Selected hour overlaps another ended session.'));
+            }
+
+            $this->_clock->clock_in = $start;
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function verifyEnd(): void
+    {
+        if (!$this->hasErrors()) {
+            $start = $this->prepareStart();
+            $end = $this->prepareEnd();
+
+            if ($start >= $end) {
+                $this->addError('endTime', Yii::t('app', 'Session ending hour must be later than starting hour.'));
+            } else {
+                $conditions = [
+                    'and',
+                    ['user_id' => $this->userId],
+                    ['<', 'clock_in', $end],
+                    ['>', 'clock_out', $start],
+                ];
+
+                if ($this->_clock->id !== null) {
+                    $conditions[] = ['<>', 'id', $this->_clock->id];
+                }
+
+                if (Clock::find()->where($conditions)->exists()) {
+                    $this->addError('endTime', Yii::t('app', 'Selected session time overlaps another ended session.'));
+                }
+            }
+        }
+    }
+
     /**
      * @return array
      */

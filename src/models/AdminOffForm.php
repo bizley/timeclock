@@ -45,6 +45,52 @@ class AdminOffForm extends OffForm
     }
 
     /**
+     * @throws Exception
+     */
+    public function verifyStart(): void
+    {
+        $conditions = [
+            'and',
+            ['user_id' => $this->userId],
+            ['<=', 'start_at', $this->startDate],
+            ['>=', 'end_at', $this->startDate],
+        ];
+
+        if ($this->_off->id !== null) {
+            $conditions[] = ['<>', 'id', $this->_off->id];
+        }
+
+        if (Off::find()->where($conditions)->exists()) {
+            $this->addError('startDate', Yii::t('app', 'Selected day overlaps another off-time.'));
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function verifyEnd(): void
+    {
+        if (Yii::$app->formatter->asTimestamp($this->startDate) > Yii::$app->formatter->asTimestamp($this->endDate)) {
+            $this->addError('endDate', Yii::t('app', 'Off-time ending day can not be earlier than starting day.'));
+        } else {
+            $conditions = [
+                'and',
+                ['user_id' => $this->userId],
+                ['<=', 'start_at', $this->endDate],
+                ['>=', 'end_at', $this->startDate],
+            ];
+
+            if ($this->_off->id !== null) {
+                $conditions[] = ['<>', 'id', $this->_off->id];
+            }
+
+            if (Off::find()->where($conditions)->exists()) {
+                $this->addError('endDate', Yii::t('app', 'Selected day overlaps another off-time.'));
+            }
+        }
+    }
+
+    /**
      * @return array
      */
     public function attributeLabels(): array
