@@ -84,7 +84,7 @@ class AdminControllerTest extends AppTestCase
     {
         $data = new AdminController('admin', Yii::$app);
 
-        $this->assertSame($expected, $data->getMonthsAndYears($provided[0], $provided[1]));
+        self::assertSame($expected, $data->getMonthsAndYears($provided[0], $provided[1]));
     }
 
     /**
@@ -169,6 +169,6 @@ class AdminControllerTest extends AppTestCase
     {
         $data = new AdminController('admin', Yii::$app);
 
-        $this->assertSame($expected, $data->getWeekRange($provided[0], $provided[1], $provided[2]));
+        self::assertSame($expected, $data->getWeekRange($provided[0], $provided[1], $provided[2]));
     }
 }

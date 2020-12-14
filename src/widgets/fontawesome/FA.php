@@ -10,6 +10,8 @@ use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
+use const PHP_VERSION_ID;
+
 /**
  * Class FA
  * @package app\widgets\fontawesome
@@ -54,7 +56,7 @@ class FA extends Widget
     {
         try {
             ob_start();
-            ob_implicit_flush(0);
+            ob_implicit_flush(PHP_VERSION_ID >= 80000 ? false : 0);
             try {
                 /* @var $widget Widget */
                 $config['class'] = static::class;

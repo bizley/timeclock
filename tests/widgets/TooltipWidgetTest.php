@@ -18,7 +18,7 @@ class TooltipWidgetTest extends DbTestCase
      */
     public function testWithoutTitle(): void
     {
-        $this->assertEmpty(Tooltip::add());
+        self::assertEmpty(Tooltip::add());
     }
 
     /**
@@ -26,7 +26,7 @@ class TooltipWidgetTest extends DbTestCase
      */
     public function testDefault(): void
     {
-        $this->assertEquals('data-toggle="tooltip" data-placement="top" title="tooltip"', Tooltip::add('tooltip'));
+        self::assertEquals('data-toggle="tooltip" data-placement="top" title="tooltip"', Tooltip::add('tooltip'));
     }
 
     /**
@@ -34,6 +34,6 @@ class TooltipWidgetTest extends DbTestCase
      */
     public function testPosition(): void
     {
-        $this->assertEquals('data-toggle="tooltip" data-placement="position" title="message"', Tooltip::add('message', 'position'));
+        self::assertEquals('data-toggle="tooltip" data-placement="position" title="message"', Tooltip::add('message', 'position'));
     }
 }

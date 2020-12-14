@@ -21,7 +21,7 @@ class ConfirmWidgetTest extends AppTestCase
      */
     public function testWithoutModal(): void
     {
-        $this->assertEmpty(Confirm::widget());
+        self::assertEmpty(Confirm::widget());
     }
 
     /**
@@ -32,9 +32,9 @@ class ConfirmWidgetTest extends AppTestCase
     {
         $out = Confirm::ask('justQuestion', true, true);
 
-        $this->assertSame('justQuestion', $out);
+        self::assertSame('justQuestion', $out);
 
-        $this->assertEquals(static::$html, Confirm::widget());
+        self::assertEquals(static::$html, Confirm::widget());
     }
 
     /**
@@ -45,9 +45,9 @@ class ConfirmWidgetTest extends AppTestCase
     {
         $out = Confirm::ask('noPostQuestion', false);
 
-        $this->assertSame('data-confirm="noPostQuestion"', $out);
+        self::assertSame('data-confirm="noPostQuestion"', $out);
 
-        $this->assertEquals(static::$html, Confirm::widget());
+        self::assertEquals(static::$html, Confirm::widget());
     }
 
     /**
@@ -58,9 +58,9 @@ class ConfirmWidgetTest extends AppTestCase
     {
         $out = Confirm::ask('defaultQuestion');
 
-        $this->assertSame('data-confirm="defaultQuestion" data-method="post"', $out);
+        self::assertSame('data-confirm="defaultQuestion" data-method="post"', $out);
 
-        $this->assertEquals(static::$html, Confirm::widget());
+        self::assertEquals(static::$html, Confirm::widget());
     }
 
     /**
@@ -72,6 +72,6 @@ class ConfirmWidgetTest extends AppTestCase
         Confirm::ask('firstQuestion');
         Confirm::ask('secondQuestion');
 
-        $this->assertEquals(static::$html, Confirm::widget());
+        self::assertEquals(static::$html, Confirm::widget());
     }
 }

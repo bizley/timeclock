@@ -38,9 +38,9 @@ class RegisterFormTest extends DbTestCase
             'emailDomain' => '@wrong.com'
         ]);
 
-        $this->assertFalse($registerForm->validate());
+        self::assertFalse($registerForm->validate());
 
-        $this->assertSame('Email Domain is invalid.', $registerForm->getFirstError('emailDomain'));
+        self::assertSame('Email Domain is invalid.', $registerForm->getFirstError('emailDomain'));
     }
 
     public function testSameEmail(): void
@@ -50,9 +50,9 @@ class RegisterFormTest extends DbTestCase
             'emailDomain' => '@company.com'
         ]);
 
-        $this->assertFalse($registerForm->validate());
+        self::assertFalse($registerForm->validate());
 
-        $this->assertSame('Email "employee@company.com" has already been taken.', $registerForm->getFirstError('email'));
+        self::assertSame('Email "employee@company.com" has already been taken.', $registerForm->getFirstError('email'));
     }
 
     public function testPasswordSameAsAccount(): void
@@ -62,9 +62,9 @@ class RegisterFormTest extends DbTestCase
             'emailAccount' => 'employee',
         ]);
 
-        $this->assertFalse($registerForm->validate());
+        self::assertFalse($registerForm->validate());
 
-        $this->assertSame('Password must not be equal to "Email".', $registerForm->getFirstError('password'));
+        self::assertSame('Password must not be equal to "Email".', $registerForm->getFirstError('password'));
     }
 
     public function testPasswordTooSimple(): void
@@ -73,8 +73,8 @@ class RegisterFormTest extends DbTestCase
             'password' => 'eeeeee',
         ]);
 
-        $this->assertFalse($registerForm->validate());
+        self::assertFalse($registerForm->validate());
 
-        $this->assertSame('You must provide more complex password.', $registerForm->getFirstError('password'));
+        self::assertSame('You must provide more complex password.', $registerForm->getFirstError('password'));
     }
 }

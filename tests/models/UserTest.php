@@ -60,17 +60,17 @@ class UserTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertTrue($this->getUser()->isClockActive());
+        self::assertTrue($this->getUser()->isClockActive());
     }
 
     public function testIsClockActiveNegative(): void
     {
-        $this->assertFalse($this->getUser()->isClockActive());
+        self::assertFalse($this->getUser()->isClockActive());
     }
 
     public function testSessionStartedAtNone(): void
     {
-        $this->assertEmpty($this->getUser()->sessionStartedAt());
+        self::assertEmpty($this->getUser()->sessionStartedAt());
     }
 
     /**
@@ -84,7 +84,7 @@ class UserTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertNotEmpty($this->getUser()->sessionStartedAt());
+        self::assertNotEmpty($this->getUser()->sessionStartedAt());
     }
 
     /**
@@ -105,7 +105,7 @@ class UserTest extends DbTestCase
 
         $sessions = $this->getUser()->todaysSessions();
 
-        $this->assertCount(2, $sessions);
+        self::assertCount(2, $sessions);
     }
 
     /**
@@ -124,6 +124,6 @@ class UserTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertSame((int) Yii::$app->formatter->asTimestamp(date('2017-01-01 10:00:00')), $this->getUser()->getOldOpenedSession()->clock_in);
+        self::assertSame((int) Yii::$app->formatter->asTimestamp(date('2017-01-01 10:00:00')), $this->getUser()->getOldOpenedSession()->clock_in);
     }
 }

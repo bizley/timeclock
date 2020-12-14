@@ -39,7 +39,7 @@ class UserTest extends ApiTestCase
 
         $user = User::findIdentityByAccessToken($token);
 
-        $this->assertSame(1, $user->id);
+        self::assertSame(1, $user->id);
     }
 
     public function testWrongId(): void

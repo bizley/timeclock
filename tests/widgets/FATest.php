@@ -16,24 +16,24 @@ class FATest extends AppTestCase
     public function testRenderDefault(): void
     {
         $output = FA::icon('test');
-        $this->assertEquals('<i class="fas fa-test"></i>', $output);
+        self::assertEquals('<i class="fas fa-test"></i>', $output);
     }
 
     public function testRenderSolid(): void
     {
         $output = FA::icon('test', ['style' => FA::SOLID]);
-        $this->assertEquals('<i class="fas fa-test"></i>', $output);
+        self::assertEquals('<i class="fas fa-test"></i>', $output);
     }
 
     public function testRenderRegular(): void
     {
         $output = FA::icon('test', ['style' => FA::REGULAR]);
-        $this->assertEquals('<i class="far fa-test"></i>', $output);
+        self::assertEquals('<i class="far fa-test"></i>', $output);
     }
 
     public function testRenderBrand(): void
     {
         $output = FA::icon('test', ['style' => FA::BRANDS]);
-        $this->assertEquals('<i class="fab fa-test"></i>', $output);
+        self::assertEquals('<i class="fab fa-test"></i>', $output);
     }
 }

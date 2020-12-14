@@ -71,7 +71,7 @@ class ClockFormTest extends DbTestCase
 
         $date = $clockForm->prepareDateTime('2019-04-11 09:35');
 
-        $this->assertSame(Yii::$app->timeZone, $date->getTimezone()->getName());
+        self::assertSame(Yii::$app->timeZone, $date->getTimezone()->getName());
     }
 
     /**
@@ -104,7 +104,7 @@ class ClockFormTest extends DbTestCase
         $clockForm = new ClockForm(new Clock());
         $clockForm->startDate = $start;
 
-        $this->assertSame($expected, $clockForm->prepareStart());
+        self::assertSame($expected, $clockForm->prepareStart());
 
         Yii::$app->timeZone = 'UTC';
     }
@@ -126,7 +126,7 @@ class ClockFormTest extends DbTestCase
         $clockForm->startDate = $start;
         $clockForm->endTime = '18:00';
 
-        $this->assertSame($expectedEnd, $clockForm->prepareEnd());
+        self::assertSame($expectedEnd, $clockForm->prepareEnd());
 
         Yii::$app->timeZone = 'UTC';
     }
@@ -159,7 +159,7 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyTime();
 
-        $this->assertSame('Please provide proper time in HH:MM format.', $clockForm->getFirstError('endTime'));
+        self::assertSame('Please provide proper time in HH:MM format.', $clockForm->getFirstError('endTime'));
     }
 
     /**
@@ -186,7 +186,7 @@ class ClockFormTest extends DbTestCase
         $clockForm->endTime = $time;
 
         $clockForm->verifyTime();
-        $this->assertEmpty($clockForm->getFirstError('endTime'));
+        self::assertEmpty($clockForm->getFirstError('endTime'));
     }
 
     /**
@@ -199,12 +199,12 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->startDate = '2019-01-02 13:10';
         $clockForm->verifyStart();
-        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startDate'));
+        self::assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startDate'));
         $clockForm->clearErrors('startDate');
 
         $clockForm->startDate = '2019-01-02 13:00';
         $clockForm->verifyStart();
-        $this->assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startDate'));
+        self::assertSame('Selected hour overlaps another ended session.', $clockForm->getFirstError('startDate'));
     }
 
     /**
@@ -217,11 +217,11 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->startDate = '2019-01-02 12:00';
         $clockForm->verifyStart();
-        $this->assertEmpty($clockForm->getFirstError('startDate'));
+        self::assertEmpty($clockForm->getFirstError('startDate'));
 
         $clockForm->startDate = '2019-01-02 14:50';
         $clockForm->verifyStart();
-        $this->assertEmpty($clockForm->getFirstError('startDate'));
+        self::assertEmpty($clockForm->getFirstError('startDate'));
     }
 
     /**
@@ -235,16 +235,16 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->endTime = '15:00';
         $clockForm->verifyEnd();
-        $this->assertEmpty($clockForm->getFirstError('endTime'));
+        self::assertEmpty($clockForm->getFirstError('endTime'));
 
         $clockForm->endTime = '15:10';
         $clockForm->verifyEnd();
-        $this->assertEmpty($clockForm->getFirstError('endTime'));
+        self::assertEmpty($clockForm->getFirstError('endTime'));
 
         $clockForm->startDate = '2019-01-02 14:45';
         $clockForm->endTime = '15:00';
         $clockForm->verifyEnd();
-        $this->assertEmpty($clockForm->getFirstError('endTime'));
+        self::assertEmpty($clockForm->getFirstError('endTime'));
     }
 
     /**
@@ -258,22 +258,22 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->endTime = '14:49';
         $clockForm->verifyEnd();
-        $this->assertSame('Session ending hour must be later than starting hour.', $clockForm->getFirstError('endTime'));
+        self::assertSame('Session ending hour must be later than starting hour.', $clockForm->getFirstError('endTime'));
         $clockForm->clearErrors('endTime');
 
         $clockForm->endTime = '15:20';
         $clockForm->verifyEnd();
-        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
+        self::assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
         $clockForm->clearErrors('endTime');
 
         $clockForm->endTime = '16:40';
         $clockForm->verifyEnd();
-        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
+        self::assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
         $clockForm->clearErrors('endTime');
 
         $clockForm->endTime = '16:50';
         $clockForm->verifyEnd();
-        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
+        self::assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
     }
 
     /**
@@ -285,10 +285,10 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->validate();
 
-        $this->assertSame('Start cannot be blank.', $clockForm->getFirstError('startDate'));
-        $this->assertEmpty($clockForm->getFirstError('endTime'));
-        $this->assertEmpty($clockForm->getFirstError('note'));
-        $this->assertEmpty($clockForm->getFirstError('projectId'));
+        self::assertSame('Start cannot be blank.', $clockForm->getFirstError('startDate'));
+        self::assertEmpty($clockForm->getFirstError('endTime'));
+        self::assertEmpty($clockForm->getFirstError('note'));
+        self::assertEmpty($clockForm->getFirstError('projectId'));
     }
 
     /**
@@ -300,11 +300,11 @@ class ClockFormTest extends DbTestCase
         $clockForm = new ClockForm(Clock::findOne(1));
         $clockForm->endTime = '09:30';
 
-        $this->assertTrue($clockForm->save());
+        self::assertTrue($clockForm->save());
 
         $saved = Clock::findOne(1);
 
-        $this->assertSame(1540027800, $saved->clock_out);
+        self::assertSame(1540027800, $saved->clock_out);
     }
 
     /**
@@ -325,7 +325,7 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->verifyEnd();
 
-        $this->assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
+        self::assertSame('Selected session time overlaps another ended session.', $clockForm->getFirstError('endTime'));
     }
 
     /**
@@ -339,11 +339,11 @@ class ClockFormTest extends DbTestCase
             'clock_out' => 1540051200,
         ]));
 
-        $this->assertTrue($clockForm->save());
+        self::assertTrue($clockForm->save());
 
         $saved = Clock::findOne(['clock_in' => 1540002000]);
 
-        $this->assertSame(1, $saved->user_id);
+        self::assertSame(1, $saved->user_id);
     }
 
     /**
@@ -353,7 +353,7 @@ class ClockFormTest extends DbTestCase
     public function testSaveValidationFail(): void
     {
         $clockForm = new ClockForm(new Clock());
-        $this->assertFalse($clockForm->save());
+        self::assertFalse($clockForm->save());
     }
 
     /**
@@ -368,10 +368,10 @@ class ClockFormTest extends DbTestCase
 
         $clockForm->endTime = '15:50';
 
-        $this->assertTrue($clockForm->save());
+        self::assertTrue($clockForm->save());
 
         $saved = Clock::findOne(2);
 
-        $this->assertSame(1546440600, $saved->clock_out);
+        self::assertSame(1546440600, $saved->clock_out);
     }
 }

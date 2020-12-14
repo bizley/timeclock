@@ -63,28 +63,28 @@ class ClockTest extends DbTestCase
         ]);
 
         $clock->clock_out = 10;
-        $this->assertFalse($clock->isAnotherSessionSaved());
+        self::assertFalse($clock->isAnotherSessionSaved());
 
         $clock->clock_out = 100;
-        $this->assertTrue($clock->isAnotherSessionSaved());
+        self::assertTrue($clock->isAnotherSessionSaved());
 
         $clock->clock_out = 50;
-        $this->assertTrue($clock->isAnotherSessionSaved());
+        self::assertTrue($clock->isAnotherSessionSaved());
 
         $clock->clock_out = 1;
-        $this->assertFalse($clock->isAnotherSessionSaved());
+        self::assertFalse($clock->isAnotherSessionSaved());
 
         $clock->clock_out = 150;
-        $this->assertTrue($clock->isAnotherSessionSaved());
+        self::assertTrue($clock->isAnotherSessionSaved());
     }
 
     public function testStart(): void
     {
-        $this->assertTrue((new Clock())->start());
+        self::assertTrue((new Clock())->start());
 
         $clock = Clock::find()->orderBy(['id' => SORT_DESC])->one();
 
-        $this->assertEmpty($clock->clock_out);
+        self::assertEmpty($clock->clock_out);
     }
 
     /**
@@ -99,7 +99,7 @@ class ClockTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertFalse((new Clock())->start());
+        self::assertFalse((new Clock())->start());
     }
 
     /**
@@ -113,7 +113,7 @@ class ClockTest extends DbTestCase
             'clock_out' => (int) Yii::$app->formatter->asTimestamp('-3 minutes'),
         ]);
 
-        $this->assertTrue((new Clock())->start());
+        self::assertTrue((new Clock())->start());
     }
 
     /**
@@ -127,7 +127,7 @@ class ClockTest extends DbTestCase
             'clock_out' => (int) Yii::$app->formatter->asTimestamp('-23 hours'),
         ]);
 
-        $this->assertTrue((new Clock())->start());
+        self::assertTrue((new Clock())->start());
     }
 
     /**
@@ -141,7 +141,7 @@ class ClockTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertTrue((new Clock())->start());
+        self::assertTrue((new Clock())->start());
     }
 
     /**
@@ -157,11 +157,11 @@ class ClockTest extends DbTestCase
 
         $clock = Clock::find()->orderBy(['id' => SORT_DESC])->one();
 
-        $this->assertTrue($clock->stop());
+        self::assertTrue($clock->stop());
 
         $clock->refresh();
 
-        $this->assertNotEmpty($clock->clock_out);
+        self::assertNotEmpty($clock->clock_out);
     }
 
     /**
@@ -177,11 +177,11 @@ class ClockTest extends DbTestCase
 
         $clock = Clock::find()->orderBy(['id' => SORT_DESC])->one();
 
-        $this->assertFalse($clock->stop());
+        self::assertFalse($clock->stop());
 
         $clock->refresh();
 
-        $this->assertEmpty($clock->clock_out);
+        self::assertEmpty($clock->clock_out);
     }
 
     /**
@@ -203,12 +203,12 @@ class ClockTest extends DbTestCase
 
         $clock = Clock::find()->orderBy(['id' => SORT_DESC])->one();
 
-        $this->assertFalse($clock->stop());
+        self::assertFalse($clock->stop());
     }
 
     public function testNoSession(): void
     {
-        $this->assertEmpty(Clock::session());
+        self::assertEmpty(Clock::session());
     }
 
     /**
@@ -222,7 +222,7 @@ class ClockTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertNotEmpty(Clock::session());
+        self::assertNotEmpty(Clock::session());
     }
 
     /**
@@ -236,12 +236,12 @@ class ClockTest extends DbTestCase
             'clock_out' => null,
         ]);
 
-        $this->assertEmpty(Clock::session());
+        self::assertEmpty(Clock::session());
     }
 
     public function testMonths(): void
     {
-        $this->assertEquals([
+        self::assertEquals([
             1 => 'January',
             2 => 'February',
             3 => 'March',
@@ -262,6 +262,6 @@ class ClockTest extends DbTestCase
         $mock = $this->getMockBuilder(Clock::class)->setMethods(['validate'])->getMock();
         $mock->method('validate')->willReturn(false);
 
-        $this->assertFalse($mock->start());
+        self::assertFalse($mock->start());
     }
 }
