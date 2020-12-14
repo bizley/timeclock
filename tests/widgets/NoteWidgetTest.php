@@ -19,7 +19,7 @@ class NoteWidgetTest extends DbTestCase
      */
     public function testWithoutNote(): void
     {
-        $this->assertEmpty(Note::widget());
+        self::assertEmpty(Note::widget());
     }
 
     /**
@@ -29,6 +29,6 @@ class NoteWidgetTest extends DbTestCase
     {
         $out = Note::widget(['model' => new Off(['note' => 'testNote'])]);
 
-        $this->assertEquals('<div class="note" title="Note" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="testNote"><i class="fas fa-sticky-note fa-spin"></i></div>', $out);
+        self::assertEquals('<div class="note" title="Note" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="testNote"><i class="fas fa-sticky-note fa-spin"></i></div>', $out);
     }
 }

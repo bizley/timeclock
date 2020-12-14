@@ -65,9 +65,9 @@ class OffTest extends ApiTestCase
     {
         $off = new Off();
 
-        $this->assertFalse($off->validate());
-        $this->assertSame('Start At cannot be blank.', $off->getFirstError('startAt'));
-        $this->assertSame('End At cannot be blank.', $off->getFirstError('endAt'));
+        self::assertFalse($off->validate());
+        self::assertSame('Start At cannot be blank.', $off->getFirstError('startAt'));
+        self::assertSame('End At cannot be blank.', $off->getFirstError('endAt'));
     }
 
     public function testEndAtInPast(): void
@@ -77,8 +77,8 @@ class OffTest extends ApiTestCase
         $off->startAt = '2019-04-15';
         $off->endAt = '2019-03-01';
 
-        $this->assertFalse($off->validate());
-        $this->assertSame('Off-time ending day can not be earlier than starting day.', $off->getFirstError('endAt'));
+        self::assertFalse($off->validate());
+        self::assertSame('Off-time ending day can not be earlier than starting day.', $off->getFirstError('endAt'));
     }
 
     public function testOverlappingWithAnotherUser(): void
@@ -88,7 +88,7 @@ class OffTest extends ApiTestCase
         $off->startAt = '2019-03-13';
         $off->endAt = '2019-04-01';
 
-        $this->assertTrue($off->validate());
+        self::assertTrue($off->validate());
     }
 
     public function testStartAtOverlapping(): void
@@ -98,8 +98,8 @@ class OffTest extends ApiTestCase
         $off->startAt = '2018-12-06';
         $off->endAt = '2018-12-08';
 
-        $this->assertFalse($off->validate());
-        $this->assertSame('Can not start off-time because it overlaps with another off-time.', $off->getFirstError('startAt'));
+        self::assertFalse($off->validate());
+        self::assertSame('Can not start off-time because it overlaps with another off-time.', $off->getFirstError('startAt'));
     }
 
     public function testEndAtOverlapping(): void
@@ -109,8 +109,8 @@ class OffTest extends ApiTestCase
         $off->startAt = '2018-12-01';
         $off->endAt = '2018-12-05';
 
-        $this->assertFalse($off->validate());
-        $this->assertSame('Can not end off-time because it overlaps with another off-time.', $off->getFirstError('endAt'));
+        self::assertFalse($off->validate());
+        self::assertSame('Can not end off-time because it overlaps with another off-time.', $off->getFirstError('endAt'));
     }
 
     public function testBetweenOverlapping(): void
@@ -120,8 +120,8 @@ class OffTest extends ApiTestCase
         $off->startAt = '2018-12-01';
         $off->endAt = '2018-12-10';
 
-        $this->assertFalse($off->validate());
-        $this->assertSame('Can not modify off-time because it overlaps with another off-time.', $off->getFirstError('endAt'));
+        self::assertFalse($off->validate());
+        self::assertSame('Can not modify off-time because it overlaps with another off-time.', $off->getFirstError('endAt'));
     }
 
     public function testUpdateOffTime(): void
@@ -132,11 +132,11 @@ class OffTest extends ApiTestCase
         $off->startAt = '2018-12-10';
         $off->endAt = '2018-12-20';
 
-        $this->assertTrue($off->save());
+        self::assertTrue($off->save());
 
         $updatedOff = Off::findOne(1);
 
-        $this->assertSame('2018-12-10', $updatedOff->startAt);
-        $this->assertSame('2018-12-20', $updatedOff->endAt);
+        self::assertSame('2018-12-10', $updatedOff->startAt);
+        self::assertSame('2018-12-20', $updatedOff->endAt);
     }
 }

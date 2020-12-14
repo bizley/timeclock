@@ -81,6 +81,6 @@ abstract class AppTestCase extends \PHPUnit\Framework\TestCase
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
 
-        $this->assertEquals($expected, $actual, $message);
+        self::assertEquals($expected, $actual, $message);
     }
 }

@@ -61,7 +61,7 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyStart();
 
-        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('startDate'));
+        self::assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('startDate'));
     }
 
     /**
@@ -77,7 +77,7 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyStart();
 
-        $this->assertFalse($offForm->hasErrors());
+        self::assertFalse($offForm->hasErrors());
     }
 
     /**
@@ -95,7 +95,7 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertFalse($offForm->hasErrors());
+        self::assertFalse($offForm->hasErrors());
     }
 
     /**
@@ -111,7 +111,7 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Off-time ending day can not be earlier than starting day.', $offForm->getFirstError('endDate'));
+        self::assertSame('Off-time ending day can not be earlier than starting day.', $offForm->getFirstError('endDate'));
     }
 
     /**
@@ -126,6 +126,6 @@ class OffFormTest extends DbTestCase
 
         $offForm->verifyEnd();
 
-        $this->assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDate'));
+        self::assertSame('Selected day overlaps another off-time.', $offForm->getFirstError('endDate'));
     }
 }

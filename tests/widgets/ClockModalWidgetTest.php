@@ -24,9 +24,9 @@ class ClockModalWidgetTest extends AppTestCase
         $view = Yii::$app->view;
         $out = Clock::button();
 
-        $this->assertEquals('<span class="btn btn-success btn-lg btn-block clock" data-toggle="modal" data-target="#clockModal"><i class="fas fa-play"></i>Start Session</span>', $out);
+        self::assertEquals('<span class="btn btn-success btn-lg btn-block clock" data-toggle="modal" data-target="#clockModal"><i class="fas fa-play"></i>Start Session</span>', $out);
 
-        $this->assertTrue($view->params[Clock::CLOCK_MODAL]);
+        self::assertTrue($view->params[Clock::CLOCK_MODAL]);
     }
 
     /**
@@ -37,7 +37,7 @@ class ClockModalWidgetTest extends AppTestCase
     {
         $out = Clock::widget(['params' => [Clock::CLOCK_MODAL => true]]);
 
-        $this->assertStringContainsString(<<<HTML
+        self::assertStringContainsString(<<<HTML
 <div id="clockModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="clockModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -45,7 +45,7 @@ class ClockModalWidgetTest extends AppTestCase
 HTML
             , $out);
 
-        $this->assertStringContainsString(<<<HTML
+        self::assertStringContainsString(<<<HTML
 <div class="modal-header">
                     <h4 id="clockModalLabel" class="modal-title">Confirmation required</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

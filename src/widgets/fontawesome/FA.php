@@ -54,7 +54,7 @@ class FA extends Widget
     {
         try {
             ob_start();
-            ob_implicit_flush(0);
+            ob_implicit_flush(false);
             try {
                 /* @var $widget Widget */
                 $config['class'] = static::class;

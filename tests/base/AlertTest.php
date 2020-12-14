@@ -22,7 +22,7 @@ class AlertTest extends AppTestCase
         $alert = new Alert();
         $alert->danger('test-danger');
 
-        $this->assertEquals(['test-danger'], Yii::$app->session->getFlash('danger'));
+        self::assertEquals(['test-danger'], Yii::$app->session->getFlash('danger'));
     }
 
     /**
@@ -33,7 +33,7 @@ class AlertTest extends AppTestCase
         $alert = new Alert();
         $alert->success('test-success');
 
-        $this->assertEquals(['test-success'], Yii::$app->session->getFlash('success'));
+        self::assertEquals(['test-success'], Yii::$app->session->getFlash('success'));
     }
 
     /**
@@ -44,7 +44,7 @@ class AlertTest extends AppTestCase
         $alert = new Alert();
         $alert->info('test-info');
 
-        $this->assertEquals(['test-info'], Yii::$app->session->getFlash('info'));
+        self::assertEquals(['test-info'], Yii::$app->session->getFlash('info'));
     }
 
     /**
@@ -55,7 +55,7 @@ class AlertTest extends AppTestCase
         $alert = new Alert();
         $alert->warning('test-warning');
 
-        $this->assertEquals(['test-warning'], Yii::$app->session->getFlash('warning'));
+        self::assertEquals(['test-warning'], Yii::$app->session->getFlash('warning'));
     }
 
     /**
@@ -66,6 +66,6 @@ class AlertTest extends AppTestCase
         $alert = new Alert();
         $alert->error('test-error');
 
-        $this->assertEquals(['test-error'], Yii::$app->session->getFlash('danger'));
+        self::assertEquals(['test-error'], Yii::$app->session->getFlash('danger'));
     }
 }
