@@ -7,7 +7,7 @@
   "require": {
     "ext-mbstring": "*",
     "npm-asset/air-datepicker": "^2.2",
-    "npm-asset/fortawesome--fontawesome-free": "^5.6",
+    "npm-asset/fortawesome--fontawesome-free": "^6.0",
     "php": ">=7.1",
     "yiisoft/yii2": ">=2.0.15.1 <2.1.0",
     "yiisoft/yii2-bootstrap4": "^2.0",
