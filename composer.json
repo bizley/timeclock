@@ -15,13 +15,16 @@
   },
   "require-dev": {
     "phpunit/phpunit": ">=7.5",
-    "roave/security-advisories": "dev-master",
+    "roave/security-advisories": "dev-latest",
     "yiisoft/yii2-debug": "^2.0"
   },
   "config": {
     "process-timeout": 1800,
     "fxp-asset": {
       "enabled": false
+    },
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
     }
   },
   "repositories": [
