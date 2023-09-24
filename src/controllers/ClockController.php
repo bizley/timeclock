@@ -11,6 +11,7 @@ use app\models\Holiday;
 use app\models\Off;
 use app\models\OffForm;
 use app\models\Project;
+use app\models\User;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -77,6 +78,43 @@ class ClockController extends BaseController
                 'off-edit',
             ]
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeAction($action): bool
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (Yii::$app->user->identity->role === User::ROLE_EMPLOYEE) {
+            switch($action->id) {
+                case 'edit':
+                    if (!Yii::$app->params['employeeSessionEdit']) {
+                        return false;
+                    }
+                break;
+                case 'delete':
+                    if (!Yii::$app->params['employeeSessionDelete']) {
+                        return false;
+                    }
+                    break;
+                case 'off-edit':
+                    if (!Yii::$app->params['employeeOffTimeEdit']) {
+                        return false;
+                    }
+                    break;
+                case 'off-delete':
+                    if (!Yii::$app->params['employeeOffTimeDelete']) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -476,6 +514,9 @@ class ClockController extends BaseController
 
         if ($off === null) {
             Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
+        } elseif (Yii::$app->user->identity->role === User::ROLE_EMPLOYEE &&
+            ($off->approved === 1 && !Yii::$app->params['employeeOffTimeApprovedDelete'])) {
+                Yii::$app->alert->danger(Yii::t('app', 'You are not allowed to delete approved off-times.'));
         } elseif (!$off->delete()) {
             Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting off-time.'));
         } else {

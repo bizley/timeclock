@@ -116,15 +116,20 @@ class Off extends ActiveRecord implements NoteInterface
 
     /**
      * @param int|null $except
+     * @param int|null $user_id
      * @return array
      * @throws Exception
      */
-    public static function getFutureOffDays(?int $except = null): array
+    public static function getFutureOffDays(?int $except = null, ?int $user_id = null): array
     {
+        if ($user_id === null) {
+            $user_id = Yii::$app->user->id;
+        }
+
         $offs = static::find()->where(
             [
                 'and',
-                ['user_id' => Yii::$app->user->id],
+                ['user_id' => $user_id],
                 ['>=', 'end_at', Yii::$app->formatter->asDate('now', 'yyyy-MM-dd')],
             ]
         );
