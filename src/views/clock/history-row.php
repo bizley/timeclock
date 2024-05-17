@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Clock;
+use app\models\User;
 use app\widgets\confirm\Confirm;
 use app\widgets\fontawesome\FA;
 use app\widgets\note\Note;
@@ -27,12 +28,16 @@ use yii\helpers\Url;
     <?php if ($session->project_id): ?>
         <span class="badge project-badge ml-1" style="background-color:<?= $session->project->color ?>"><?= Html::encode($session->project->name) ?></span>
     <?php endif; ?>
-    <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="action badge badge-<?= $session->clock_out !== null ? 'warning' : 'success' ?> ml-1">
-        <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-    </a>
-    <a href="<?= Url::to(['clock/delete', 'id' => $session->id, 'stay' => true]) ?>" class="action badge badge-danger ml-1 mr-1"
-        <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
-        <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
-    </a>
+    <?php if (Yii::$app->user->identity->role !== User::ROLE_EMPLOYEE || Yii::$app->params['employeeSessionEdit']): ?>
+        <a href="<?= Url::to(['clock/edit', 'id' => $session->id]) ?>" class="action badge badge-<?= $session->clock_out !== null ? 'warning' : 'success' ?> ml-1">
+            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+        </a>
+    <?php endif; ?>
+    <?php if (Yii::$app->user->identity->role !== User::ROLE_EMPLOYEE || Yii::$app->params['employeeSessionDelete']): ?>
+        <a href="<?= Url::to(['clock/delete', 'id' => $session->id, 'stay' => true]) ?>" class="action badge badge-danger ml-1 mr-1"
+            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this session?')) ?>>
+            <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+        </a>
+    <?php endif; ?>
     <?= Note::widget(['model' => $session]) ?>
 </li>
