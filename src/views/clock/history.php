@@ -2,6 +2,7 @@
 
 use app\base\ClockHelper;
 use app\models\Off;
+use app\models\User;
 use app\widgets\confirm\Confirm;
 use app\widgets\fontawesome\FA;
 use app\widgets\note\Note;
@@ -223,14 +224,19 @@ JS
                         <?php if ($day->type === Off::TYPE_VACATION): ?>
                             [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                         <?php endif; ?>
-                        <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="action badge badge-warning ml-1">
-                            <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
-                        </a>
-                        <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id]) ?>"
-                           class="action badge badge-danger ml-1 mr-1"
-                            <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
-                            <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
-                        </a>
+                        <?php if (Yii::$app->user->identity->role !== User::ROLE_EMPLOYEE || Yii::$app->params['employeeOffTimeEdit']): ?>
+                            <a href="<?= Url::to(['clock/off-edit', 'id' => $day->id]) ?>" class="action badge badge-warning ml-1">
+                                <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (Yii::$app->user->identity->role !== User::ROLE_EMPLOYEE || (Yii::$app->params['employeeOffTimeDelete'] &&
+                                ($day->approved !== 1 || Yii::$app->params['employeeOffTimeApprovedDelete']))) : ?>
+                            <a href="<?= Url::to(['clock/off-delete', 'id' => $day->id, 'stay' => true]) ?>"
+                                class="action badge badge-danger ml-1 mr-1"
+                                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                                <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+                            </a>
+                        <?php endif; ?>
                         <?= Note::widget(['model' => $day]) ?>
                     </li>
                 <?php endforeach; ?>

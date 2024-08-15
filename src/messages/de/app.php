@@ -162,7 +162,7 @@ return [
     'November' => 'November',
     'October' => 'Oktober',
     'Off-time ending day can not be earlier than starting day.' => 'Das Enddatum muss größer als das Startdatum sein.',
-    'Off-time has been deleted.' => 'Abwesenheit wurd gelöscht.',
+    'Off-time has been deleted.' => 'Abwesenheit wurde gelöscht.',
     'Off-time has been saved.' => 'Abwesenheit wurde gespeichert.',
     'Off-time of given {ID}.' => 'Zeigt Abwesenheit anhand {ID} an.',
     'Off-Time' => 'Abwesenheit',
