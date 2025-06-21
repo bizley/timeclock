@@ -243,6 +243,11 @@ JS
                class="btn btn-warning btn-sm float-right ml-1">
                 <?= FA::icon('file-download') ?> <?= Yii::t('app', 'Download CSV') ?>
             </a>
+            <?php if (Yii::$app->params['adminSessionAdd']): ?>
+                <a href="<?= Url::to(['admin/session-add']) ?>" class="btn btn-warning btn-sm float-right ml-1">
+                    <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Session') ?>
+                </a>
+            <?php endif; ?>
             <?php if ($week !== null): ?>
                 <a href="<?= Url::to(['history', 'month' => $month, 'year' => $year, 'id' => $employee !== null ? $employee->id : null]) ?>"
                    class="btn btn-outline-success btn-sm float-right ml-3">

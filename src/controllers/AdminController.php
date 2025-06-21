@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace app\controllers;
 
 use app\base\BaseController;
+use app\models\AdminClockForm;
+use app\models\AdminOffForm;
 use app\models\Clock;
 use app\models\Holiday;
 use app\models\Off;
 use app\models\Project;
 use app\models\User;
+use DateTime;
+use DateTimeZone;
 use Exception;
 use Throwable;
 use Yii;
@@ -18,6 +22,7 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -109,6 +114,39 @@ class AdminController extends BaseController
             Yii::$app->response->redirect(['site/index']);
 
             return false;
+        }
+
+        switch($action->id) {
+            case 'session-add':
+                if (!Yii::$app->params['adminSessionAdd']) {
+                    return false;
+                }
+                break;
+            case 'session-edit':
+                if (!Yii::$app->params['adminSessionEdit']) {
+                    return false;
+                }
+                break;
+            case 'session-delete':
+                if (!Yii::$app->params['adminSessionDelete']) {
+                    return false;
+                }
+                break;
+            case 'off-add':
+                if (!Yii::$app->params['adminOffTimeAdd']) {
+                    return false;
+                }
+                break;
+            case 'off-edit':
+                if (!Yii::$app->params['adminOffTimeEdit']) {
+                    return false;
+                }
+                break;
+            case 'off-delete':
+                if (!Yii::$app->params['adminOffTimeDelete']) {
+                    return false;
+                }
+                break;
         }
 
         return true;
@@ -1159,5 +1197,241 @@ class AdminController extends BaseController
         }
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param string|int|null $month
+     * @param string|int|null $year
+     * @param string|int|null $day
+     * @return string|Response
+     * @throws Exception
+     */
+    public function actionSessionAdd($month = null, $year = null, $day = null)
+    {
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            $month = date('n');
+        }
+        if (!is_numeric($year) || $year < 2018) {
+            $year = date('Y');
+        }
+        if (!is_numeric($day) || $day < 1 || $day > 31) {
+            $day = date('j');
+        }
+
+        $model = new AdminClockForm(
+            new Clock(
+                [
+                    'project_id' => Yii::$app->user->identity->project_id,
+                    'clock_in' => (new DateTime(
+                        $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day . date(
+                            ' H:i:s'
+                        ),
+                        new DateTimeZone(Yii::$app->timeZone)
+                    )
+                    )->getTimestamp(),
+                ]
+            )
+        );
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
+            return $this->goBack(null, true);
+        }
+
+        $users = ArrayHelper::map(
+            User::find()->where(['status' => User::STATUS_ACTIVE, 'role' => [User::ROLE_EMPLOYEE, User::ROLE_ADMIN]])
+                ->orderBy(['name' => SORT_ASC])->all(),
+            'id',
+            'name'
+        );
+
+        return $this->render(
+            'session-add',
+            [
+                'model' => $model,
+                'projects' => ['' => Yii::t('app', '-- no project --')] + Yii::$app->user->identity->assignedProjects,
+                'users' => $users,
+            ]
+        );
+    }
+
+    /**
+     * @param string|int|null $month
+     * @param string|int|null $year
+     * @param string|int|null $day
+     * @return string|Response
+     * @throws Exception
+     */
+    public function actionOffAdd($month = null, $year = null, $day = null)
+    {
+        if (!is_numeric($month) || $month < 1 || $month > 12) {
+            $month = date('n');
+        }
+        if (!is_numeric($year) || $year < 2018) {
+            $year = date('Y');
+        }
+        if (!is_numeric($day) || $day < 1 || $day > 31) {
+            $day = date('j');
+        }
+
+        $model = new AdminOffForm(
+            new Off(
+                [
+                    'start_at' => $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day,
+                    'end_at' => $year . '-' . ($month < 10 ? '0' : '') . $month . '-' . ($day < 10 ? '0' : '') . $day,
+                ]
+            )
+        );
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
+
+            return $this->goBack(null, true);
+        }
+
+        $users = ArrayHelper::map(
+            User::find()->where(['status' => User::STATUS_ACTIVE, 'role' => [User::ROLE_EMPLOYEE, User::ROLE_ADMIN]])
+                ->orderBy(['name' => SORT_ASC])->all(),
+            'id',
+            'name'
+        );
+
+        return $this->render(
+            'off-add',
+            [
+                'model' => $model,
+                'users' => $users,
+            ]
+        );
+    }
+
+    /**
+     * @param string|int $id
+     * @param string|int $user_id
+     * @return string|Response
+     * @throws Exception
+     */
+    public function actionSessionEdit($id, $user_id)
+    {
+        $session = Clock::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => (int)$user_id,
+            ]
+        )->one();
+
+        if ($session === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
+
+            return $this->goBack(null, true);
+        }
+
+        $model = new AdminClockForm($session);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->alert->success(Yii::t('app', 'Session has been saved.'));
+
+            return $this->goBack(null, true);
+        }
+
+        return $this->render(
+            'session-edit',
+            [
+                'session' => $session,
+                'model' => $model,
+                'projects' => ['' => Yii::t('app', '-- no project --')] + Yii::$app->user->identity->assignedProjects,
+            ]
+        );
+    }
+
+    /**
+     * @param string|int $id
+     * @param string|int $user_id
+     * @return string|Response
+     * @throws Exception
+     */
+    public function actionOffEdit($id, $user_id)
+    {
+        $off = Off::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => (int)$user_id,
+            ]
+        )->one();
+
+        if ($off === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
+
+            return $this->goBack(null, true);
+        }
+
+        $model = new AdminOffForm($off);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->alert->success(Yii::t('app', 'Off-time has been saved.'));
+
+            return $this->goBack(null, true);
+        }
+
+        return $this->render(
+            'off-edit',
+            [
+                'off' => $off,
+                'model' => $model,
+                'marked' => Off::getFutureOffDays($off->id),
+            ]
+        );
+    }
+
+    /**
+     * @param string|int $id
+     * @param string|int $user_id
+     * @return Response
+     * @throws StaleObjectException
+     * @throws Throwable
+     */
+    public function actionOffDelete($id, $user_id): Response
+    {
+        $off = Off::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => (int)$user_id,
+            ]
+        )->one();
+
+        if ($off === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find off-time of given ID.'));
+        } elseif (!$off->delete()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting off-time.'));
+        } else {
+            Yii::$app->alert->success(Yii::t('app', 'Off-time has been deleted.'));
+        }
+
+        return $this->goBack(null, true);
+    }
+
+    /**
+     * @param string|int $id
+     * @param string|int $user_id
+     * @param bool $stay
+     * @return Response
+     * @throws StaleObjectException
+     * @throws Throwable
+     */
+    public function actionSessionDelete($id, $user_id, bool $stay = true): Response
+    {
+        $clock = Clock::find()->where(
+            [
+                'id' => (int)$id,
+                'user_id' => (int)$user_id,
+            ]
+        )->one();
+
+        if ($clock === null) {
+            Yii::$app->alert->danger(Yii::t('app', 'Can not find session of given ID.'));
+        } elseif (!$clock->delete()) {
+            Yii::$app->alert->danger(Yii::t('app', 'There was an error while deleting session.'));
+        } else {
+            Yii::$app->alert->success(Yii::t('app', 'Session has been deleted.'));
+        }
+
+        return $this->goBack(null, $stay);
     }
 }

@@ -25,7 +25,17 @@ Simple work time clocking service built on [Yii 2 framework](https://www.yiifram
     - `params > company` (default `Company Name`; displayed in footer and other layout places),
     - `params > email` (default `email@company.com`; used as the email sender address for emails),
     - `params > allowedDomains` (default `['@company.com']`; array with email domains allowed for registration).
-    
+    - `params > employeeSessionEdit` (default `true`; allows employees to edit own sessions)
+    - `params > employeeSessionDelete` (default `true`; allows employees to delete own sessions)
+    - `params > employeeOffTimeEdit` (default `true`; allows employees to edit own off-times)
+    - `params > employeeOffTimeDelete` (default `true`; allows employees to delete own off-times)
+    - `params > employeeOffTimeApprovedDelete` (default `true`; allows employees to delete own approved off-times)
+    - `params > adminSessionAdd` (default `false`; allows admins to add sessions)
+    - `params > adminSessionEdit` (default `false`; allows admins to edit every session)
+    - `params > adminSessionDelete` (default `false`; allows admins to delete every session)
+    - `params > adminOffTimeAdd` (default `false`; allows admins to add off-time)
+    - `params > adminOffTimeEdit` (default `false`; allows admins to edit every off-time)
+    - `params > adminOffTimeDelete` (default `false`; allows admins to delete every off-time)
 5. Change `/public/index.php` file to set `YII_DEBUG` mode to `false` and `YII_ENV` environment to `prod`.
 6. Apply migrations by running in console `php yii migrate`.
 7. Start webserver and register first account.

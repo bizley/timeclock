@@ -109,10 +109,15 @@ $list = '';
     <div class="col-lg-9">
         <div class="form-group">
             <?php if ($employee !== null): ?>
-                <a href="<?= Url::to(['off', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-sm float-right">
+                <a href="<?= Url::to(['off', 'month' => $month, 'year' => $year]) ?>" class="btn btn-success btn-sm float-right ml-1">
                     <?= FA::icon('users') ?> <?= Yii::t('app', 'All Employees') ?>
                 </a>
                 <?= Html::encode($employee->name) ?>
+            <?php endif; ?>
+            <?php if (Yii::$app->params['adminOffTimeAdd']): ?>
+                <a href="<?= Url::to(['admin/off-add']) ?>" class="btn btn-warning btn-sm float-right ml-1">
+                    <?= FA::icon('plus') ?> <?= Yii::t('app', 'Add Off-Time') ?>
+                </a>
             <?php endif; ?>
             <?= $months[$month] ?> <?= $year ?>
         </div>
@@ -133,6 +138,18 @@ $list = '';
                             <?= Yii::$app->formatter->asDate($day->end_at) ?>
                             [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                             <span class="badge badge-danger"><?= FA::icon('exclamation-triangle') ?> <?= Yii::t('app', 'VACATION NOT APPROVED YET') ?></span>
+                            <?php if (Yii::$app->params['adminOffTimeEdit']): ?>
+                                <a href="<?= Url::to(['admin/off-edit', 'id' => $day->id, 'user_id' => $day->user_id]) ?>" class="action badge badge-warning ml-1">
+                                    <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (Yii::$app->params['adminOffTimeDelete']): ?>
+                                <a href="<?= Url::to(['admin/off-delete', 'id' => $day->id, 'user_id' => $day->user_id, 'stay' => true]) ?>"
+                                   class="action badge badge-danger ml-1 mr-1"
+                                    <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                                    <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+                                </a>
+                            <?php endif; ?>
                             <a href="<?= Url::to(['off-deny', 'id' => $day->id]) ?>" class="badge badge-danger float-right ml-1 mt-1"
                                 <?= Confirm::ask(Yii::t('app', 'Are you sure you want to deny this vacation?')) ?>>
                                 <?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'deny') ?>
@@ -162,6 +179,18 @@ $list = '';
                         <?= Yii::$app->formatter->asDate($day->end_at) ?>
                         [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                         <span class="badge badge-success"><?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'Vacation approved') ?></span>
+                        <?php if (Yii::$app->params['adminOffTimeEdit']): ?>
+                            <a href="<?= Url::to(['admin/off-edit', 'id' => $day->id, 'user_id' => $day->user_id]) ?>" class="action badge badge-warning ml-1">
+                                <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (Yii::$app->params['adminOffTimeDelete']): ?>
+                            <a href="<?= Url::to(['admin/off-delete', 'id' => $day->id, 'user_id' => $day->user_id, 'stay' => true]) ?>"
+                               class="action badge badge-danger ml-1 mr-1"
+                                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                                <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+                            </a>
+                        <?php endif; ?>
                         <a href="<?= Url::to(['off-deny', 'id' => $day->id]) ?>" class="badge badge-danger float-right ml-1 mt-1"
                             <?= Confirm::ask(Yii::t('app', 'Are you sure you want to deny this vacation?')) ?>>
                             <?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'deny') ?>
@@ -187,6 +216,18 @@ $list = '';
                         <?= Yii::$app->formatter->asDate($day->end_at) ?>
                         [<?= Yii::t('app', '{n,plural,one{# day} other{# days}}', ['n' => $day->getWorkDaysOfOffPeriod()]) ?>]
                         <span class="badge badge-secondary"><?= FA::icon('thumbs-down') ?> <?= Yii::t('app', 'Vacation denied') ?></span>
+                        <?php if (Yii::$app->params['adminOffTimeEdit']): ?>
+                            <a href="<?= Url::to(['admin/off-edit', 'id' => $day->id, 'user_id' => $day->user_id]) ?>" class="action badge badge-warning ml-1">
+                                <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                            </a>
+                        <?php endif; ?>
+                        <?php if (Yii::$app->params['adminOffTimeDelete']): ?>
+                            <a href="<?= Url::to(['admin/off-delete', 'id' => $day->id, 'user_id' => $day->user_id, 'stay' => true]) ?>"
+                               class="action badge badge-danger ml-1 mr-1"
+                                <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                                <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+                            </a>
+                        <?php endif; ?>
                         <a href="<?= Url::to(['off-approve', 'id' => $day->id]) ?>" class="badge badge-success float-right mt-1"
                             <?= Confirm::ask(Yii::t('app', 'Are you sure you want to approve this vacation?')) ?>>
                             <?= FA::icon('thumbs-up') ?> <?= Yii::t('app', 'approve') ?>
@@ -210,6 +251,18 @@ $list = '';
                             <?= Yii::$app->formatter->asDate($day->start_at) ?>
                             <?= FA::icon('long-arrow-alt-right') ?>
                             <?= Yii::$app->formatter->asDate($day->end_at) ?>
+                            <?php if (Yii::$app->params['adminOffTimeEdit']): ?>
+                                <a href="<?= Url::to(['admin/off-edit', 'id' => $day->id, 'user_id' => $day->user_id]) ?>" class="action badge badge-warning ml-1">
+                                    <?= FA::icon('clock') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'edit') ?></span>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (Yii::$app->params['adminOffTimeDelete']): ?>
+                                <a href="<?= Url::to(['admin/off-delete', 'id' => $day->id, 'user_id' => $day->user_id, 'stay' => true]) ?>"
+                                   class="action badge badge-danger ml-1 mr-1"
+                                    <?= Confirm::ask(Yii::t('app', 'Are you sure you want to delete this off-time?')) ?>>
+                                    <?= FA::icon('times') ?> <span class="d-none d-md-inline"><?= Yii::t('app', 'delete') ?></span>
+                                </a>
+                            <?php endif; ?>
                         </li>
                 <?php endif; ?>
             <?php endforeach; ?>
